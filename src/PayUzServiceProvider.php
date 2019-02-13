@@ -1,6 +1,6 @@
 <?php
 
-namespace Goodone\PayUz;
+namespace Goodoneuz\PayUz;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -15,9 +15,9 @@ class PayUzServiceProvider extends ServiceProvider
          * Optional methods to load your package assets
          */
         // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'pay-uz');
-        // $this->loadViewsFrom(__DIR__.'/../resources/views', 'pay-uz');
-        // $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        // $this->loadRoutesFrom(__DIR__.'/routes.php');
+        $this->loadViewsFrom(__DIR__.'/resources/views', 'pay-uz');
+        $this->loadMigrationsFrom(__DIR__.'/database/migrations');
+        $this->loadRoutesFrom(__DIR__.'/routes/routes.php');
 
         if ($this->app->runningInConsole()) {
             $this->publishes([

@@ -1,6 +1,6 @@
 <?php
 
-namespace Goodone\PayUz;
+namespace Goodoneuz\PayUz;
 
 class PayUz
 {
