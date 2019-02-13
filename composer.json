@@ -1,0 +1,54 @@
+{
+    "name": "goodoneuz/pay-uz",
+    "description": "Payment: Click, Payme, Uzcard, Visa",
+    "keywords": [
+        "goodoneuz",
+        "pay-uz"
+    ],
+    "homepage": "https://github.com/goodoneuz/pay-uz",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Shaxzodbek",
+            "email": "shaxzodbek.qambaraliyev@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "illuminate/support": "5.7.*"
+    },
+    "require-dev": {
+        "orchestra/testbench": "3.7.*",
+        "phpunit/phpunit": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Goodoneuz\\PayUz\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Goodoneuz\\PayUz\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Goodoneuz\\PayUz\\PayUzServiceProvider"
+            ],
+            "aliases": {
+                "PayUz": "Goodone\\PayUz\\PayUzFacade"
+            }
+        }
+    }
+}
