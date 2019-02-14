@@ -1,9 +1,9 @@
-# Very short description of the package
+# O'zbekiston milliy to'lov tizimlari uchun
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/goodone/pay-uz.svg?style=flat-square)](https://packagist.org/packages/goodone/pay-uz)
 [![Build Status](https://img.shields.io/travis/goodone/pay-uz/master.svg?style=flat-square)](https://travis-ci.org/goodone/pay-uz)
-[![Quality Score](https://img.shields.io/scrutinizer/g/goodone/pay-uz.svg?style=flat-square)](https://scrutinizer-ci.com/g/goodone/pay-uz)
-[![Total Downloads](https://img.shields.io/packagist/dt/goodone/pay-uz.svg?style=flat-square)](https://packagist.org/packages/goodone/pay-uz)
+[![Quality Score](https://img.shields.io/scrutinizer/g/goodone/pay-uz.svg?style=flat-square)](https://scrutinizer-ci.com/g/goodoneuz/pay-uz)
+[![Total Downloads](https://img.shields.io/packagist/dt/goodone/pay-uz.svg?style=flat-square)](https://packagist.org/packages/goodoneuz/pay-uz)
 
 This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what PSRs you support to avoid any confusion with users and contributors.
 
@@ -41,7 +41,8 @@ If you discover any security related issues, please email shaxzodbek.qambaraliye
 
 ## Credits
 
-- [Shaxzodbek](https://github.com/goodone)
+- [Shaxzodbek](https://github.com/goodoneuz)
+- [Azizbek](https://github.com/azizbekeshonaliyev)
 - [All Contributors](../../contributors)
 
 ## License
