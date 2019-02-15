@@ -5,4 +5,8 @@
  */
 return [
 
+        // Assets folder published folder name.
+
+        'pay_assets_path'   => '/vendor/pay-uz',
+
 ];
