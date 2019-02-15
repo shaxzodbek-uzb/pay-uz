@@ -12,10 +12,7 @@ class Payme {
     public $response;
     public $merchant;
 
-    /**
-     * Application constructor.
-     * @param array $config configuration array with <em>merchant_id</em>, <em>login</em>, <em>keyFile</em> keys.
-     */
+    
     public function __construct()
     {
         $this->config   = config('payment.payme');
