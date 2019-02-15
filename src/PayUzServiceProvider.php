@@ -23,7 +23,8 @@ class PayUzServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             /*$this->publishes([
                 __DIR__.'/../config/config.php' => config_path('pay-uz.php'),
-            ], 'config');*/
+            ], 'config');
+            */
 
             // Publishing the views.
             /*$this->publishes([
