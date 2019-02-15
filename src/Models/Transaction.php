@@ -46,7 +46,7 @@ class Transaction extends Model
     const AGR       = 'agr';
     const PAYNET    = 'paynet';
     const CASH      = 'cash';
-    const TERMINAL      = 'terminal';
+    const TERMINAL  = 'terminal';
 
 
     const CURRENCY_CODE_UZS = 860;
