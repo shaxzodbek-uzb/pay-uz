@@ -21,7 +21,7 @@ class PaymentProxy extends Controller
                     (new Click($request))->run();
                     break;
                 default:
-                    return response('Function not fount',200);
+                    return response('Function not found',200);
                     break;
             }
         }catch(PaymentException $e){
