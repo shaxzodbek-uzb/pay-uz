@@ -15,7 +15,9 @@ class CreateInvoicesTable extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->increments('id');
-
+            $table->morphs('invoiceable');
+            $table->double('amount')->default(0.00);
+            $table->string('state')->default(\Goodoneuz\PayUz\Models\Invoice::STATE_CREATED);
             $table->timestamps();
         });
     }
