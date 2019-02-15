@@ -1,6 +1,6 @@
 # O'zbekiston milliy to'lov tizimlari uchun
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/goodoneuz/pay-uz.svg?style=flat-square)](https://packagist.org/packages/goodoneuz/pay-uz)
+[![Latest Version on Packagist](https://img.shields.io/packagist/dt/goodoneuz/pay-uz.svg?style=flat](https://packagist.org/packages/goodoneuz/pay-uz)
 [![Build Status](https://img.shields.io/travis/goodone/pay-uz/master.svg?style=flat-square)](https://travis-ci.org/goodone/pay-uz)
 [![Quality Score](https://img.shields.io/scrutinizer/g/goodone/pay-uz.svg?style=flat-square)](https://scrutinizer-ci.com/g/goodoneuz/pay-uz)
 [![Total Downloads](https://img.shields.io/packagist/dt/goodone/pay-uz.svg?style=flat-square)](https://packagist.org/packages/goodoneuz/pay-uz)
