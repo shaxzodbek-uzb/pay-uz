@@ -2,35 +2,53 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="authors" content="Shaxzodbek,Azizbek">
-    <title>Pay-uz System | @yield('title')</title>
-    <!-- BOOTSTRAP STYLES-->
-    <link href="{{ config('pay-uz.pay_assets_path') }}/css/bootstrap.css" rel="stylesheet" />
-    <!-- FONTAWESOME STYLES-->
-    <link href="{{ config('pay-uz.pay_assets_path') }}/css/font-awesome.css" rel="stylesheet" />
-    <!-- CUSTOM STYLES-->
-    <link href="{{ config('pay-uz.pay_assets_path') }}/css/custom.css" rel="stylesheet" />
-    <!-- GOOGLE FONTS-->
+    <title>Pay-uz | @yield('title')</title>
+    <!-- Bootstrap css -->
+    <link rel="stylesheet" href="{{ config('pay-uz.pay_assets_path') }}/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ config('pay-uz.pay_assets_path') }}/css/style.css">
+    <!-- Qo`shimcha css -->
+    <link rel="stylesheet" href="{{ config('pay-uz.pay_assets_path') }}/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ config('pay-uz.pay_assets_path') }}/css/dataTables.bootstrap4.css">
+    <link rel="stylesheet" href="{{ config('pay-uz.pay_assets_path') }}/css/sb-admin.css">
+
+
     @yield('style')
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
 </head>
-<body>
-<div id="wrapper">
+<body style="background-color: #eeeeee;">
 
-    @include('pay-uz::components.header')
+<!-- TopPanel -->
+<!-- End TopPanel -->
 
-    @yield('content')
+@include('pay-uz::components.main_nav')
+<!-- Content -->
+<!-- Sugurtalar -->
+<div class="content-wrapper" style="padding-top: 80px;">
+   @yield('content')
 </div>
-    @include('pay-uz::components.footer')
-<!-- /. WRAPPER  -->
-<!-- SCRIPTS -AT THE BOTOM TO REDUCE THE LOAD TIME-->
-<!-- JQUERY SCRIPTS -->
-<script src="{{ config('pay-uz.pay_assets_path') }}/js/jquery-1.10.2.js"></script>
-<!-- BOOTSTRAP SCRIPTS -->
+<!-- End Content -->
+
+<!-- Sozlovchi JavaScript -->
+<!-- jQuery birinchi, keyin Popper js, keyin Bootstrap js -->
+<script src="{{ config('pay-uz.pay_assets_path') }}/js/jquery-3.2.1.min.js"></script>
+<script src="{{ config('pay-uz.pay_assets_path') }}/js/popper.min.js"></script>
 <script src="{{ config('pay-uz.pay_assets_path') }}/js/bootstrap.min.js"></script>
-<!-- CUSTOM SCRIPTS -->
-<script src="{{ config('pay-uz.pay_assets_path') }}/js/custom.js"></script>
-@yield('script')
+<!-- Qo`shimcha js -->
+<script src="{{ config('pay-uz.pay_assets_path') }}/js/Chart.min.js"></script>
+<script src="{{ config('pay-uz.pay_assets_path') }}/js/jquery.dataTables.js"></script>
+<script src="{{ config('pay-uz.pay_assets_path') }}/js/dataTables.bootstrap4.js"></script>
+<script src="{{ config('pay-uz.pay_assets_path') }}/js/jquery.easing.min.js"></script>
+<script src="{{ config('pay-uz.pay_assets_path') }}/js/sb-admin.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#dataTable').DataTable();
+    } );
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    });
+</script>
+
 </body>
-</html>

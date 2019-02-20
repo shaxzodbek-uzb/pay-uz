@@ -3,7 +3,7 @@ namespace Goodoneuz\PayUz\Http\Classes\Click;
 
 use Goodoneuz\PayUz\Http\Classes\PaymentException;
 use Goodoneuz\PayUz\Http\Classes\DataFormat;
-use App\Transaction;
+use Goodoneuz\PayUz\Models\Transaction;
 
 class Click{
     
@@ -12,6 +12,7 @@ class Click{
     private $response;
     const REQUEST_PREPARE = 0;
     const REQUEST_COMPLATE = 1;
+
     public function __construct($request)
     {
         $this->request  = $request;

@@ -1,268 +1,1050 @@
 @extends('pay-uz::layouts.app')
 
+@section('title')
+
+@stop
+
+@section('style')
+    <style>
+
+    </style>
+@stop
+
 @section('content')
-    <div id="page-wrapper" >
-        <div id="page-inner">
-            <div class="row">
-                <div class="col-md-12">
-                    <h2>BASIC UI ELEMENTS</h2>
-                </div>
+    <div class="container-fluid pb-4">
+        <!-- <div class="col-12 mb-4"> -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <span class="h5">Asosiy bo'lim</span>
             </div>
-            <!-- /. ROW  -->
-            <hr />
-            <div class="row">
-                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                    <h5>Input Examples Set</h5>
-                    <div class="input-group">
-                        <span class="input-group-addon">@</span>
-                        <input type="text" class="form-control" placeholder="Username" />
-                    </div>
-                    <br />
-                    <div class="input-group">
-                        <input type="text" class="form-control" />
-                        <span class="input-group-addon">.00</span>
-                    </div>
-                    <br />
-                    <div class="input-group">
-                        <span class="input-group-addon">$</span>
-                        <input type="text" class="form-control" />
-                        <span class="input-group-addon">.00</span>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-md-6">
-                    <h5>Buttons Samples</h5>
-                    <a href="#" class="btn btn-default">default</a>
-                    <a href="#" class="btn btn-primary">primary</a>
-                    <a href="#" class="btn btn-danger">danger</a>
-                    <a href="#" class="btn btn-success">success</a>
-                    <a href="#" class="btn btn-info">info</a>
-                    <a href="#" class="btn btn-warning">warning</a>
-                    <br>
-                    <br>
-                    <h5>Progressbar Samples</h5>
-                    <div class="progress progress-striped">
-                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
-                            <span class="sr-only">40% Complete (success)</span>
-                        </div>
-                    </div>
-                    <div class="progress progress-striped active">
-                        <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%">
-                            <span class="sr-only">20% Complete</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- /. ROW  -->
-            <hr>
-            <div class="row">
-                <div class="col-lg-4 col-md-4">
-                    <div class="form-group">
-                        <label>Text Input Example</label>
-                        <input class="form-control" />
-                        <p class="help-block">Help text here.</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-4">
-                    <label>Click to see blank page</label>
-                    <a href="blank.html" target="_blank" class="btn btn-danger btn-lg btn-block">BLANK PAGE</a>
-                </div>
-                <div class="col-lg-4 col-md-4">
-                    For More Examples Please visit official bootstrap website <a href="http://getbootstrap.com" target="_blank">getbootstrap.com</a>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="col-lg-6 col-md-6">
-                    <h5>Table  Sample One</h5>
-                    <table class="table table-striped table-bordered table-hover">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Username</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Larry</td>
-                            <td>the Bird</td>
-                            <td>@twitter</td>
-                        </tr>
-                        </tbody>
-                    </table>
-
-                </div>
-                <div class="col-lg-6 col-md-6">
-                    <h5>Table  Sample Two</h5>
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Username</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr class="success">
-                                <td>1</td>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
-                            <tr class="info">
-                                <td>2</td>
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
-                            </tr>
-                            <tr class="warning">
-                                <td>3</td>
-                                <td>Larry</td>
-                                <td>the Bird</td>
-                                <td>@twitter</td>
-                            </tr>
-                            <tr class="danger">
-                                <td>4</td>
-                                <td>John</td>
-                                <td>Smith</td>
-                                <td>@jsmith</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <!-- /. ROW  -->
-            <hr>
-            <div class="row">
-                <div class="col-lg-4 col-md-4">
-                    <h5>Panel Sample</h5>
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            Default Panel
-                        </div>
-                        <div class="panel-body">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tincidunt est vitae ultrices accumsan. Aliquam ornare lacus adipiscing, posuere lectus et, fringilla augue.</p>
-                        </div>
-                        <div class="panel-footer">
-                            Panel Footer
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-4">
-                    <h5>Accordion Sample</h5>
-                    <div class="panel-group" id="accordion">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" class="collapsed">Collapsible Group Item #1</a>
-                                </h4>
-                            </div>
-                            <div id="collapseOne" class="panel-collapse collapse" style="height: 0px;">
-                                <div class="panel-body">
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Collapsible Group Item #2</a>
-                                </h4>
-                            </div>
-                            <div id="collapseTwo" class="panel-collapse in" style="height: auto;">
-                                <div class="panel-body">
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt.
-
-                                </div>
-                            </div>
-                        </div>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" class="collapsed">Collapsible Group Item #3</a>
-                                </h4>
-                            </div>
-                            <div id="collapseThree" class="panel-collapse collapse">
-                                <div class="panel-body">
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-4">
-                    <h5>Tabs Sample</h5>
-                    <ul class="nav nav-tabs">
-                        <li class="active"><a href="#home" data-toggle="tab">Home</a>
-                        </li>
-                        <li class=""><a href="#profile" data-toggle="tab">Profile</a>
-                        </li>
-                        <li class=""><a href="#messages" data-toggle="tab">Messages</a>
-                        </li>
-                    </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane fade active in" id="home">
-                            <h4>Home Tab</h4>
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit eserunt mollit anim id est laborum.
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit eserunt mollit anim id est laborum.
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit eserunt mollit anim id est laborum.
-                            </p>
-                        </div>
-                        <div class="tab-pane fade" id="profile">
-                            <h4>Profile Tab</h4>
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit eserunt mollit anim id est laborum.
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit eserunt mollit anim id est laborum.
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit eserunt mollit anim id est laborum.
-                            </p>
-                        </div>
-                        <div class="tab-pane fade" id="messages">
-                            <h4>Messages Tab</h4>
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit eserunt mollit anim id est laborum.
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit eserunt mollit anim id est laborum.
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit eserunt mollit anim id est laborum.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- /. ROW  -->
-            <hr />
-            <div class="row">
-                <div class="col-lg-12 col-md-12">
-                    <h5>Information</h5>
-                    This is a type of bare admin that means you can customize your own admin using this admin structured  template . For More Examples of bootstrap elements or components please visit official bootstrap website <a href="http://getbootstrap.com" target="_blank">getbootstrap.com</a>
-                    . And if you want full template please download <a href="http://www.binarytheme.com/bootstrap-free-admin-dashboard-template/" target="_blank">FREE BCORE ADMIN </a>&nbsp;,&nbsp;  <a href="http://www.binarytheme.com/free-bootstrap-admin-template-siminta/" target="_blank">FREE SIMINTA ADMIN</a> and <a href="http://binarycart.com/" target="_blank">FREE BINARY ADMIN</a>.
-                </div>
-            </div>
-            <!-- /. ROW  -->
         </div>
-    </div>
-    <!-- /. PAGE WRAPPER  -->
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-danger" role="alert">
+                    <span class="fa fa-warning"></span> <b>Xatolik:</b> FileViewFinder->findInPaths('admin', array('C:\OpenServer\domains\kafolat.uz\resources\views')) in FileViewFinder.php line 79
+                </div>
+            </div>
+        </div>
+
+        <!-- cards -->
+        <div class="row">
+            <div class="col-xl-3 col-sm-6 mb-3">
+                <div class="card text-topics bg-white o-hidden h-100">
+                    <div class="card-body">
+                        <div class="card-body-icon text-secondary">
+                            <i class="fa fa-fw fa-shopping-cart"></i>
+                        </div>
+                        <div class="mr-5">
+                            Sug'urtaga <span class="badge badge-pill badge-danger">5</span> ta so'rov
+                        </div>
+                    </div>
+                    <a href="#order_ins" class="card-footer text-topics clearfix small z-1" data-toggle="modal">
+                        <span class="float-left">To'liq ko'rish</span>
+                        <span class="float-right">
+                    <i class="fa fa-angle-right"></i>
+                  </span>
+                    </a>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-3">
+                <div class="card text-topics bg-white o-hidden h-100">
+                    <div class="card-body">
+                        <div class="card-body-icon text-secondary">
+                            <i class="fa fa-fw fa-envelope"></i>
+                        </div>
+                        <div class="mr-5">
+                            Sizda <span class="badge badge-pill badge-danger">24</span> ta yangi xabar
+                        </div>
+                    </div>
+                    <a href="#mail" class="card-footer text-topics clearfix small z-1" data-toggle="modal">
+                        <span class="float-left">To'liq ko'rish</span>
+                        <span class="float-right">
+                    <i class="fa fa-angle-right"></i>
+                  </span>
+                    </a>
+
+                    <!-- Xabarlar -->
+                    <div class="modal" id="mail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h6 class="modal-title" id="exampleModalLabel">
+                                        Xabarlar <span class="badge badge-pill badge-danger">24</span>
+                                    </h6>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body py-0">
+                                    <div class="row">
+                                        <div class="col-12" style="height: 350px; overflow-y: scroll;">
+                                            <div class="row">
+                                                <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                                <span class="ft-sc text-topics">
+                                  <a href="#"><b>Jamshid Eshnazarov</b></a>
+                                  <span class="badge badge-pill badge-danger">2</span>
+                                  <br>
+                                  The oasis is a mile that way, or is that just a mirage?
+                                  <br>
+                                  <span class="text-secondary ft-th"><i class="fa fa-clock-o"></i> Vaqt: 22:02 | 20.10.2017</span>
+                                </span>
+                                                </div>
+                                                <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                                <span class="ft-sc text-topics">
+                                  <a href="#"><b>Sultonov Davron</b></a>
+                                  <span class="badge badge-pill badge-danger">1</span>
+                                  <br>
+                                  Where did you get that camera?! I want one!
+                                  The oasis is a mile that way, or is that just a mirage?
+                                  <br>
+                                  <span class="text-secondary ft-th"><i class="fa fa-clock-o"></i> Vaqt: 22:02 | 20.10.2017</span>
+                                </span>
+                                                </div>
+                                                <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                                <span class="ft-sc text-topics">
+                                  <a href="#"><b>Amonov Adiz</b></a>
+                                  <span class="badge badge-pill badge-danger">1</span>
+                                  <br>
+                                  10 Kids Unaware of Their Halloween Costume? Where did you get that camera?! I want one!
+                                  <br>
+                                  <span class="text-secondary ft-th"><i class="fa fa-clock-o"></i> Vaqt: 22:02 | 20.10.2017</span>
+                                </span>
+                                                </div>
+                                                <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                                <span class="ft-sc text-topics">
+                                  <a href="#"><b>Sultonov Davron</b></a>
+                                  <span class="badge badge-pill badge-danger">1</span>
+                                  <br>
+                                  Where did you get that camera?! I want one!
+                                  The oasis is a mile that way, or is that just a mirage?
+                                  <br>
+                                  <span class="text-secondary ft-th"><i class="fa fa-clock-o"></i> Vaqt: 22:02 | 20.10.2017</span>
+                                </span>
+                                                </div>
+                                                <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                                <span class="ft-sc text-topics">
+                                  <a href="#"><b>Amonov Adiz</b></a>
+                                  <span class="badge badge-pill badge-danger">3</span>
+                                  <br>
+                                  10 Kids Unaware of Their Halloween Costume? Where did you get that camera?! I want one!
+                                  <br>
+                                  <span class="text-secondary ft-th"><i class="fa fa-clock-o"></i> Vaqt: 22:02 | 20.10.2017</span>
+                                </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="col-12 py-3 text-right">
+                                      <a href="#" class="btn btn-sm btn-primary btn-circle">Yangi xabar yozish</a>
+                                    </div> -->
+                                </div>
+                                <div class="modal-footer text-right">
+                                    <a href="#" role="button" class="btn btn-sm btn-secondary btn-circle" data-dismiss="modal">Chiqish</a>
+                                    <a href="#message" class="btn btn-sm btn-primary btn-circle" data-toggle="modal" data-dismiss="modal">Yangi xabar yozish</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Xabar yozish -->
+                    <div class="modal" id="message" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h6 class="modal-title" id="exampleModalLabel">Xabar yozish</h6>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-12" style="height: 350px; overflow-y: scroll;">
+                                            <form>
+                                                <div class="form-group">
+                                                    <label class="custom-control custom-checkbox">
+                                                        <input type="checkbox" class="custom-control-input">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">Barcha foydalanuvchilarga yuborish</span>
+                                                    </label>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="custom-control custom-checkbox">
+                                                        <input type="checkbox" class="custom-control-input">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">E-mail orqali ogohlantirish</span>
+                                                    </label>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="recipient-name" class="col-form-label">Qabul qiluvchi:</label>
+                                                    <input type="text" class="form-control" id="recipient-name">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="message-text" class="col-form-label">Xabar matni:</label>
+                                                    <textarea class="form-control" id="message-text" rows="5"></textarea>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <a href="#" role="button" class="btn btn-sm btn-secondary btn-circle" data-dismiss="modal">Chiqish</a>
+                                    <a href="#" role="button" class="btn btn-sm btn-primary btn-circle">
+                                        <i class="fa fa-send"></i> Yuborish
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Sugurta -->
+                    <div class="modal" id="order_ins" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h6 class="modal-title" id="exampleModalLabel">
+                                        Sug'urtaga <span class="badge badge-pill badge-danger">5</span> ta so'rov
+                                    </h6>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body py-0">
+                                    <div class="row">
+                                        <div class="col-12" style="height: 350px; overflow-y: scroll;">
+                                            <div class="row">
+                                                <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                                <span class="ft-sc text-topics">
+                                  <a href="#"><b>Jamshid Eshnazarov</b></a> -
+                                  <a href="#">Страхование на случай онкологических заболеваний</a> sug'urta turi uchun so'rov yubordi
+                                  <br>
+                                  <span class="text-secondary ft-th">
+                                    <i class="fa fa-check"></i> soni: <b>2</b>  | qiymati: <b>35$</b> - to'lov amalga oshirilgan
+                                  </span>
+                                  <br>
+                                  <span class="text-secondary ft-th"><i class="fa fa-clock-o"></i> Vaqti: 22:02 | 20.10.2017</span>
+                                  <span style="float: right;">
+                                    <a href="#confirm_ins" data-toggle="modal"><i class="fa fa-check"></i> <b>Tasdiqlash</b></a>
+                                  </span>
+                                </span>
+                                                </div>
+                                                <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                                <span class="ft-sc text-topics">
+                                  <a href="#"><b>Jamshid Eshnazarov</b></a> -
+                                  <a href="#">Страхование на случай онкологических заболеваний</a> sug'urta turi uchun so'rov yubordi
+                                  <br>
+                                  <span class="text-secondary ft-th">
+                                    <i class="fa fa-check"></i> soni: <b>2</b>  | qiymati: <b>35$</b> - to'lov amalga oshirilgan
+                                  </span>
+                                  <br>
+                                  <span class="text-secondary ft-th"><i class="fa fa-clock-o"></i> Vaqti: 22:02 | 20.10.2017</span>
+                                  <span style="float: right;">
+                                    <a href="#confirm_ins" data-toggle="modal"><i class="fa fa-check"></i> <b>Tasdiqlash</b></a>
+                                  </span>
+                                </span>
+                                                </div>
+                                                <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                                <span class="ft-sc text-topics">
+                                  <a href="#"><b>Jamshid Eshnazarov</b></a> -
+                                  <a href="#">Страхование на случай онкологических заболеваний</a> sug'urta turi uchun so'rov yubordi
+                                  <br>
+                                  <span class="text-secondary ft-th">
+                                    <i class="fa fa-check"></i> soni: <b>2</b>  | qiymati: <b>35$</b> - to'lov amalga oshirilgan
+                                  </span>
+                                  <br>
+                                  <span class="text-secondary ft-th"><i class="fa fa-clock-o"></i> Vaqti: 22:02 | 20.10.2017</span>
+                                  <span style="float: right;">
+                                    <a href="#confirm_ins" data-toggle="modal"><i class="fa fa-check"></i> <b>Tasdiqlash</b></a>
+                                  </span>
+                                </span>
+                                                </div>
+                                                <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                                <span class="ft-sc text-topics">
+                                  <a href="#"><b>Jamshid Eshnazarov</b></a> -
+                                  <a href="#">Страхование на случай онкологических заболеваний</a> sug'urta turi uchun so'rov yubordi
+                                  <br>
+                                  <span class="text-secondary ft-th">
+                                    <i class="fa fa-check"></i> soni: <b>2</b>  | qiymati: <b>35$</b> - to'lov amalga oshirilgan
+                                  </span>
+                                  <br>
+                                  <span class="text-secondary ft-th"><i class="fa fa-clock-o"></i> Vaqti: 22:02 | 20.10.2017</span>
+                                  <span style="float: right;">
+                                    <a href="#confirm_ins" data-toggle="modal"><i class="fa fa-check"></i> <b>Tasdiqlash</b></a>
+                                  </span>
+                                </span>
+                                                </div>
+                                                <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                                <span class="ft-sc text-topics">
+                                  <a href="#"><b>Jamshid Eshnazarov</b></a> -
+                                  <a href="#">Страхование на случай онкологических заболеваний</a> sug'urta turi uchun so'rov yubordi
+                                  <br>
+                                  <span class="text-secondary ft-th">
+                                    <i class="fa fa-check"></i> soni: <b>2</b>  | qiymati: <b>35$</b> - to'lov amalga oshirilgan
+                                  </span>
+                                  <br>
+                                  <span class="text-secondary ft-th"><i class="fa fa-clock-o"></i> Vaqti: 22:02 | 20.10.2017</span>
+                                  <span style="float: right;">
+                                    <a href="#confirm_ins" data-toggle="modal"><i class="fa fa-check"></i> <b>Tasdiqlash</b></a>
+                                  </span>
+                                </span>
+                                                </div>
+                                                <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                                <span class="ft-sc text-topics">
+                                  <a href="#"><b>Jamshid Eshnazarov</b></a> -
+                                  <a href="#">Страхование на случай онкологических заболеваний</a> sug'urta turi uchun so'rov yubordi
+                                  <br>
+                                  <span class="text-secondary ft-th">
+                                    <i class="fa fa-check"></i> soni: <b>2</b>  | qiymati: <b>35$</b> - to'lov amalga oshirilgan
+                                  </span>
+                                  <br>
+                                  <span class="text-secondary ft-th"><i class="fa fa-clock-o"></i> Vaqti: 22:02 | 20.10.2017</span>
+                                  <span style="float: right;">
+                                    <a href="#confirm_ins" data-toggle="modal"><i class="fa fa-check"></i> <b>Tasdiqlash</b></a>
+                                  </span>
+                                </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="col-12 py-3 text-right">
+                                      <a href="#" class="btn btn-sm btn-primary btn-circle">Yangi xabar yozish</a>
+                                    </div> -->
+                                </div>
+                                <div class="modal-footer text-right">
+                                    <a href="#" role="button" class="btn btn-sm btn-secondary btn-circle" data-dismiss="modal">Chiqish</a>
+                                    <!-- <a href="#message" class="btn btn-sm btn-primary btn-circle" data-toggle="modal">Yangi xabar yozish</a> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Tasdiqlash -->
+                    <div class="modal" id="confirm_ins" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-sm">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h6 class="modal-title text-topics">So'rovni tasdiqlash</h6>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            Siz rostdan ham ushbu sug'urta sotuvini tasdiqlaysizmi?
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <a href="#" role="button" class="btn btn-sm btn-danger btn-circle" data-dismiss="modal">Yo'q</a>
+                                    <a href="#" class="btn btn-sm btn-primary btn-circle">Ha</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-3">
+                <div class="card text-topics bg-white o-hidden h-100">
+                    <div class="card-body">
+                        <div class="card-body-icon text-secondary">
+                            <i class="fa fa-fw fa-shopping-cart"></i>
+                        </div>
+                        <div class="mr-5">
+                            Kunlik savdo <span class="badge badge-pill badge-primary">586$</span>
+                        </div>
+                    </div>
+                    <a href="#kunlik" class="card-footer text-topics clearfix small z-1" data-toggle="modal">
+                        <span class="float-left">To'liq ko'rish</span>
+                        <span class="float-right">
+                    <i class="fa fa-angle-right"></i>
+                  </span>
+                    </a>
+                </div>
+            </div>
+            <!-- Kunlik savdo -->
+            <div class="modal" id="kunlik" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h6 class="modal-title" id="exampleModalLabel">
+                                Kunlik savdo aylanmasi
+                            </h6>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body py-0">
+                            <div class="row">
+                                <div class="col-12 py-3" style="background-color: #eeeeee; border-bottom: solid 1px; border-color: #dddddd;">
+                                    <span class="text-topics">Hisobda: <b>6314$</b> bor</span>
+                                    <span class="text-topics" style="float: right;">Bugun: <b>+68$</b></span>
+                                </div>
+                                <div class="col-12" style="height: 350px; overflow-y: scroll;">
+                                    <div class="row">
+                                        <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                                <span class="ft-sc text-topics">
+                                  <span class="text-secondary ft-sc">15.09.2017 | 09:36</span>:
+                                  <span class="ft-sc">
+                                  <a href="#" class="text-topics">Мен ва менинг фарзандим</a>
+                                  </span>
+                                  <span class="ft-th"> - su'gurtasi harid qilindi </span>
+                                  <span class="badge badge badge-pill badge-secondary">+23$</span>
+                                </span>
+                                        </div>
+                                        <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                                <span class="ft-sc text-topics">
+                                  <span class="text-secondary ft-sc">15.09.2017 | 14:50</span>:
+                                  <span class="ft-sc">
+                                  <a href="#" class="text-topics">Страхование на случай онкологических заболеваний</a>
+                                  </span>
+                                  <span class="ft-th"> - su'gurtasi harid qilindi </span>
+                                  <span class="badge badge badge-pill badge-secondary">+45$</span>
+                                </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div class="col-12 py-3 text-right">
+                              <a href="#" class="btn btn-sm btn-primary btn-circle">Yangi xabar yozish</a>
+                            </div> -->
+                        </div>
+                        <div class="modal-footer text-right">
+                            <a href="#" role="button" class="btn btn-sm btn-secondary btn-circle" data-dismiss="modal">Chiqish</a>
+                            <!-- <a href="#message" class="btn btn-sm btn-primary btn-circle" data-toggle="modal">Yangi xabar yozish</a> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-3">
+                <div class="card text-topics bg-white o-hidden h-100">
+                    <div class="card-body">
+                        <div class="card-body-icon text-secondary">
+                            <i class="fa fa-fw fa-comment"></i>
+                        </div>
+                        <div class="mr-5">
+                            Forumda <span class="badge badge-pill badge-danger">63</span> ta yangi
+                        </div>
+                    </div>
+                    <a href="#moderatsiya" class="card-footer text-topics clearfix small z-1">
+                        <span class="float-left">To'liq ko'rish</span>
+                        <span class="float-right">
+                    <i class="fa fa-angle-right"></i>
+                  </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- </div> -->
+
+        <!-- balans -->
+        <div class="col-12 box-admin pt-3 pb-3 mb-3">
+            <div class="col-12 pb-2 mb-4" style="border-bottom: solid 1px; border-color: #eeeeee;">
+                <div class="row">
+                    <span class="text-topics h6">Balans statistikasi</span>
+                </div>
+            </div>
+            <div class="col-12"><canvas id="hisob" width="100%" height="25"></canvas></div>
+        </div>
+
+        <!-- users -->
+        <div class="col-12 box-admin pt-3 pb-3 mb-3">
+            <div class="col-12 pb-2 mb-4" style="border-bottom: solid 1px; border-color: #eeeeee;">
+                <div class="row">
+                    <span class="text-topics h6">Foydalanuvchilar tashrifi</span>
+                </div>
+            </div>
+            <div class="col-12"><canvas id="users" width="100%" height="25"></canvas></div>
+        </div>
+
+        <!-- faol nuqta -->
+        <div class="col-12 box-admin pt-3 pb-3 mb-3">
+            <!-- <div class="col-12 pb-2 mb-4" style="border-bottom: solid 1px; border-color: #eeeeee;">
+              <div class="row">
+                <span class="text-topics h6">Moderatsiya uchun</span>
+              </div>
+            </div> -->
+            <div class="row px-3">
+                <div class="col-sm-6">
+                    <div class="row">
+                        <div class="col-12">
+                            <span class="text-topics"><b>Saytdagi faol nuqtalar</b></span>
+                            <hr>
+                            <table class="table table-responsive table-sm text-topics table-hover table-bordered">
+                                <thead>
+                                <tr class="text-secondary">
+                                    <!-- <th>#</th> -->
+                                    <th>Sug'urta nomi</th>
+                                    <th>Haridlar</th>
+                                    <th>Ko'rishlar</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <!-- <th scope="row">1</th> -->
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                </tr>
+                                <tr>
+                                    <!-- <th scope="row">2</th> -->
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>@fat</td>
+                                </tr>
+                                <tr>
+                                    <!-- <th scope="row">3</th> -->
+                                    <td>Jacob</td>
+                                    <td>Larry the Bird</td>
+                                    <td>@twitter</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="row">
+                        <div class="col-12">
+                            <span class="text-topics"><b>Eng faol sug'urtalar</b></span>
+                            <hr>
+                            <table class="table table-responsive table-sm text-topics table-hover table-bordered">
+                                <thead>
+                                <tr class="text-secondary">
+                                    <!-- <th>#</th> -->
+                                    <th>Sug'urta nomi</th>
+                                    <th>Haridlar</th>
+                                    <th>Ko'rishlar</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <!-- <th scope="row">1</th> -->
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                </tr>
+                                <tr>
+                                    <!-- <th scope="row">2</th> -->
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>@fat</td>
+                                </tr>
+                                <tr>
+                                    <!-- <th scope="row">3</th> -->
+                                    <td>Jacob</td>
+                                    <td>Larry the Bird</td>
+                                    <td>@twitter</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix" id="moderatsiya"></div>
+            </div>
+        </div>
+
+        <!-- moderatsiya -->
+        <div class="col-12 box-admin pt-3 pb-3 mb-3">
+            <!-- <div class="col-12 pb-2 mb-4" style="border-bottom: solid 1px; border-color: #eeeeee;">
+              <div class="row">
+                <span class="text-topics h6">Moderatsiya uchun</span>
+              </div>
+            </div> -->
+            <div class="row px-3">
+                <div class="col-sm-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <span class="text-topics"><b>Forumda savollar</b></span> <span class="badge badge-pill badge-danger">31 yangi</span>
+                            <hr>
+                            <p class="text-secondary">
+                                <a href="#">10 Kids Unaware of Their Halloween Costume</a><br>
+                                <span class="ft-th">
+                    <b><a href="#" class="text-secondary">Jamshid</a></b> &bull; 2017-09-07 10:05 &bull; <b><a href="#" class="text-secondary">Umumiy bo'lim</a></b> da
+                  </span>
+                            </p>
+                            <p class="text-secondary">
+                                <a href="#">Where did you get that camera?! I want one!</a><br>
+                                <span class="ft-th">
+                    <b><a href="#" class="text-secondary">Jamshid</a></b> &bull; 2017-09-07 10:05 &bull; <b><a href="#" class="text-secondary">Umumiy bo'lim</a></b> da
+                  </span>
+                            </p>
+                            <p class="text-secondary">
+                                <a href="#">Where did you get that camera?! I want one!</a><br>
+                                <span class="ft-th">
+                    <b><a href="#" class="text-secondary">Jamshid</a></b> &bull; 2017-09-07 10:05 &bull; <b><a href="#" class="text-secondary">Umumiy bo'lim</a></b> da
+                  </span>
+                            </p>
+                        </div>
+                        <div class="col-12 align-items-end">
+                            <p><a href="#quest_order" class="btn btn-sm btn-primary btn-circle ft-th" role="button" data-toggle="modal">To'liq ko'rish</a></p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Question Confirm -->
+                <div class="modal" id="quest_order" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h6 class="modal-title" id="exampleModalLabel">
+                                    Forumdagi yangi mavzular <span class="badge badge-pill badge-danger">5</span>
+                                </h6>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body py-0">
+                                <div class="row">
+                                    <div class="col-12" style="height: 350px; overflow-y: scroll;">
+                                        <div class="row">
+                                            <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                          <span class="ft-sc text-topics">
+                            <a href="#">10 Kids Unaware of Their Halloween Costume</a><br>
+                            <span class="ft-th">
+                              <b><a href="#" class="text-secondary">Jamshid</a></b> &bull; 2017-09-07 10:05 &bull; <b><a href="#" class="text-secondary">Umumiy bo'lim</a></b> da
+                            </span>
+                            <span style="float: right;">
+                              <a href="#confirm_quest" data-toggle="modal"><i class="fa fa-check"></i> <b>Tasdiqlash</b></a>
+                            </span>
+                          </span>
+                                            </div>
+                                            <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                          <span class="ft-sc text-topics">
+                            <a href="#">10 Kids Unaware of Their Halloween Costume</a><br>
+                            <span class="ft-th">
+                              <b><a href="#" class="text-secondary">Jamshid</a></b> &bull; 2017-09-07 10:05 &bull; <b><a href="#" class="text-secondary">Umumiy bo'lim</a></b> da
+                            </span>
+                            <span style="float: right;">
+                              <a href="#confirm_quest" data-toggle="modal"><i class="fa fa-check"></i> <b>Tasdiqlash</b></a>
+                            </span>
+                          </span>
+                                            </div>
+                                            <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                          <span class="ft-sc text-topics">
+                            <a href="#">Where did you get that camera?! I want one!</a><br>
+                            <span class="ft-th">
+                            <b><a href="#" class="text-secondary">Jamshid</a></b> &bull; 2017-09-07 10:05 &bull; <b><a href="#" class="text-secondary">Umumiy bo'lim</a></b> da
+                            </span>
+                            <span style="float: right;">
+                              <a href="#confirm_quest" data-toggle="modal"><i class="fa fa-check"></i> <b>Tasdiqlash</b></a>
+                            </span>
+                          </span>
+                                            </div>
+                                            <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                          <span class="ft-sc text-topics">
+                            <a href="#">10 Kids Unaware of Their Halloween Costume</a><br>
+                            <span class="ft-th">
+                              <b><a href="#" class="text-secondary">Jamshid</a></b> &bull; 2017-09-07 10:05 &bull; <b><a href="#" class="text-secondary">Umumiy bo'lim</a></b> da
+                            </span>
+                            <span style="float: right;">
+                              <a href="#confirm_quest" data-toggle="modal"><i class="fa fa-check"></i> <b>Tasdiqlash</b></a>
+                            </span>
+                          </span>
+                                            </div>
+                                            <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                          <span class="ft-sc text-topics">
+                            <a href="#">10 Kids Unaware of Their Halloween Costume</a><br>
+                            <span class="ft-th">
+                              <b><a href="#" class="text-secondary">Jamshid</a></b> &bull; 2017-09-07 10:05 &bull; <b><a href="#" class="text-secondary">Umumiy bo'lim</a></b> da
+                            </span>
+                            <span style="float: right;">
+                              <a href="#confirm_quest" data-toggle="modal"><i class="fa fa-check"></i> <b>Tasdiqlash</b></a>
+                            </span>
+                          </span>
+                                            </div>
+                                            <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                          <span class="ft-sc text-topics">
+                            <a href="#">10 Kids Unaware of Their Halloween Costume</a><br>
+                            <span class="ft-th">
+                              <b><a href="#" class="text-secondary">Jamshid</a></b> &bull; 2017-09-07 10:05 &bull; <b><a href="#" class="text-secondary">Umumiy bo'lim</a></b> da
+                            </span>
+                            <span style="float: right;">
+                              <a href="#confirm_quest" data-toggle="modal"><i class="fa fa-check"></i> <b>Tasdiqlash</b></a>
+                            </span>
+                          </span>
+                                            </div>
+                                            <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                          <span class="ft-sc text-topics">
+                            <a href="#">10 Kids Unaware of Their Halloween Costume</a><br>
+                            <span class="ft-th">
+                              <b><a href="#" class="text-secondary">Jamshid</a></b> &bull; 2017-09-07 10:05 &bull; <b><a href="#" class="text-secondary">Umumiy bo'lim</a></b> da
+                            </span>
+                            <span style="float: right;">
+                              <a href="#confirm_quest" data-toggle="modal"><i class="fa fa-check"></i> <b>Tasdiqlash</b></a>
+                            </span>
+                          </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- <div class="col-12 py-3 text-right">
+                                  <a href="#" class="btn btn-sm btn-primary btn-circle">Yangi xabar yozish</a>
+                                </div> -->
+                            </div>
+                            <div class="modal-footer text-right">
+                                <a href="#" role="button" class="btn btn-sm btn-secondary btn-circle" data-dismiss="modal">Chiqish</a>
+                                <a href="#confirm_quest" class="btn btn-sm btn-primary btn-circle" data-toggle="modal">Barchasini tasdiqlash</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Tasdiqlash -->
+                <div class="modal" id="confirm_quest" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h6 class="modal-title text-topics">Savolni qabul qilish</h6>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        Siz rostdan ham ushbu savolni forumga qabul qilasizmi?
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="#" role="button" class="btn btn-sm btn-danger btn-circle" data-dismiss="modal">Yo'q</a>
+                                <a href="#" class="btn btn-sm btn-primary btn-circle">Ha</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <span class="text-topics"><b>Forumda javoblar</b></span> <span class="badge badge-pill badge-danger">87 yangi</span>
+                            <hr>
+                            <p class="text-secondary">
+                                <a href="#">The oasis is a mile that way, or is that just a mirage?</a><br>
+                                <span class="ft-th">
+                    <b><a href="#" class="text-secondary">Jamshid</a></b> &bull; 2017-09-07 10:05 &bull; <b><a href="#" class="text-secondary">Umumiy bo'lim</a></b> da
+                  </span>
+                            </p>
+                            <p class="text-secondary">
+                                <a href="#">Where did you get that camera?! I want one!</a><br>
+                                <span class="ft-th">
+                    <b><a href="#" class="text-secondary">Jamshid</a></b> &bull; 2017-09-07 10:05 &bull; <b><a href="#" class="text-secondary">Umumiy bo'lim</a></b> da
+                  </span>
+                            </p>
+                            <p class="text-secondary">
+                                <a href="#">The oasis is a mile that way, or is that just a mirage?</a><br>
+                                <span class="ft-th">
+                    <b><a href="#" class="text-secondary">Jamshid</a></b> &bull; 2017-09-07 10:05 &bull; <b><a href="#" class="text-secondary">Umumiy bo'lim</a></b> da
+                  </span>
+                            </p>
+                        </div>
+                        <div class="col-12 align-items-end">
+                            <p><a href="#ans_order" class="btn btn-sm btn-primary btn-circle ft-th" role="button" data-toggle="modal">To'liq ko'rish</a></p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Ans Confirm -->
+                <div class="modal" id="ans_order" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h6 class="modal-title" id="exampleModalLabel">
+                                    Forumdagi yangi javoblar <span class="badge badge-pill badge-danger">13</span>
+                                </h6>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body py-0">
+                                <div class="row">
+                                    <div class="col-12" style="height: 350px; overflow-y: scroll;">
+                                        <div class="row">
+                                            <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                          <span class="ft-sc text-topics">
+                            <a href="#">10 Kids Unaware of Their Halloween Costume</a><br>
+                            <span class="ft-th">
+                              <b><a href="#" class="text-secondary">Jamshid</a></b> &bull; 2017-09-07 10:05 &bull; <b><a href="#" class="text-secondary">Umumiy bo'lim</a></b> da
+                            </span>
+                            <span style="float: right;">
+                              <a href="#confirm_ans" data-toggle="modal"><i class="fa fa-check"></i> <b>Tasdiqlash</b></a>
+                            </span>
+                          </span>
+                                            </div>
+                                            <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                          <span class="ft-sc text-topics">
+                            <a href="#">10 Kids Unaware of Their Halloween Costume</a><br>
+                            <span class="ft-th">
+                              <b><a href="#" class="text-secondary">Jamshid</a></b> &bull; 2017-09-07 10:05 &bull; <b><a href="#" class="text-secondary">Umumiy bo'lim</a></b> da
+                            </span>
+                            <span style="float: right;">
+                              <a href="#confirm_ans" data-toggle="modal"><i class="fa fa-check"></i> <b>Tasdiqlash</b></a>
+                            </span>
+                          </span>
+                                            </div>
+                                            <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                          <span class="ft-sc text-topics">
+                            <a href="#">Where did you get that camera?! I want one!</a><br>
+                            <span class="ft-th">
+                            <b><a href="#" class="text-secondary">Jamshid</a></b> &bull; 2017-09-07 10:05 &bull; <b><a href="#" class="text-secondary">Umumiy bo'lim</a></b> da
+                            </span>
+                            <span style="float: right;">
+                              <a href="#confirm_ans" data-toggle="modal"><i class="fa fa-check"></i> <b>Tasdiqlash</b></a>
+                            </span>
+                          </span>
+                                            </div>
+                                            <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                          <span class="ft-sc text-topics">
+                            <a href="#">10 Kids Unaware of Their Halloween Costume</a><br>
+                            <span class="ft-th">
+                              <b><a href="#" class="text-secondary">Jamshid</a></b> &bull; 2017-09-07 10:05 &bull; <b><a href="#" class="text-secondary">Umumiy bo'lim</a></b> da
+                            </span>
+                            <span style="float: right;">
+                              <a href="#confirm_ans" data-toggle="modal"><i class="fa fa-check"></i> <b>Tasdiqlash</b></a>
+                            </span>
+                          </span>
+                                            </div>
+                                            <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                          <span class="ft-sc text-topics">
+                            <a href="#">10 Kids Unaware of Their Halloween Costume</a><br>
+                            <span class="ft-th">
+                              <b><a href="#" class="text-secondary">Jamshid</a></b> &bull; 2017-09-07 10:05 &bull; <b><a href="#" class="text-secondary">Umumiy bo'lim</a></b> da
+                            </span>
+                            <span style="float: right;">
+                              <a href="#confirm_ans" data-toggle="modal"><i class="fa fa-check"></i> <b>Tasdiqlash</b></a>
+                            </span>
+                          </span>
+                                            </div>
+                                            <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                          <span class="ft-sc text-topics">
+                            <a href="#">10 Kids Unaware of Their Halloween Costume</a><br>
+                            <span class="ft-th">
+                              <b><a href="#" class="text-secondary">Jamshid</a></b> &bull; 2017-09-07 10:05 &bull; <b><a href="#" class="text-secondary">Umumiy bo'lim</a></b> da
+                            </span>
+                            <span style="float: right;">
+                              <a href="#confirm_ans" data-toggle="modal"><i class="fa fa-check"></i> <b>Tasdiqlash</b></a>
+                            </span>
+                          </span>
+                                            </div>
+                                            <div class="col-12 pb-3 pt-2 cart-item" style="border-bottom: dotted 1px; border-color: #eeeeee;">
+                          <span class="ft-sc text-topics">
+                            <a href="#">10 Kids Unaware of Their Halloween Costume</a><br>
+                            <span class="ft-th">
+                              <b><a href="#" class="text-secondary">Jamshid</a></b> &bull; 2017-09-07 10:05 &bull; <b><a href="#" class="text-secondary">Umumiy bo'lim</a></b> da
+                            </span>
+                            <span style="float: right;">
+                              <a href="#confirm_ans" data-toggle="modal"><i class="fa fa-check"></i> <b>Tasdiqlash</b></a>
+                            </span>
+                          </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- <div class="col-12 py-3 text-right">
+                                  <a href="#" class="btn btn-sm btn-primary btn-circle">Yangi xabar yozish</a>
+                                </div> -->
+                            </div>
+                            <div class="modal-footer text-right">
+                                <a href="#" role="button" class="btn btn-sm btn-secondary btn-circle" data-dismiss="modal">Chiqish</a>
+                                <a href="#confirm_ans" class="btn btn-sm btn-primary btn-circle" data-toggle="modal">Barchasini tasdiqlash</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Tasdiqlash -->
+                <div class="modal" id="confirm_ans" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h6 class="modal-title text-topics">Javobni qabul qilish</h6>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        Siz rostdan ham ushbu javobni forumga qabul qilasizmi?
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="#" role="button" class="btn btn-sm btn-danger btn-circle" data-dismiss="modal">Yo'q</a>
+                                <a href="#" class="btn btn-sm btn-primary btn-circle">Ha</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <span class="text-topics"><b>Sug'urta uchun so'rovlar</b></span> <span class="badge badge-pill badge-danger">6 yangi</span>
+                            <hr>
+                            <p class="text-secondary">
+                                <a href="#">Страхование на случай онкологических заболеваний</a> <span class="ft-th">- uchun</span><br>
+                                <span class="ft-th"><b><a href="#" class="text-secondary">Jamshid</a></b> &bull; 2017-09-07 10:05 &bull; <b>53$</b></span>
+                            </p>
+                            <p class="text-secondary">
+                                <a href="#">Мен ва менинг фарзандим</a> <span class="ft-th">- uchun</span><br>
+                                <span class="ft-th"><b><a href="#" class="text-secondary">Jamshid</a></b> &bull; 2017-09-07 10:05 &bull; <b>25$</b></span>
+                            </p>
+                            <p class="text-secondary">
+                                <a href="#">Мен ва менинг фарзандим</a> <span class="ft-th">- uchun</span><br>
+                                <span class="ft-th"><b><a href="#" class="text-secondary">Jamshid</a></b> &bull; 2017-09-07 10:05 &bull; <b>25$</b></span>
+                            </p>
+                        </div>
+                        <div class="col-12 align-items-end">
+                            <p><a href="#order_ins" class="btn btn-sm btn-primary btn-circle ft-th" role="button" data-toggle="modal">To'liq ko'rish</a></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+
+        <!-- lenta -->
+        <div class="col-12 box-admin pt-3 pb-3 mb-3">
+            <!-- <div class="col-12 pb-2 mb-4" style="border-bottom: solid 1px; border-color: #eeeeee;">
+              <div class="row">
+                <span class="text-topics h6">Moderatsiya uchun</span>
+              </div>
+            </div> -->
+            <div class="row px-3">
+                <div class="col-sm-6">
+                    <div class="row">
+                        <div class="col-12 pb-3">
+                            <span class="text-topics"><b>Saytdagi faolliklar</b></span>
+                            <hr>
+                            <div style="height: 250px; overflow-y: scroll;">
+                                <p class="text-secondary">
+                                    <a href="#" class="text-secondary ft-sc"><b>15.09.2017</b></a><b>:</b>
+                                    <span class="ft-sc">
+                    <a href="#" class="text-topics">Jamshid</a>
+                  </span>
+                                    <span class="ft-th"> - ismli foydalanuvchi saytda ro'yhatdan o'tdi </span>
+                                    <!-- <span class="badge badge badge-pill badge-secondary">+23$</span> -->
+                                </p>
+                                <p class="text-secondary">
+                                    <a href="#" class="text-secondary ft-sc"><b>15.09.2017</b></a><b>:</b>
+                                    <span class="ft-sc">
+                    <a href="#" class="text-topics">Muhlisa</a>
+                  </span>
+                                    <span class="ft-th"> - ismli foydalanuvchi bitta sug'urta turini savatiga qo'shdi </span>
+                                    <!-- <span class="badge badge badge-pill badge-secondary">+45$</span> -->
+                                </p>
+                                <p class="text-secondary">
+                                    <a href="#" class="text-secondary ft-sc"><b>14.09.2017</b></a><b>:</b>
+                                    <span class="ft-sc">
+                    <a href="#" class="text-topics">Jamshid</a>
+                  </span>
+                                    <span class="ft-th"> - ismli foydalanuvchi o'z shaxsiy sahifasi parolini yangiladi </span>
+                                    <!-- <span class="badge badge badge-pill badge-secondary">+21$</span> -->
+                                </p>
+                                <p class="text-secondary">
+                                    <a href="#" class="text-secondary ft-sc"><b>12.09.2017</b></a><b>:</b>
+                                    <span class="ft-sc">
+                    <a href="#" class="text-topics">Ninuwa</a>
+                  </span>
+                                    <span class="ft-th"> - ismli foydalanuvchi saytda ro'yhatdan o'tdi </span>
+                                    <!-- <span class="badge badge badge-pill badge-secondary">+14$</span> -->
+                                </p>
+                                <p class="text-secondary">
+                                    <a href="#" class="text-secondary ft-sc"><b>15.09.2017</b></a><b>:</b>
+                                    <span class="ft-sc">
+                    <a href="#" class="text-topics">Muhlisa</a>
+                  </span>
+                                    <span class="ft-th"> - ismli foydalanuvchi bitta sug'urta turini savatiga qo'shdi </span>
+                                    <!-- <span class="badge badge badge-pill badge-secondary">+45$</span> -->
+                                </p>
+                                <p class="text-secondary">
+                                    <a href="#" class="text-secondary ft-sc"><b>14.09.2017</b></a><b>:</b>
+                                    <span class="ft-sc">
+                    <a href="#" class="text-topics">Jamshid</a>
+                  </span>
+                                    <span class="ft-th"> - ismli foydalanuvchi o'z shaxsiy sahifasi parolini yangiladi </span>
+                                    <!-- <span class="badge badge badge-pill badge-secondary">+21$</span> -->
+                                </p>
+                                <p class="text-secondary">
+                                    <a href="#" class="text-secondary ft-sc"><b>12.09.2017</b></a><b>:</b>
+                                    <span class="ft-sc">
+                    <a href="#" class="text-topics">Ninuwa</a>
+                  </span>
+                                    <span class="ft-th"> - ismli foydalanuvchi saytda ro'yhatdan o'tdi </span>
+                                    <!-- <span class="badge badge badge-pill badge-secondary">+14$</span> -->
+                                </p>
+                            </div>
+                        </div>
+                        <!-- <div class="col-12 align-items-end pt-3">
+                          <p><a href="#" class="btn btn-sm btn-primary btn-circle ft-th" role="button">To'liq ko'rish</a></p>
+                        </div> -->
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="row">
+                        <div class="col-12 pb-3">
+                            <span class="text-topics"><b>Balansdagi faolliklar</b></span>
+                            <hr>
+                            <div style="height: 250px; overflow-y: scroll;">
+                                <p class="text-secondary">
+                                    <a href="#" class="text-secondary ft-sc"><b>15.09.2017</b></a><b>:</b>
+                                    <span class="ft-sc">
+                    <a href="#" class="text-topics">Мен ва менинг фарзандим</a>
+                  </span>
+                                    <span class="ft-th"> - su'gurtasi harid qilindi </span>
+                                    <span class="badge badge badge-pill badge-secondary">+23$</span>
+                                </p>
+                                <p class="text-secondary">
+                                    <a href="#" class="text-secondary ft-sc"><b>15.09.2017</b></a><b>:</b>
+                                    <span class="ft-sc">
+                    <a href="#" class="text-topics">Страхование на случай онкологических заболеваний</a>
+                  </span>
+                                    <span class="ft-th"> - su'gurtasi harid qilindi </span>
+                                    <span class="badge badge badge-pill badge-secondary">+45$</span>
+                                </p>
+                                <p class="text-secondary">
+                                    <a href="#" class="text-secondary ft-sc"><b>14.09.2017</b></a><b>:</b>
+                                    <span class="ft-sc">
+                    <a href="#" class="text-topics">Страхование водителей от несчастных случаев</a>
+                  </span>
+                                    <span class="ft-th"> - su'gurtasi harid qilindi </span>
+                                    <span class="badge badge badge-pill badge-secondary">+21$</span>
+                                </p>
+                                <p class="text-secondary">
+                                    <a href="#" class="text-secondary ft-sc"><b>12.09.2017</b></a><b>:</b>
+                                    <span class="ft-sc">
+                    <a href="#" class="text-topics">Выезжающие за рубеж</a>
+                  </span>
+                                    <span class="ft-th"> - su'gurtasi harid qilindi </span>
+                                    <span class="badge badge badge-pill badge-secondary">+14$</span>
+                                </p>
+                                <p class="text-secondary">
+                                    <a href="#" class="text-secondary ft-sc"><b>15.09.2017</b></a><b>:</b>
+                                    <span class="ft-sc">
+                    <a href="#" class="text-topics">Мен ва менинг фарзандим</a>
+                  </span>
+                                    <span class="ft-th"> - su'gurtasi harid qilindi </span>
+                                    <span class="badge badge badge-pill badge-secondary">+23$</span>
+                                </p>
+                                <p class="text-secondary">
+                                    <a href="#" class="text-secondary ft-sc"><b>15.09.2017</b></a><b>:</b>
+                                    <span class="ft-sc">
+                    <a href="#" class="text-topics">Страхование на случай онкологических заболеваний</a>
+                  </span>
+                                    <span class="ft-th"> - su'gurtasi harid qilindi </span>
+                                    <span class="badge badge badge-pill badge-secondary">+45$</span>
+                                </p>
+                                <p class="text-secondary">
+                                    <a href="#" class="text-secondary ft-sc"><b>14.09.2017</b></a><b>:</b>
+                                    <span class="ft-sc">
+                    <a href="#" class="text-topics">Страхование водителей от несчастных случаев</a>
+                  </span>
+                                    <span class="ft-th"> - su'gurtasi harid qilindi </span>
+                                    <span class="badge badge badge-pill badge-secondary">+21$</span>
+                                </p>
+                            </div>
+                        </div>
+                        <!-- <div class="col-12 align-items-end pt-3">
+                          <p><a href="#" class="btn btn-sm btn-primary btn-circle ft-th" role="button">To'liq ko'rish</a></p>
+                        </div> -->
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
     </div>
 @stop

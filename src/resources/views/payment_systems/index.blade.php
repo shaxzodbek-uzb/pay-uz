@@ -2,13 +2,13 @@
 
 @section('title')
     Blank page
-    @stop
+@stop
 
 @section('style')
     <style>
 
     </style>
-    @stop
+@stop
 
 @section('content')
 
@@ -16,4 +16,4 @@
 
 @section('script')
 
-    @stop
+@stop
