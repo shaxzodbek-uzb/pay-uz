@@ -19,7 +19,7 @@ class PaymentException extends \Exception{
     public function response()
     {
         $this->response->send();
-        return $response;
+        return $this->response;
     }
     
 
