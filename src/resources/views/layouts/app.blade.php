@@ -26,6 +26,9 @@
 <!-- Content -->
 <!-- Sugurtalar -->
 <div class="content-wrapper" style="padding-top: 80px;">
+    <div class="container-fluid">
+        @include('pay-uz::components.alerts')
+    </div>
    @yield('content')
 </div>
 <!-- End Content -->
@@ -50,5 +53,5 @@
         $('[data-toggle="tooltip"]').tooltip()
     });
 </script>
-
+@yield('script')
 </body>

@@ -1,7 +1,7 @@
 @extends('pay-uz::layouts.app')
 
 @section('title')
-
+    Dashboard
 @stop
 
 @section('style')
