@@ -18,6 +18,7 @@ class CreateInvoicesTable extends Migration
             $table->morphs('invoiceable');
             $table->double('amount')->default(0.00);
             $table->string('state')->default(\Goodoneuz\PayUz\Models\Invoice::STATE_CREATED);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -4,9 +4,16 @@ namespace Goodoneuz\PayUz\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Goodoneuz\PayUz\Http\Classes\DataFormat;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Transaction extends Model
 {
+    use SoftDeletes;
+
+    protected $dates    = [
+        'deleted_at'
+    ];
+
     protected $fillable = [
         'payment_system', //varchar 191
         'system_transaction_id', // varchar 191

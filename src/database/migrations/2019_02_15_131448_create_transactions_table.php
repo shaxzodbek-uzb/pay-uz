@@ -28,6 +28,7 @@ class CreateTransactionsTable extends Migration
             $table->dateTime('system_time_datetime')->nullable();
             $table->string('comment')->nullable();
             $table->string('detail')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

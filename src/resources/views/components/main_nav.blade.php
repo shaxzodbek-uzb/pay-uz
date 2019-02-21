@@ -1,4 +1,4 @@
-<!-- MainNav -->
+@php($current_route=Illuminate\Support\Facades\Route::currentRouteName())
 <div class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" id="mainNav">
     <a class="navbar-brand" href="/admin">Pay-uz</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -6,36 +6,36 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
-            <li class="nav-item active" data-toggle="tooltip" data-placement="right" title="Asosiy bo'lim">
-                <a class="nav-link" href="/admin">
+            <li class="nav-item @if($current_route == 'payment.dashboard') active @endif" data-toggle="tooltip" data-placement="right" title="Asosiy bo'lim">
+                <a class="nav-link" href="{{ route('payment.dashboard') }}">
                     <i class="fa fa-fw fa-dashboard"></i>
                     <span class="nav-link-text">
                 Asosiy bo'lim</span>
                 </a>
             </li>
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Payment Systems">
-                <a class="nav-link" href="">
+            <li class="nav-item @if($current_route == 'payment.payment_systems.index') active @endif" data-toggle="tooltip" data-placement="right" title="Payment Systems">
+                <a class="nav-link" href="{{ route('payment.payment_systems.index') }}">
                     <i class="fa fa-fw fa-list"></i>
                     <span class="nav-link-text">
                 Payment Systems</span>
                 </a>
             </li>
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Transactions">
+            <li class="nav-item @if($current_route == 'payment.transactions.index') active @endif" data-toggle="tooltip" data-placement="right" title="Transactions">
                 <a class="nav-link" href="{{ route('payment.transactions.index') }}">
                     <i class="fa fa-fw fa-exchange"></i>
                     <span class="nav-link-text">
                 Transactions</span>
                 </a>
             </li>
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Invoices">
-                <a class="nav-link" href="/">
+            <li class="nav-item @if($current_route == 'payment.invoices.index') active @endif" data-toggle="tooltip" data-placement="right" title="Invoices">
+                <a class="nav-link" href="{{ route('payment.invoices.index') }}">
                     <i class="fa fa-fw fa-building"></i>
                     <span class="nav-link-text">
                  Invoices
                 </span>
                 </a>
             </li>
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Settings">
+            <li class="nav-item @if($current_route == 'payment.settings.index') active @endif" data-toggle="tooltip" data-placement="right" title="Settings">
                 <a class="nav-link" href="/">
                     <i class="fa fa-fw fa-cog"></i>
                     <span class="nav-link-text">
