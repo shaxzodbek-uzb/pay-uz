@@ -10,6 +10,7 @@ namespace Goodoneuz\PayUz\Http\Controllers;
 
 
 use App\Http\Controllers\Controller;
+use Goodoneuz\PayUz\Models\Transaction;
 use Illuminate\Http\Request;
 
 class TransactionController extends Controller
@@ -21,7 +22,8 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        return view('pay-uz::transactions.index');
+        $transactions = Transaction::latest()->get();
+        return view('pay-uz::transactions.index',compact('transactions'));
     }
 
     /**
