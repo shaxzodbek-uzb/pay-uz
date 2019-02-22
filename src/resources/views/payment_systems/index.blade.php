@@ -15,7 +15,7 @@
         <!-- <div class="col-12 mb-4"> -->
         <div class="row mb-4">
             <div class="col-6">
-                <span class="h5">To'lov tizimlar</span>
+                <span class="h5">Payment systems</span>
             </div>
             <div class="col-6 text-right">
                 <a href="{{ route('payment.payment_systems.create') }}" class="btn btn-sm btn-primary" role="button"><span class="fa fa-plus"></span> Add new</a>
@@ -25,7 +25,7 @@
         <div class="col-12 box-admin pt-3 pb-3">
             <div class="col-12 pb-2 mb-4" style="border-bottom: solid 1px; border-color: #eeeeee;">
                 <div class="row">
-                    <span class="text-topics h6">To'lov tizimlari jadvali</span>
+                    <span class="text-topics h6">Payment systems</span>
                 </div>
             </div>
             <div class="table-responsive">

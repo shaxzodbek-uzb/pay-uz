@@ -10,7 +10,10 @@ namespace Goodoneuz\PayUz\Http\Controllers;
 
 
 use App\Http\Controllers\Controller;
+use Goodoneuz\PayUz\Models\Invoice;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class InvoiceController extends Controller
 {
@@ -21,7 +24,8 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        return view('pay-uz::invoices.index');
+        $invoices   = Invoice::latest()->get();
+        return view('pay-uz::invoices.index',compact('invoices'));
     }
 
     /**
@@ -42,7 +46,40 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $rules = [
+            'model_type'         => 'required|max:255',
+            'model_id'           => 'required',
+            'amount'             => 'required'
+        ];
+
+        $messages = [
+            'model_type.required'          => "Model type can not be exist!",
+            'model_id.required'          => "Model id can not be exist!",
+            'amount.required'          => "Amount can not be exist!",
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            return redirect()->route('payment.invoices.index')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $model_type = 'App\\' . Str::studly(Str::singular($request['model_type']));
+
+        if (!is_subclass_of($model_type, 'Illuminate\Database\Eloquent\Model')) {
+                return redirect()->back()->with(['warning'  => "Model type not found"]);
+        }
+
+        $model = $model_type::where('id',$request['model_id'])->first();
+
+        if (is_null($model)){
+            return redirect()->back()->with(['warning'  => "For model id Model not found"]);
+        }
+
+        return redirect()->back()->with(['success'  => "To'lov tizmi muvaffaqiyatli saqlandi."]);
     }
 
     /**
