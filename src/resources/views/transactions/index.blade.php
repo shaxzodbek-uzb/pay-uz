@@ -15,7 +15,7 @@
         <!-- <div class="col-12 mb-4"> -->
         <div class="row mb-4">
             <div class="col-6">
-                <span class="h5">To'lov tizimlar</span>
+                <span class="h5">Transactions</span>
             </div>
             <div class="col-6 text-right">
                 <a href="{{ route('payment.transactions.create') }}" class="btn btn-sm btn-primary" role="button"><span class="fa fa-plus"></span> Add new</a>
@@ -25,7 +25,7 @@
         <div class="col-12 box-admin pt-3 pb-3">
             <div class="col-12 pb-2 mb-4" style="border-bottom: solid 1px; border-color: #eeeeee;">
                 <div class="row">
-                    <span class="text-topics h6">To'lov tizimlari jadvali</span>
+                    <span class="text-topics h6">Transactions</span>
                 </div>
             </div>
             <div class="table-responsive">
@@ -71,39 +71,9 @@
             </div>
         </div>
     </div>
-
-    <!-- Delete modal -->
-    <div class="modal fade" id="modalDeletePaymentSystem" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <form id="deleteSystemForm" method="post" action="">
-                    @csrf
-                    @method('DELETE')
-                    <div class="modal-header bg-danger text-white">
-                        <h5 class="modal-title" id="exampleModalLongTitle">Confirmation</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        Are you sure you want to remove it?
-                        <input id="deleteSystemId" type="hidden" name="transaction_id">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Confirm</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 @stop
 
 @section('script')
     <script type="text/javascript">
-        $('.deleteBtn').on('click', function () {
-            $("#deleteSystemForm").attr('action','/payment/transactions/'+$(this).data('system_id'));
-            $("#modalDeletePaymentSystem").modal('show');
-        });
     </script>
 @stop

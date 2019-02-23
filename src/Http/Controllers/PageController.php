@@ -33,4 +33,11 @@ class PageController extends Controller
     public function blank(){
         return view('pay-uz::blank');
     }
+
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function settings(){
+        return view('pay-uz::settings');
+    }
 }
