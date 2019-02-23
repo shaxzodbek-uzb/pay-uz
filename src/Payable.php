@@ -11,7 +11,7 @@ namespace Goodoneuz\PayUz;
 
 use Goodoneuz\PayUz\Models\Invoice;
 
-trait PayAble
+trait Payable
 {
     public function invoices()
     {
