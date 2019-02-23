@@ -11,5 +11,5 @@ Route::middleware('web')->name('payment.')->prefix('payment')->namespace('Goodon
     Route::resource('invoices','InvoiceController');
     Route::resource('transactions','TransactionController');
     Route::any('/redirect/','PaymentProxy@redirect')->name('redirect');
-    Route::any ('/{payment}/{type?}/{invoice_id?}/{status?}','PaymentProxy@handle')->name('handle');
+    Route::any ('/handle/{payment}/{type?}/{invoice_id?}/{status?}','PaymentProxy@handle')->name('handle');
 });
