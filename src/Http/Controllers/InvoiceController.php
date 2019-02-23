@@ -48,15 +48,17 @@ class InvoiceController extends Controller
     {
 
         $rules = [
-            'model_type'         => 'required|max:255',
-            'model_id'           => 'required',
-            'amount'             => 'required'
+            'invoiceable_type'         => 'required|max:255',
+            'invoiceable_id'           => 'required',
+            'amount'             => 'required',
+            'currency_code'      => 'required'
         ];
 
         $messages = [
-            'model_type.required'          => "Model type can not be exist!",
-            'model_id.required'          => "Model id can not be exist!",
-            'amount.required'          => "Amount can not be exist!",
+            'invoiceable_type.required'          => "Model type can not be exist!",
+            'invoiceable_id.required'            => "Model id can not be exist!",
+            'amount.required'              => "Amount can not be exist!",
+            'currency_code.required'       => "Currency can not be exist!",
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -67,17 +69,19 @@ class InvoiceController extends Controller
                 ->withInput();
         }
 
-        $model_type = 'App\\' . Str::studly(Str::singular($request['model_type']));
+        $model_type = 'App\\' . Str::studly(Str::singular($request['invoiceable_type']));
 
         if (!is_subclass_of($model_type, 'Illuminate\Database\Eloquent\Model')) {
                 return redirect()->back()->with(['warning'  => "Model type not found"]);
         }
 
-        $model = $model_type::where('id',$request['model_id'])->first();
+        $model = $model_type::where('id',$request['invoiceable_id'])->first();
 
         if (is_null($model)){
             return redirect()->back()->with(['warning'  => "For model id Model not found"]);
         }
+
+        \PayUz::createInvoice($model,$request['amount'],$request['currency_code']);
 
         return redirect()->back()->with(['success'  => "To'lov tizmi muvaffaqiyatli saqlandi."]);
     }

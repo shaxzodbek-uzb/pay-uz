@@ -34,28 +34,28 @@
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="form-group">
-                                            <label for="recipient-model_type" class="col-form-label">
+                                            <label for="recipient-invoiceable_type" class="col-form-label">
                                                 <span class="text-danger">* </span>Model type:
                                             </label>
-                                            <input name="model_type" type="text" class="form-control @if ($errors->has('model_type')) is-invalid @endif" id="recipient-model_type" placeholder="App\Order">
-                                            @if ($errors->has('model_type'))
-                                                <div class="invalid-feedback">{{ $errors->first('model_type') }}</div>
+                                            <input name="invoiceable_type" type="text" class="form-control @if ($errors->has('invoiceable_type')) is-invalid @endif" id="recipient-invoiceable_type" placeholder="Order" value="{{ old('invoiceable_type') }}">
+                                            @if ($errors->has('invoiceable_type'))
+                                                <div class="invalid-feedback">{{ $errors->first('invoiceable_type') }}</div>
                                             @endif
                                         </div>
                                         <div class="form-group">
-                                            <label for="recipient-model_id" class="col-form-label">
+                                            <label for="recipient-invoiceable_id" class="col-form-label">
                                                 <span class="text-danger">* </span>Model id:
                                             </label>
-                                            <input name="model_id" type="text" class="form-control @if ($errors->has('model_id')) is-invalid @endif" id="recipient-model_id" placeholder="123">
-                                            @if ($errors->has('model_id'))
-                                                <div class="invalid-feedback">{{ $errors->first('model_id') }}</div>
+                                            <input name="invoiceable_id" type="text" class="form-control @if ($errors->has('invoiceable_id')) is-invalid @endif" id="recipient-invoiceable_id" placeholder="123"  value="{{ old('invoiceable_id') }}">
+                                            @if ($errors->has('invoiceable_id'))
+                                                <div class="invalid-feedback">{{ $errors->first('invoiceable_id') }}</div>
                                             @endif
                                         </div>
                                         <div class="form-group">
                                             <label for="recipient-amount" class="col-form-label">
                                                 <span class="text-danger">* </span>Amount:
                                             </label>
-                                            <input name="amount" type="password" class="form-control @if ($errors->has('amount')) is-invalid @endif" id="recipient-amount" placeholder="120000">
+                                            <input name="amount" type="text" class="form-control @if ($errors->has('amount')) is-invalid @endif" id="recipient-amount" placeholder="120000"  value="{{ old('amount') }}">
                                             @if ($errors->has('amount'))
                                                 <div class="invalid-feedback">{{ $errors->first('amount') }}</div>
                                             @endif
@@ -66,9 +66,9 @@
                                             </label>
                                             <select class="form-control @if ($errors->has('currency_code')) is-invalid @endif" id="exampleFormControlSelect1" name="currency_code">
                                                 <option value="{{ \Goodoneuz\PayUz\Models\Transaction::CURRENCY_CODE_UZS }}">UZS</option>
-                                                <option value="{{ \Goodoneuz\PayUz\Models\Transaction::CURRENCY_CODE_USD }}">USD</option>
-                                                <option value="{{ \Goodoneuz\PayUz\Models\Transaction::CURRENCY_CODE_EUR }}">EUR</option>
-                                                <option value="{{ \Goodoneuz\PayUz\Models\Transaction::CURRENCY_CODE_RUB }}">RUB</option>
+                                                <option @if(old('currency_code') == \Goodoneuz\PayUz\Models\Transaction::CURRENCY_CODE_USD) selected @endif value="{{ \Goodoneuz\PayUz\Models\Transaction::CURRENCY_CODE_USD }}">USD</option>
+                                                <option @if(old('currency_code') == \Goodoneuz\PayUz\Models\Transaction::CURRENCY_CODE_EUR) selected @endif value="{{ \Goodoneuz\PayUz\Models\Transaction::CURRENCY_CODE_EUR }}">EUR</option>
+                                                <option @if(old('currency_code') == \Goodoneuz\PayUz\Models\Transaction::CURRENCY_CODE_RUB) selected @endif value="{{ \Goodoneuz\PayUz\Models\Transaction::CURRENCY_CODE_RUB }}">RUB</option>
                                             </select>
                                             @if ($errors->has('currency_code'))
                                                 <div class="invalid-feedback">{{ $errors->first('currency_code') }}</div>
@@ -103,8 +103,9 @@
                         <th>Model type</th>
                         <th>Model id</th>
                         <th>Amount</th>
+                        <th>Currency code</th>
                         <th>State</th>
-                        <th></th>
+                        <th>Created at</th>
                     </tr>
                     </thead>
                     <tfoot class="thead-default">
@@ -113,22 +114,21 @@
                             <th>Model type</th>
                             <th>Model id</th>
                             <th>Amount</th>
+                            <th>Currency code</th>
                             <th>State</th>
-                            <th></th>
+                            <th>Created at</th>
                         </tr>
                     </tfoot>
                     <tbody>
                     @foreach($invoices as $invoice)
                         <tr>
                             <td>#{{ $invoice->id }}</td>
-                            <td>{{ $invoice->model_type }}</td>
-                            <td>{{ $invoice->model_id }}</td>
+                            <td>{{ $invoice->invoiceable_type }}</td>
+                            <td>{{ $invoice->invoiceable_id }}</td>
                             <td>{{ $invoice->amount }}</td>
+                            <td>{{ $invoice->currency_code }}</td>
                             <td>{{ $invoice->state }}</td>
-                            <td class="text-center">
-                                <a href="{{ route('payment.invoices.edit',['id'  => $invoice->id]) }}"><span class="fa fa-cog" data-toggle="tooltip" data-placement="top" title="Sozlash"></span></a> &nbsp;
-                                <a href="{{ route('payment.invoices.edit_status',['id'  => $invoice->id]) }}"><span class="fa @if($invoice->status == \Goodoneuz\PayUz\Models\PaymentSystem::NOT_ACTIVE) fa-lock @else fa-unlock-alt @endif " data-toggle="tooltip" data-placement="top" title="Bloklash"></span></a>
-                            </td>
+                            <td>{{ $invoice->created_at }}</td>
                         </tr>
                     @endforeach
                     </tbody>
