@@ -4,8 +4,10 @@ namespace Goodoneuz\PayUz;
 
 use Goodoneuz\PayUz\Http\Classes\Click\Click;
 use Goodoneuz\PayUz\Http\Classes\Payme\Payme;
+use Goodoneuz\PayUz\Http\Classes\PaymentException;
 use Goodoneuz\PayUz\Models\Transaction;
 use Goodoneuz\PayUz\Services\InvoiceService;
+use Illuminate\Support\Facades\View;
 
 class PayUz
 {
@@ -70,8 +72,8 @@ class PayUz
     public function redirect($model, $amount, $currency_code = 860){
         $this->validateDriver();
         $invoice = $this->createInvoice($model, $amount, $currency_code);
-        (new $this->driverClass)::getRedirectParams($invoice);
-        return $this;
+        $params = $this->driverClass::getRedirectParams($invoice);
+        echo view('pay-uz::redirect.redirect',compact('params'));
     }
 
     /**
@@ -79,8 +81,13 @@ class PayUz
      */
     public function handle(){
         $this->validateDriver();
-        (new $this->driverClass)->run();
-        return $this;
+        try{
+            (new $this->driverClass)->run();
+        }catch(PaymentException $e){
+            $e->response();
+        }
+
+return $this;
     }
 
     /**

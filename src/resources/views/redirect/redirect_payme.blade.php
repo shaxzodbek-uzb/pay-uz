@@ -7,7 +7,7 @@
     <title>Payme</title>
 </head>
 <body>
-<form method="POST" action="https://checkout.paycom.uz/" name="check">
+<form method="POST" action="" name="check">
     @lang('strings.pls_wait')
     <input type="hidden" name="merchant" value="{{ $params['merchant']  }}"/>
     <input type="hidden" name="amount" value="{{ $params['amount']  }}"/>

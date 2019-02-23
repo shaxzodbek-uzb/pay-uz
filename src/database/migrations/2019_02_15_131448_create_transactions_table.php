@@ -19,13 +19,9 @@ class CreateTransactionsTable extends Migration
             $table->string('system_transaction_id');
             $table->double('amount',15,5);
             $table->integer('currency_code');
-            $table->string('payable')->nullable();
-            $table->integer('payable_id')->nullable();
+            $table->integer('invoice_id')->nullable();
             $table->integer('state');
-            $table->dateTime('create_time')->nullable();
-            $table->dateTime('cancel_time')->nullable();
-            $table->dateTime('perform_time')->nullable();
-            $table->dateTime('system_time_datetime')->nullable();
+            $table->dateTime('updated_time')->nullable();
             $table->string('comment')->nullable();
             $table->string('detail')->nullable();
             $table->softDeletes();

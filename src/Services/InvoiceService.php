@@ -27,4 +27,13 @@ class InvoiceService
             'state'             => Invoice::STATE_CREATED,
         ]);
     }
+
+    /**
+     * @param $invoice_id
+     * @return mixed
+     */
+    public static function getInvoiceById($invoice_id)
+    {
+        return Invoice::find($invoice_id);
+    }
 }

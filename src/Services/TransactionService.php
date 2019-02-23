@@ -9,7 +9,17 @@
 namespace Goodoneuz\PayUz\Services;
 
 
+use Goodoneuz\PayUz\Models\Transaction;
+
 class TransactionService
 {
 
+    /**
+     * @param $transaction_id
+     * @return mixed
+     */
+    public static function getTransactionById($transaction_id)
+    {
+        return Transaction::find($transaction_id);
+    }
 }

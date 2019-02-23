@@ -19,15 +19,10 @@ class Transaction extends Model
         'system_transaction_id', // varchar 191
         'amount', // double (15,5)
         'currency_code', // int(11)
-        'payable_type', // varchar 191
-        'payable_id', // int(11)
+        'invoice_id', // int(11)
         'state', // int(11)
-        'create_time', //datetime
-        'cancel_time', //datetime
-        'perform_time', //datetime
-        'system_time_datetime', // date_time
+        'updated_time', //datetime
         'comment', // varchar 191
-        'detail' // varchar 191
     ];
     const TIMEOUT = 43200000;
 
@@ -63,7 +58,7 @@ class Transaction extends Model
 
     public function cancel($reason)
     {
-        $this->cancel_time = DataFormat::timestamp(true);
+        $this->updated_time = DataFormat::timestamp(true);
 
         if ($this->state == self::STATE_COMPLETED) {
             // Scenario: CreateTransaction -> PerformTransaction -> CancelTransaction
@@ -79,10 +74,10 @@ class Transaction extends Model
     }
     public function isExpired()
     {
-        return $this->state == self::STATE_CREATED && DataFormat::datetime2timestamp($this->create_time) - time() > self::TIMEOUT;
+        return $this->state == self::STATE_CREATED && DataFormat::datetime2timestamp($this->updated_time) - time() > self::TIMEOUT;
     }
-    public function order()
+    public function invoice()
     {
-        return $this->belongsTo(Invoice::class,'payable_id','id');
+        return $this->belongsTo(Invoice::class,'invoice_id','id');
     }
 }
