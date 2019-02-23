@@ -1,4 +1,4 @@
-# O'zbekiston milliy to'lov tizimlari uchun
+# Для национальных платежных систем в Узбекистане
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/dt/goodoneuz/pay-uz.svg?style=flat)](https://packagist.org/packages/goodoneuz/pay-uz)
 [![Build Status](https://img.shields.io/travis/goodoneuz/pay-uz/master.svg?style=flat-square)](https://travis-ci.org/goodoneuz/pay-uz)
@@ -64,7 +64,3 @@ If you discover any security related issues, please email shaxzodbek.qambaraliye
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
-
-## Laravel Package Boilerplate
-
-This package was generated using the [Laravel Package Boilerplate](https://laravelpackageboilerplate.com).

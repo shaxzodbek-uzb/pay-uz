@@ -4,7 +4,18 @@
 [![Build Status](https://img.shields.io/travis/goodoneuz/pay-uz/master.svg?style=flat-square)](https://travis-ci.org/goodoneuz/pay-uz)
 [![Quality Score](https://img.shields.io/scrutinizer/g/goodoneuz/pay-uz.svg?style=flat-square)](https://scrutinizer-ci.com/g/goodoneuz/pay-uz)
 
-This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what PSRs you support to avoid any confusion with users and contributors.
+**Featured**
+------
+- [Payme](http://payme.uz) - Merchant <img src="https://cdn.paycom.uz/documentation_assets/payme_01.png" alt="Payme" width="80"/>
+- [Click](http://click.uz) - Merchant <img src="http://click.uz/wp-content/themes/click_theme/assets/img/logo.png" alt="Click" width="80"/>
+
+**Planed**
+------
+- Paynet
+- Upay
+- Oson
+- Visa
+- [Uzcard](http://uzcard.uz) - Merchant <img src="http://uzcard.uz/templates/uzcard_ordinary/images/logo-f.png" alt="UZCARD" width="80"/>
 
 ## Installation
 
@@ -15,10 +26,16 @@ composer require goodoneuz/pay-uz
 ```
 
 ## Usage
+------
+- Request handle: `PayUz::driver('payme')->redirect($model, $amount, $currency)`
+- Redirect user:  `PayUz::driver('payme')->handle()`
+- Get Invoices: `PayUz::getInvoices($model)` - returns collection
+- Get invoice transactions: `PayUz::getTransactions($invoice)` - returns collection
 
-``` php
-// Usage description here
-```
+**Exception:**
+------
+
+PaymentException 
 
 ### Testing
 
