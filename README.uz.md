@@ -59,6 +59,7 @@ If you discover any security related issues, please email shaxzodbek.qambaraliye
 
 - [Shaxzodbek](https://github.com/goodoneuz)
 - [Azizbek](https://github.com/azizbekeshonaliyev)
+- [Rustam Mamadaminov](https://github.com/rustamwin)
 - [All Contributors](../../contributors)
 
 ## License
