@@ -19,14 +19,16 @@ class Request
     /** @var int amount value in coins */
     public $amount;
 
+    public $response;
     /**
      * Request constructor.
      * Parses request payload and populates properties with values.
      */
     public function __construct($response)
     {
+        $this->response = $response;
         $request_body  = file_get_contents('php://input');
-        
+
         $this->payload = json_decode($request_body, true);
         if (!$this->payload) {
             $this->response->error(Response::ERROR_INVALID_JSON_RPC_OBJECT,'Invalid JSON-RPC object.');

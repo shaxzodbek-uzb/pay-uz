@@ -2,6 +2,7 @@
 
 namespace Goodoneuz\PayUz\Http\Controllers;
 
+use Goodoneuz\PayUz\Http\Classes\PaymentException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Goodoneuz\PayUz\Http\Classes\Click\Click;
@@ -10,8 +11,9 @@ use Goodoneuz\PayUz\Models\Transaction;
 
 class PaymentProxy extends Controller
 {
-    public function handle(Request $request, $payment, $type = null, $order_id = null, $state = null)
+    public function handle(Request $request, $payment)
     {
+
         try{
             switch ($payment) {
                 case Transaction::PAYME:

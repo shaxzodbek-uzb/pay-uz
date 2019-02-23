@@ -2,7 +2,6 @@
 
 namespace Goodoneuz\PayUz\Http\Classes\Payme;
 
-use Illuminate\Support\Facades\Log;
 use Goodoneuz\PayUz\Http\Classes\PaymentException;
 
 class Response
@@ -17,23 +16,38 @@ class Response
     const ERROR_COULD_NOT_CANCEL        = -31007;
     const ERROR_COULD_NOT_PERFORM       = -31008;
 
+    /**
+     * @var array
+     */
     public $response;
-    
-    
+
+
+    /**
+     * Response constructor.
+     */
     public function __construct()
     {
         $this->response = [];
         $this->response['jsonrpc'] = '2.0';
     }
 
-   
+
+    /**
+     *
+     */
     public function send()
     {
         header('Content-Type: application/json; charset=UTF-8');
         echo json_encode($this->response);
         exit();
     }
-    
+
+    /**
+     * @param $code
+     * @param null $message
+     * @param null $data
+     * @throws PaymentException
+     */
     public function error($code, $message = null, $data = null)
     {
         // prepare error data
@@ -50,17 +64,30 @@ class Response
         throw new PaymentException($this);
     }
 
+    /**
+     * @param $result
+     * @throws PaymentException
+     */
     public function success($result){
         $this->response['result']  = $result;
         $this->response['error']   = null;
         throw new PaymentException($this);
     }
 
+    /**
+     * @param $ru
+     * @param string $uz
+     * @param string $en
+     * @return array
+     */
     public static function message($ru, $uz = '', $en = '')
     {
         return ['ru' => $ru, 'uz' => $uz, 'en' => $en];
     }
-    
+
+    /**
+     * @param $request
+     */
     public function setRequest($request)
     {
         $this->response['id'] = $request->id;

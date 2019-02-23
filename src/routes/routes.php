@@ -10,6 +10,4 @@ Route::middleware('web')->name('payment.')->prefix('payment')->namespace('Goodon
     Route::get('payment_systems/edit/status/{payment_system}','PaymentSystemController@editStatus')->name('payment_systems.edit_status');
     Route::resource('invoices','InvoiceController');
     Route::resource('transactions','TransactionController');
-    Route::any('/redirect/','PaymentProxy@redirect')->name('redirect');
-    Route::any ('/handle/{payment}/{type?}/{invoice_id?}/{status?}','PaymentProxy@handle')->name('handle');
 });

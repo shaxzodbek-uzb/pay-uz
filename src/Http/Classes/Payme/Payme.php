@@ -4,6 +4,11 @@ namespace Goodoneuz\PayUz\Http\Classes\Payme;
 use App;
 use Goodoneuz\PayUz\Http\Classes\PaymentException;
 use Goodoneuz\PayUz\Http\Classes\DataFormat;
+use Goodoneuz\PayUz\Models\Invoice;
+use Goodoneuz\PayUz\Models\PaymentSystem;
+use Goodoneuz\PayUz\Models\Transaction;
+use Goodoneuz\PayUz\Services\InvoiceService;
+use Illuminate\Support\Facades\DB;
 
 
 class Payme {
@@ -11,6 +16,7 @@ class Payme {
     public $request;
     public $response;
     public $merchant;
+    public $payment_system;
 
 
     /**
@@ -18,12 +24,11 @@ class Payme {
      */
     public function __construct()
     {
-        $this->config   = config('payment.payme'); //TODO database qilish kerak
+        $this->config   = PaymentSystem::where('system',Transaction::PAYME)->first();
         $this->response = new Response();
         $this->request  = new Request($this->response);
         $this->response->setRequest($this->request);
         $this->merchant = new Merchant($this->config, $this->response);
-
     }
     public function run()
     {
@@ -85,11 +90,11 @@ class Payme {
     {
         $this->validateParams($this->request->params);
 
-        $order = $this->findOrderByParams($this->request->params['account']);
-        if (!$order->isPayable($this->request->params['amount'])){
+        $invoice = $this->findOrderByParams($this->request->params['account']);
+        if (!$invoice->isPayable($this->request->params['amount'])){
             $this->response->error(
                 Response::ERROR_COULD_NOT_PERFORM,
-                'There is other active/completed transaction for this order.'
+                'There is other active/completed transaction for this invoice.'
             );
         }
         
@@ -101,19 +106,19 @@ class Payme {
 
     private function findOrderByParams($account)
     {
-        $order = false;
+        $invoice = false;
         // Example implementation to load order by id
-       if (isset($account['order_id'])) {
-           $order = Order::where('id',$account['order_id'])->first();
-           if ($order)
-               return $order;
+       if (isset($account['invoice_id'])) {
+           $invoice = Invoice::where('id',$account['invoice_id'])->first();
+           if ($invoice)
+               return $invoice;
        }
 
-       if (!$order) {
+       if (!$invoice) {
            $this->response->error(
             Response::ERROR_INVALID_ACCOUNT,
-            Response::message( 'Buyurtma topilmadi.', 'Buyurtma topilmadi.', 'Buyurtma topilmadi.'),
-               'order_id'
+            Response::message( 'Invoice not found.', 'Счет не найден.', 'Billing yo\'q.'),
+               'invoice_id'
            );
        }
     }
@@ -125,11 +130,11 @@ class Payme {
         }
 
         // assume, we should have order_id
-        if (!isset($params['account']['order_id'])) {
+        if (!isset($params['account']['invoice_id'])) {
             $this->response->error(
                 Response::ERROR_INVALID_ACCOUNT,
-                Response::message( 'Неверный код заказа.', 'Harid kodida xatolik.', 'Incorrect order code.'),
-                'order_id'
+                Response::message( 'Неверный код Счет.', 'Billing kodida xatolik.', 'Incorrect invoice code.'),
+                'invoice_id'
             );
         }
 
@@ -138,7 +143,7 @@ class Payme {
     private function CreateTransaction()
     {
 
-        $order = $this->findOrderByParams($this->request->params['account']);
+        $invoice = $this->findOrderByParams($this->request->params['account']);
         $this->validateParams($this->request->params);
 
 
@@ -167,13 +172,6 @@ class Payme {
                     Response::ERROR_COULD_NOT_PERFORM,
                     'Transaction is expired.'
                 );
-            } else { // if transaction found and active, send it as response
-                $this->response->success([
-                    'create_time' => 1*$transaction->create_time,
-                    'transaction' => (string)$transaction->system_transaction_id,
-                    'state'       => 1*$transaction->state,
-                    'receivers'   => $transaction->receivers,
-                ]);
             }
         } else { // transaction not found, create new one
 
@@ -193,27 +191,34 @@ class Payme {
             // create new transaction
             // keep create_time as timestamp, it is necessary in response
             $create_time = DataFormat::timestamp(true);
+
+            $detail = json_encode(array(
+                'create_time'           => $create_time,
+                'perform_time'          => null,
+                'cancel_time'           => null,
+                'system_time_datetime'  => DataFormat::timestamp2datetime($this->request->params['time'])
+            ));
+
             $transaction = Transaction::create([
                 'payment_system'        => Transaction::PAYME,
                 'system_transaction_id' => $this->request->params['id'],
                 'amount'                =>1*($this->request->amount / 100),
                 'currency_code'         => Transaction::CURRENCY_CODE_UZS,
-                'payable_type'          => 'App\Order', 
-                'payable_id'            => $this->request->account('order_id'),
+                'invoice_id'            => $this->request->account('invoice_id'),
                 'state'                 => Transaction::STATE_CREATED,
-                'create_time'           => 1*$create_time, 
-                'system_time_datetime'  => DataFormat::timestamp2datetime($this->request->params['time']),
+                'updated_time'          => 1*$create_time,
                 'comment'               => (isset($this->request->params['error_note'])?$this->request->params['error_note']:''),
-            ]);
-
-            // send response
-            $this->response->success([
-                'create_time' => 1*$create_time,
-                'transaction' => (string)$transaction->system_transaction_id,
-                'state'       => 1*$transaction->state,
-                'receivers'   => null,
+                'detail'                => $detail
             ]);
         }
+
+        // send response
+        $this->response->success([
+            'create_time' => 1*$transaction->updated_time,
+            'transaction' => (string)$transaction->system_transaction_id,
+            'state'       => 1*$transaction->state,
+            'receivers'   => $transaction->receivers,
+        ]);
     }
 
     public function findTransactionByParams($params)
@@ -243,10 +248,20 @@ class Payme {
                     //todo taobao saytiga jo'natish
                     $perform_time               = DataFormat::timestamp(true);
                     $transaction->state         = Transaction::STATE_COMPLETED;
-                    $transaction->perform_time  = $perform_time;
+                    $transaction->updated_time  = $perform_time;
+
+                    $detail = json_decode($transaction->detail,true);
+                    $detail->perform_time   =   $perform_time;
+                    $detail = json_encode($detail);
+                    $transaction->detail = $detail;
+
                     $transaction->save();
-                    $order = Order::find($transaction->payable_id);
-                    $order->pay($transaction->id);
+
+                    $invoice  =  InvoiceService::getInvoiceById($transaction->invoice_id);
+                    $invoice->pay($transaction->id);
+
+                    // TODO:: Add EventListener For Billing close.
+
                     $this->response->success([
                         'transaction'  => (string)$transaction->system_transaction_id,
                         'perform_time' => 1*$perform_time,
@@ -256,13 +271,16 @@ class Payme {
                 break;
 
             case Transaction::STATE_COMPLETED: // handle complete transaction
+
+                $detail = json_decode($transaction->detail,true);
                 $this->response->success([
                     'transaction'  => (string)$transaction->system_transaction_id,
-                    'perform_time' => 1*$transaction->perform_time,
+                    'perform_time' => 1*$detail->perform_time,
                     'state'        => 1*$transaction->state,
                 ]);
-                $order = Order::find($transaction->payable_id);
-                $order->pay($transaction->id);
+
+                $invoice  =  InvoiceService::getInvoiceById($transaction->invoice_id);
+                $invoice->pay($transaction->id);
                 break;
 
             default:
@@ -287,9 +305,10 @@ class Payme {
             // if already cancelled, just send it
             case Transaction::STATE_CANCELLED:
             case Transaction::STATE_CANCELLED_AFTER_COMPLETE:
+                $detail = json_decode($transaction->detail,true);
                 $this->response->success([
                     'transaction' => (string)$transaction->id,
-                    'cancel_time' => 1*$transaction->cancel_time,
+                    'cancel_time' => 1*$detail->cancel_time,
                     'state'       => 1*$transaction->state,
                 ]);
                 break;
@@ -302,7 +321,13 @@ class Payme {
 
 
                 $cancel_time               = DataFormat::timestamp(true);
-                $transaction->cancel_time  = $cancel_time;
+                $transaction->updated_time  = $cancel_time;
+
+                $detail = json_decode($transaction->detail,true);
+                $detail->cancel_time   =   $cancel_time;
+                $detail = json_encode($detail);
+                $transaction->detail = $detail;
+
                 $transaction->save();
 
                 // change order state to cancelled
@@ -322,10 +347,11 @@ class Payme {
                     $transaction->cancel(1 * $this->request->params['reason']);
                     // after $found->cancel(), cancel_time and state properties populated with data
 
+                    $detail = json_decode($transaction->detail,true);
                     // send response
                     $this->response->success([
                         'transaction' => (string)$transaction->id,
-                        'cancel_time' => 1*$transaction->cancel_time,
+                        'cancel_time' => 1*$detail->cancel_time,
                         'state'       => 1*$transaction->state,
                     ]);
                 } else {
@@ -349,13 +375,13 @@ class Payme {
             $this->response->error(Response::ERROR_INSUFFICIENT_PRIVILEGE, 'Insufficient privilege. Incorrect new password.');
         }
 
-        $path = base_path('.env');
         $completed = false;
-        if (file_exists($path)) {
-            if(file_put_contents($path, str_replace(
-                'PAYME_PASSWORD='.$this->config['password'], 'PAYME_PASSWORD='.$this->request->params['password'], file_get_contents($path)
-            )))
-                $completed = true;
+        $payment_system = PaymentSystem::find($this->config['id']);
+        if (!is_null($payment_system))
+        {
+            $payment_system->password = $this->request->params['password'];
+            $payment_system->update();
+            $completed = true;
         }
         // example implementation, that saves new password into file specified in the configuration
         if (!$completed) {
@@ -397,23 +423,25 @@ class Payme {
 
         $transactions = Transaction::where('payment_system',Transaction::PAYME)
             ->where('state',Transaction::STATE_COMPLETED)
-            ->where('system_time_datetime','>=',$from_date)
-            ->where('system_time_datetime','<=',$to_date)->get();
+            ->where('created_at','>=',$from_date)
+            ->where('created_at','<=',$to_date)->get();
         // assume, here we have $rows variable that is populated with transactions from data store
         // normalize data for response
         $result = [];
         foreach ($transactions as $row) {
+            $detail = json_decode($row['detail'],true);
+
             $result[] = [
                 'id'           => $row['system_transaction_id'], // paycom transaction id
-                'time'         => 1 * $row['system_time'], // paycom transaction timestamp as is
+                'time'         => 1 * $detail['system_time_datetime'], // paycom transaction timestamp as is
                 'amount'       => 1 * $row['amount'],
                 'account'      => [
                     'user_key' => 1 * $row['user_key'], // account parameters to identify client/order/service
                     // ... additional parameters may be listed here, which are belongs to the account
                 ],
-                'create_time'  => DataFormat::datetime2timestamp($row['create_time']),
-                'perform_time' => DataFormat::datetime2timestamp($row['perform_time']),
-                'cancel_time'  => DataFormat::datetime2timestamp($row['cancel_time']),
+                'create_time'  => DataFormat::datetime2timestamp($detail['create_time']),
+                'perform_time' => DataFormat::datetime2timestamp($detail['perform_time']),
+                'cancel_time'  => DataFormat::datetime2timestamp($detail['cancel_time']),
                 'transaction'  => (string)(1 * $row['id']),
                 'state'        => 1 * $row['state'],
                 'reason'       => isset($row['comment']) ? 1 * $row['comment'] : null,
@@ -425,13 +453,14 @@ class Payme {
     }
     public static function getRedirectParams($pay){
         return [
-            'merchant' => env('PAYME_MERCHANT_ID',null),
+            'merchant' => (PaymentSystem::where('system',Transaction::PAYME)->first())['merchant_id'],
             'amount' => $pay->amount*100,
-            'account[order_id]' => $pay->order_id,
+            'account[invoice_id]' => $pay->id,
             'lang' => 'ru',
             'currency' => Transaction::CURRENCY_CODE_UZS,
-            'callback' => 'http://themall.uz',
+            'callback' => 'http://dev.pay.uz',
             'callback_timeout' => 20000,
+            'url'   => "https://checkout.paycom.uz/",
         ];
     }
 }
