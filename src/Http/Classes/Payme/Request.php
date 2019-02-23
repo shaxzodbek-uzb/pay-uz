@@ -23,7 +23,7 @@ class Request
      * Request constructor.
      * Parses request payload and populates properties with values.
      */
-    public function __construct()
+    public function __construct($response)
     {
         $request_body  = file_get_contents('php://input');
         

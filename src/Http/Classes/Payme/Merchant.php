@@ -19,8 +19,6 @@ class Merchant
     public function Authorize()
     {
         $headers = $_SERVER;
-        // print_r($headers);
-        // exit();
 
 //        preg_match('/^\s*Basic\s+(\S+)\s*$/i', $headers['Authorization'], $matches);
 //        echo $matches[1] . (base64_decode($matches[1]));

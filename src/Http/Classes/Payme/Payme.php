@@ -4,7 +4,7 @@ namespace Goodoneuz\PayUz\Http\Classes\Payme;
 use App;
 use Goodoneuz\PayUz\Http\Classes\PaymentException;
 use Goodoneuz\PayUz\Http\Classes\DataFormat;
-use App\Transaction;
+
 
 class Payme {
     public $config;
@@ -12,12 +12,14 @@ class Payme {
     public $response;
     public $merchant;
 
-    
+
+    /**
+     * Payme constructor.
+     */
     public function __construct()
     {
-        $this->config   = config('payment.payme');
+        $this->config   = config('payment.payme'); //TODO database qilish kerak
         $this->response = new Response();
-        
         $this->request  = new Request($this->response);
         $this->response->setRequest($this->request);
         $this->merchant = new Merchant($this->config, $this->response);
@@ -58,7 +60,6 @@ class Payme {
                     'Method not found.',
                     $this->request->method
                 );
-                break;
         }
     }
     private function CheckTransaction()
