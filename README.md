@@ -25,11 +25,17 @@ You can install the package via composer:
 composer require goodoneuz/pay-uz
 ```
 
-## Usage
+##Usage
+------
+- Request handle: `PayUz::driver('payme')->redirect($model, $amount, $currecy)`
+- Redirect user:  `PayUz::driver('payme')->handle()`
+- Get Invoices: `PayUz::getInvoices($model)` - returns collection
+- Get invoice transactions: `PayUz::getTransactions($invoice)` - returns collection
 
-``` php
-// Usage description here
-```
+**Exception:**
+------
+
+PaymentException 
 
 ### Testing
 
