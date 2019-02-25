@@ -85,9 +85,6 @@ class Invoice extends Model
 
         $transaction = TransactionService::getTransactionById($transaction_id);
 
-        if (is_null($transaction))
-            throw new \Exception("Transaction not found!");
-
         if ($transaction->state == Transaction::STATE_COMPLETED)
         {
             if ($transaction->amount == $this->amount)
