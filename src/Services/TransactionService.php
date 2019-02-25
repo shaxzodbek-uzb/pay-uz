@@ -20,6 +20,6 @@ class TransactionService
      */
     public static function getTransactionById($transaction_id)
     {
-        return Transaction::find($transaction_id);
+        return Transaction::findOrFail($transaction_id);
     }
 }
