@@ -23,6 +23,18 @@ class PaymentSystem extends Model
      */
     const ACTIVE = 'active';
 
+    const PAYME     = 'payme';
+    const CLICK     = 'click';
+    const UPAY      = 'upay';
+    const UZCARD    = 'uzcard';
+    const MBANK     = 'mbank';
+    const OSON      = 'oson';
+    const VISA      = 'visa';
+    const AGR       = 'agr';
+    const PAYNET    = 'paynet';
+    const CASH      = 'cash';
+    const TERMINAL  = 'terminal';
+
     /**
      * @var array
      */
