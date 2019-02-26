@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePaymentSystemsTable extends Migration
+class CreatePaymentSystemParamsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreatePaymentSystemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('payment_systems', function (Blueprint $table) {
+        Schema::create('payment_system_params', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name')->nullable();
-            $table->string('system')->unique();
-            $table->string('status')->default(\Goodoneuz\PayUz\Models\PaymentSystem::NOT_ACTIVE);
-            $table->softDeletes();
+            $table->string('system');
+            $table->string('name');
+            $table->text('value');
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ class CreatePaymentSystemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('payment_systems');
+        Schema::dropIfExists('payment_system_params');
     }
 }

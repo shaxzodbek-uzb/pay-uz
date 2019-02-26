@@ -34,7 +34,6 @@
                     <tr>
                         <th>Name</th>
                         <th>System</th>
-                        <th>endPointUrl</th>
                         <th>Created at</th>
                         <th></th>
                     </tr>
@@ -43,7 +42,6 @@
                     <tr>
                         <th>Name</th>
                         <th>System</th>
-                        <th>endPointUrl</th>
                         <th>Created at</th>
                         <th></th>
                     </tr>
@@ -53,7 +51,6 @@
                         <tr class="@if($payment_system->status == \Goodoneuz\PayUz\Models\PaymentSystem::NOT_ACTIVE) table-danger @endif">
                             <td>{{ $payment_system->name }}</td>
                             <td>{{ $payment_system->system }}</td>
-                            <td>{{ $payment_system->end_point_url }}</td>
                             <td>{{ $payment_system->created_at }}</td>
                             <td class="text-center">
                                 <a href="#" data-system_id="{{ $payment_system->id }}" class="deleteBtn"><span class="fa fa-trash" data-toggle="tooltip" data-placement="top" title="O'chirish"></span></a> &nbsp;
