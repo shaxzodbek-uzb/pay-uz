@@ -77,6 +77,7 @@ class PayUz
     }
 
     /**
+     * @return $this
      * @throws \Exception
      */
     public function handle(){
@@ -87,7 +88,7 @@ class PayUz
             $e->response();
         }
 
-return $this;
+        return $this;
     }
 
     /**
