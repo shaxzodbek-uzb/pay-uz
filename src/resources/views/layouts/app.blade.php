@@ -12,8 +12,6 @@
     <link rel="stylesheet" href="{{ config('pay-uz.pay_assets_path') }}/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{ config('pay-uz.pay_assets_path') }}/css/dataTables.bootstrap4.css">
     <link rel="stylesheet" href="{{ config('pay-uz.pay_assets_path') }}/css/sb-admin.css">
-
-
     @yield('style')
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
 </head>

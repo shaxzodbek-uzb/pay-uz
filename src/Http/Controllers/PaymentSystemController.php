@@ -11,6 +11,8 @@ namespace Goodoneuz\PayUz\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Goodoneuz\PayUz\Models\PaymentSystem;
+use Goodoneuz\PayUz\Models\PaymentSystemParam;
+use Goodoneuz\PayUz\Services\PaymentSystemService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -46,11 +48,12 @@ class PaymentSystemController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'system'         => 'required|max:255',
+            'system'         => 'required|unique:payment_systems|max:255',
         ];
 
         $messages = [
-            'system.required'          => "To'lov Sistemasi bo'sh bo'lishi mumkin emas",
+            'system.required'          => "Payment system cannot be exist!",
+            'system.unique'          => "The payment system has already been taken!",
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -61,9 +64,9 @@ class PaymentSystemController extends Controller
                 ->withInput();
         }
 
-        PaymentSystem::create($request->all());
+        PaymentSystemService::createPaymentSystem($request);
 
-        return redirect()->back()->with(['success'  => "To'lov tizmi muvaffaqiyatli saqlandi."]);
+        return redirect()->route('payment.payment_systems.index')->with(['success'  => "Payment system successfully saved."]);
 
     }
 
@@ -96,11 +99,12 @@ class PaymentSystemController extends Controller
     public function update(Request $request, PaymentSystem $payment_system)
     {
         $rules = [
-            'system'         => 'required|max:255',
+            'system'         => 'required|max:255|unique:payment_systems'. ',system,' . $payment_system->id,
         ];
 
         $messages = [
-            'system.required'          => "To'lov Sistemasi bo'sh bo'lishi mumkin emas",
+            'system.required'          => "Payment system cannot be exist!",
+            'system.unique'          => "The payment system has already been taken!",
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -111,9 +115,9 @@ class PaymentSystemController extends Controller
                 ->withInput();
         }
 
-        $payment_system->update($request->all());
+        PaymentSystemService::updatePaymentSystem($request,$payment_system);
 
-        return redirect()->back()->with(['success'  => "To'lov tizmi muvaffaqiyatli saqlandi."]);
+        return redirect()->route('payment.payment_systems.edit',['id'   => $payment_system->id])->with(['success'  => "Payment system successfully saved."]);
     }
 
     /**
@@ -131,5 +135,14 @@ class PaymentSystemController extends Controller
         $paymentSystem->status = ($paymentSystem->status == PaymentSystem::NOT_ACTIVE) ? PaymentSystem::ACTIVE : PaymentSystem::NOT_ACTIVE;
         $paymentSystem->update();
         return  redirect()->back()->with(['success' => "Status o'xgartirildi"]);
+    }
+
+    public function deleteParam($param_id){
+        $param = PaymentSystemParam::find($param_id);
+        if ($param){
+            $param->delete();
+            return redirect()->back()->with(['success'  => 'Param deleted!']);
+        }
+        return redirect()->back()->with(['warning'  => 'Param not found!']);
     }
 }

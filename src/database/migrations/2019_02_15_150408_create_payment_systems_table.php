@@ -18,7 +18,6 @@ class CreatePaymentSystemsTable extends Migration
             $table->string('name')->nullable();
             $table->string('system')->unique();
             $table->string('status')->default(\Goodoneuz\PayUz\Models\PaymentSystem::NOT_ACTIVE);
-            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -10,12 +10,9 @@ namespace Goodoneuz\PayUz\Models;
 
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PaymentSystem extends Model
 {
-    use SoftDeletes;
-
     /**
      *
      */
@@ -29,23 +26,9 @@ class PaymentSystem extends Model
     /**
      * @var array
      */
-    protected $dates    = [
-        'deleted_at'
-    ];
-
-    /**
-     * @var array
-     */
     protected $fillable =[
         'name',
         'system',
-        'merchant_id',
-        'service_id',
-        'secret_key',
-        'merchant_user_id',
-        'login',
-        'password',
-        'end_point_url',
         'status'
     ];
     /**
@@ -55,5 +38,12 @@ class PaymentSystem extends Model
      */
     public function scopeStatus($query, $status = null){
         return $query->where('status',($status) ? $status : self::ACTIVE);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function params(){
+        return $this->hasMany(PaymentSystemParam::class,'system','system');
     }
 }
