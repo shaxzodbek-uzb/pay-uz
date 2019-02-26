@@ -2,13 +2,12 @@
 namespace Goodoneuz\PayUz\Http\Classes\Payme;
 
 use App;
-use Goodoneuz\PayUz\Http\Classes\PaymentException;
 use Goodoneuz\PayUz\Http\Classes\DataFormat;
 use Goodoneuz\PayUz\Models\Invoice;
 use Goodoneuz\PayUz\Models\PaymentSystem;
+use Goodoneuz\PayUz\Models\PaymentSystemParam;
 use Goodoneuz\PayUz\Models\Transaction;
 use Goodoneuz\PayUz\Services\InvoiceService;
-use Illuminate\Support\Facades\DB;
 
 
 class Payme {
@@ -17,14 +16,17 @@ class Payme {
     public $response;
     public $merchant;
     public $payment_system;
-
+    protected $params;
 
     /**
      * Payme constructor.
      */
     public function __construct()
     {
-        $this->config   = PaymentSystem::where('system',Transaction::PAYME)->first();
+        $this->params = PaymentSystemParam::where('system',PaymentSystem::PAYME)->get();
+        $this->config   = $this->params->mapWithKeys(function ($item) {
+            return [$item['name'] => $item['value']];
+        });
         $this->response = new Response();
         $this->request  = new Request($this->response);
         $this->response->setRequest($this->request);
@@ -200,7 +202,7 @@ class Payme {
             ));
 
             $transaction = Transaction::create([
-                'payment_system'        => Transaction::PAYME,
+                'payment_system'        => PaymentSystem::PAYME,
                 'system_transaction_id' => $this->request->params['id'],
                 'amount'                =>1*($this->request->amount / 100),
                 'currency_code'         => Transaction::CURRENCY_CODE_UZS,
@@ -223,7 +225,7 @@ class Payme {
 
     public function findTransactionByParams($params)
     {
-        $transaction = Transaction::where('payment_system',Transaction::PAYME)->where('system_transaction_id',$params['id'])->first();
+        $transaction = Transaction::where('payment_system',PaymentSystem::PAYME)->where('system_transaction_id',$params['id'])->first();
         return $transaction;  
     }
     private function PerformTransaction()
@@ -363,6 +365,10 @@ class Payme {
                 break;
         }
     }
+
+    /**
+     * @throws \Goodoneuz\PayUz\Http\Classes\PaymentException
+     */
     private function ChangePassword()
     {
         // validate, password is specified, otherwise send error
@@ -421,7 +427,7 @@ class Payme {
         $from_date = DataFormat::timestamp2datetime($from_date);
         $to_date   = DataFormat::timestamp2datetime($to_date);
 
-        $transactions = Transaction::where('payment_system',Transaction::PAYME)
+        $transactions = Transaction::where('payment_system',PaymentSystem::PAYME)
             ->where('state',Transaction::STATE_COMPLETED)
             ->where('created_at','>=',$from_date)
             ->where('created_at','<=',$to_date)->get();
@@ -452,8 +458,14 @@ class Payme {
 
     }
     public static function getRedirectParams($pay){
+
+        $params = PaymentSystemParam::where('system',PaymentSystem::PAYME)->get();
+        $config = $params->mapWithKeys(function ($item) {
+            return [$item['name'] => $item['value']];
+        });
+
         return [
-            'merchant' => (PaymentSystem::where('system',Transaction::PAYME)->first())['merchant_id'],
+            'merchant' => $config['merchant_id'],
             'amount' => $pay->amount*100,
             'account[invoice_id]' => $pay->id,
             'lang' => 'ru',

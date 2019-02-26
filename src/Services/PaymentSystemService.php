@@ -48,6 +48,7 @@ class PaymentSystemService
                 $attr['name']  = $param['name'];
                 $attr['value']  = $param['value'];
                 $attr->save();
+                $attr=null;
             }
     }
 

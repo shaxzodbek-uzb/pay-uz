@@ -5,6 +5,7 @@ namespace Goodoneuz\PayUz;
 use Goodoneuz\PayUz\Http\Classes\Click\Click;
 use Goodoneuz\PayUz\Http\Classes\Payme\Payme;
 use Goodoneuz\PayUz\Http\Classes\PaymentException;
+use Goodoneuz\PayUz\Models\PaymentSystem;
 use Goodoneuz\PayUz\Models\Transaction;
 use Goodoneuz\PayUz\Services\InvoiceService;
 use Illuminate\Support\Facades\View;
@@ -25,16 +26,6 @@ class PayUz
      * @param $model
      * @param $amount
      * @param $currency_code
-     * @throws \Exception
-     */
-    public function pay($model, $amount, $currency_code){
-        $invoice = $this->createInvoice($model,$amount,$currency_code);
-    }
-
-    /**
-     * @param $model
-     * @param $amount
-     * @param $currency_code
      * @return mixed
      * @throws \Exception
      */
@@ -43,7 +34,6 @@ class PayUz
         return InvoiceService::createInvoice($model,$amount,$currency_code);
     }
 
-
     /**
      * Select payment driver
      * @param null $driver
@@ -51,10 +41,10 @@ class PayUz
      */
     public function driver($driver = null){
         switch ($driver){
-            case Transaction::PAYME:
+            case PaymentSystem::PAYME:
                 $this->driverClass = Payme::class;
                 break;
-            case Transaction::CLICK:
+            case PaymentSystem::CLICK:
                 $this->driverClass = Click::class;
                 break;
         }

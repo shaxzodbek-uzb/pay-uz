@@ -38,19 +38,6 @@ class Transaction extends Model
     const REASON_FUND_RETURNED = 5;
     const REASON_UNKNOWN = 10;
 
-    const PAYME     = 'payme';
-    const CLICK     = 'click';
-    const UPAY      = 'upay';
-    const UZCARD    = 'uzcard';
-    const MBANK     = 'mbank';
-    const OSON      = 'oson';
-    const VISA      = 'visa';
-    const AGR       = 'agr';
-    const PAYNET    = 'paynet';
-    const CASH      = 'cash';
-    const TERMINAL  = 'terminal';
-
-
     const CURRENCY_CODE_UZS = 860;
     const CURRENCY_CODE_RUB = 643;
     const CURRENCY_CODE_USD = 840;
