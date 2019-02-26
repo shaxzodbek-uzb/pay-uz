@@ -23,12 +23,14 @@ class Click{
 
 
     public function run(){
+
         $required_fields = [
             'click_trans_id', 'service_id', 
             'click_paydoc_id', 'merchant_trans_id', 
             'amount', 'action', 'error', 'error_note', 
             'sign_time', 'sign_string'
         ];
+
         $res = $this->check_for_required_field($required_fields);
         if (!$res){
             $this->response->setResult(Response::ERROR_REQUEST_FROM);
