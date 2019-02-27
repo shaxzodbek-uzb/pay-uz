@@ -19,6 +19,11 @@ class Response{
     const ERROR_VENDOR_NOT_FOUND         = -10;
     public $result = [];
 
+    /**
+     * @param null $status
+     * @param null $params
+     * @throws PaymentException
+     */
     public function setResult($status = null, $params = null)
     {
         $this->result['error'] = $status;
@@ -64,6 +69,10 @@ class Response{
         }
         throw new PaymentException($this);
     }
+
+    /**
+     *
+     */
     public function send(){
         header('Content-Type: application/json;');
         $timestamp = time();

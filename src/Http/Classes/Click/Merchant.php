@@ -3,6 +3,8 @@
 namespace Goodoneuz\PayUz\Http\Classes\Click;
 
 use Goodoneuz\PayUz\Http\Classes\PaymentException;
+use Goodoneuz\PayUz\Models\PaymentSystem;
+use Goodoneuz\PayUz\Services\PaymentSystemService;
 
 class Merchant{
     private $config;
@@ -11,7 +13,7 @@ class Merchant{
     
     public function __construct($response)
     {
-        $this->config   = config('payment.click');
+        $this->config   = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::CLICK);
         $this->response = $response;
     }
     public function validateRequest($request){
