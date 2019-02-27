@@ -1,0 +1,6 @@
+.remove_payment_system_btn_sb {
+    margin-top: 2rem !important;
+}
+a.remove_payment_system_btn_sb:hover {
+    color: white !important;
+}

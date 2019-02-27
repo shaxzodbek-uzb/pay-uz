@@ -59,7 +59,6 @@ class PaymentSystemService
             'system'    => $request['system'],
             'status'    => $request['status']
         ]);
-
         if (isset($request['params']) && is_array($request['params']))
 
             self::storeParams($request['params'],$payment_system);

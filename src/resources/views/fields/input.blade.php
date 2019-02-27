@@ -4,19 +4,19 @@
             <div class="col-3">
                 <div class="form-group">
                     <label for="recipient-{{ $param->label }}" class="col-form-label">Label name:</label>
-                    <input name="[{{$param->id}}]['label']" type="text" class="form-control" id="recipient-{{ $param->label }}"  value="{{ $param->label }}">
+                    <input name="params[old-{{$param->id}}][label]" type="text" class="form-control" id="recipient-{{ $param->label }}"  value="{{ $param->label }}">
                 </div>
             </div>
             <div class="col-3">
                 <div class="form-group">
                     <label for="recipient-{{ $param->name }}" class="col-form-label">Key:</label>
-                    <input name="[{{$param->id}}]['name']" type="text" class="form-control" id="recipient-{{ $param->name }}"  value="{{ $param->name }}">
+                    <input name="params[old-{{$param->id}}][name]" type="text" class="form-control" id="recipient-{{ $param->name }}"  value="{{ $param->name }}">
                 </div>
             </div>
             <div class="col-3">
                 <div class="form-group">
                     <label for="recipient-{{ $param->value }}" class="col-form-label">Value:</label>
-                    <input name="[{{$param->id}}]['value']" type="text" class="form-control" id="recipient-{{ $param->value }}"  value="{{ $param->value }}">
+                    <input name="params[old-{{$param->id}}][value]" type="text" class="form-control" id="recipient-{{ $param->value }}"  value="{{ $param->value }}">
                 </div>
             </div>
             <div class="col-3">
