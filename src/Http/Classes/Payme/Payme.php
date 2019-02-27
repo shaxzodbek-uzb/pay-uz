@@ -8,6 +8,7 @@ use Goodoneuz\PayUz\Models\PaymentSystem;
 use Goodoneuz\PayUz\Models\PaymentSystemParam;
 use Goodoneuz\PayUz\Models\Transaction;
 use Goodoneuz\PayUz\Services\InvoiceService;
+use Goodoneuz\PayUz\Services\PaymentSystemService;
 
 
 class Payme {
@@ -16,17 +17,13 @@ class Payme {
     public $response;
     public $merchant;
     public $payment_system;
-    protected $params;
 
     /**
      * Payme constructor.
      */
     public function __construct()
     {
-        $this->params = PaymentSystemParam::where('system',PaymentSystem::PAYME)->get();
-        $this->config   = $this->params->mapWithKeys(function ($item) {
-            return [$item['name'] => $item['value']];
-        });
+        $this->config   = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::PAYME);
         $this->response = new Response();
         $this->request  = new Request($this->response);
         $this->response->setRequest($this->request);
@@ -259,9 +256,7 @@ class Payme {
 
                     $transaction->save();
 
-                    $invoice  =  InvoiceService::getInvoiceById($transaction->invoice_id);
-                    $invoice->pay($transaction->id);
-
+                    InvoiceService::getInvoiceById($transaction->invoice_id)->pay($transaction->id);
                     // TODO:: Add EventListener For Billing close.
 
                     $this->response->success([
@@ -281,8 +276,7 @@ class Payme {
                     'state'        => 1*$transaction->state,
                 ]);
 
-                $invoice  =  InvoiceService::getInvoiceById($transaction->invoice_id);
-                $invoice->pay($transaction->id);
+                InvoiceService::getInvoiceById($transaction->invoice_id)->pay($transaction->id);
                 break;
 
             default:
@@ -458,12 +452,7 @@ class Payme {
 
     }
     public static function getRedirectParams($pay){
-
-        $params = PaymentSystemParam::where('system',PaymentSystem::PAYME)->get();
-        $config = $params->mapWithKeys(function ($item) {
-            return [$item['name'] => $item['value']];
-        });
-
+        $config = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::PAYME);
         return [
             'merchant' => $config['merchant_id'],
             'amount' => $pay->amount*100,

@@ -65,4 +65,21 @@ class PaymentSystemService
 
         return $payment_system;
     }
+
+    /**
+     * @param $driver
+     * @return array
+     */
+    public static function getPaymentSystemParamsCollect($driver)
+    {
+        $params = PaymentSystemParam::where('system',$driver)->get();
+
+        if (count($params)>0)
+            return $params->mapWithKeys(
+                function ($item) {
+                return [$item['name'] => $item['value']];
+            });
+
+        return [];
+    }
 }
