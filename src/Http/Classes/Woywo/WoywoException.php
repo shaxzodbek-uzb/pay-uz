@@ -50,6 +50,7 @@ class WoywoException extends \Exception
     {
         header('Content-Type: application/json; charset=UTF-8');
         // create response
+        $response = array();
         $response['status']  = $this->status;
         $response['message'] = $this->message;
         echo json_encode($response);
