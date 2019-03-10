@@ -54,6 +54,7 @@ class OsonException extends \Exception
     {
         header('Content-Type: application/json; charset=UTF-8');
         // create response
+        $response = array();
         $response[]  = [
             'jsonrcp'=> '2.0',
             'result' => $this->result
