@@ -119,7 +119,7 @@ class OsonController extends Controller
                 ."\n<b>To'lov tizimi:</b>".$transaction->payment_system;
 
         TelegramController::send($str);
-        $temp = cURL::send_result($transaction);
+        cURL::send_result($transaction);
 
         throw new OsonException(OsonException::SUCCESS,['prividerTrnId'=>$this->request['params']['trans']['transID'],'ts'=>$this->request['params']['trans']['time'],'order_state'=>Order::STATE_PAY_ACCEPTED]);
 
