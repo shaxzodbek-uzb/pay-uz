@@ -112,7 +112,6 @@ class WoywoController extends Controller
     }
     public static function getRedirectParams($order)
     {
-        $now = round(microtime(true) * 1000);
         $hash = base64_encode('m='.env('WOYWO_MERCHANT_ID').';ac.order_id='.$order->id.';a='.$order->price.';r='.urlencode(route('home')));
         return [
             'base64' => $hash
