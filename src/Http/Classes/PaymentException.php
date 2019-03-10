@@ -4,7 +4,7 @@ namespace Goodoneuz\PayUz\Http\Classes;
 
 class PaymentException extends \Exception{
 
-    private $reponse;
+    private $response;
     
     public function __construct($response)
     {
