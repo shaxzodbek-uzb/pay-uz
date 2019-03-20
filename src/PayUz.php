@@ -51,7 +51,7 @@ class PayUz
     public function redirect($model, $amount, $currency_code = 860){
         $this->validateDriver();
         $invoice = $this->createInvoice($model, $amount, $currency_code);
-        $params = $this->driverClass::getRedirectParams($invoice);
+        $params = $this->driverClass::getRedirectParams($model, $amount);
         echo view('pay-uz::redirect.redirect',compact('params'));
     }
 

@@ -23,6 +23,8 @@ class CreateTransactionsTable extends Migration
             $table->dateTime('updated_time')->nullable();
             $table->string('comment')->nullable();
             $table->string('detail')->nullable();
+            $table->string('transactionable_type')->nullable();
+            $table->integer('transactionable_id')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

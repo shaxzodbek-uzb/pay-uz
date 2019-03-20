@@ -22,6 +22,8 @@ class Transaction extends Model
         'state', // int(11)
         'updated_time', //datetime
         'comment', // varchar 191
+        'transactionable_type',
+        'transactionable_id'
     ];
     const TIMEOUT = 43200000;
 
