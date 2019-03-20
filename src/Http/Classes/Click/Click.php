@@ -6,8 +6,9 @@ use Goodoneuz\PayUz\Http\Classes\DataFormat;
 use Goodoneuz\PayUz\Models\PaymentSystem;
 use Goodoneuz\PayUz\Models\Transaction;
 use Goodoneuz\PayUz\Services\PaymentSystemService;
+use Goodoneuz\PayUz\Services\PaymentService;
 
-class Click{
+class Click {
     
     private $merchant;
     private $request;
@@ -52,18 +53,20 @@ class Click{
     
     private function Prepare()
     {
+        
         $params = $this->request->all();
-
+        
         $additional_params = [
             'merchant_prepare_id' => null,
             'click_trans_id' => null,
             'merchant_trans_id' => null
         ];
-        $invoice = Invoice::find($this->request['merchant_trans_id']);
-        if(!$invoice)
+        $model = PaymentService::convertKeyToModel($this->request['merchant_trans_id']);
+        PaymentService::payListener($model,1*($this->request->amount/100),'before-pay');
+        if(!$model)
             $this->response->setResult(Response::ERROR_ORDER_NOT_FOUND);
 
-        if (!$invoice->isPayable($params['amount']))
+        if (!PaymentService::isProperModelAndAmount($model, $params['amount']))
             $this->response->setResult(Response::ERROR_INVALID_AMOUNT);
             
         $additional_params['click_trans_id'] = $params['click_trans_id'];
@@ -76,7 +79,7 @@ class Click{
             'system_time_datetime'  => DataFormat::timestamp2datetime($params['sign_time'])
         ));
 
-        $transaction                        = Transaction::create([
+        $transaction = Transaction::create([
             'payment_system'        => PaymentSystem::CLICK,
             'system_transaction_id' => $params['click_trans_id'],
             'amount'                => $params['amount'],
@@ -84,7 +87,9 @@ class Click{
             'state'                 => Transaction::STATE_CREATED,
             'updated_time'          => 1*$create_time,
             'comment'               => $params['error_note'],
-            'detail'                => $detail
+            'detail'                => $detail,
+            'transactionable_type'  => get_class($model),
+            'transactionable_id'    => $this->request['merchant_trans_id']
         ]);
         $additional_params['merchant_prepare_id'] = $transaction->id;
         $this->response->setResult(Response::SUCCESS,$additional_params);
@@ -128,10 +133,7 @@ class Click{
 
         $transaction->state = Transaction::STATE_COMPLETED;
         $transaction->update();
-
-        // TODO:: Add EventListener For Billing close.
-        InvoiceService::getInvoiceById($params['merchant_trans_id'])->pay($transaction->id);
-
+        
         $additional_params['merchant_confirm_id'] = $transaction->id;
         $this->response->setResult(Response::SUCCESS,$additional_params);
     }
@@ -152,24 +154,24 @@ class Click{
         return true;
     }
     
-    public static function getRedirectParams($pay)
+    public static function getRedirectParams($model, $amount, $currency)
     {
         $config   = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::CLICK);
         $time = date('Y-m-d H:i:s', time());
         $sign = MD5($time . $config['secret_key'] .
-        $config['service_id'] . $pay->amount); // todo change price obj
+        $config['service_id'] . $amount);
         return [
-            'MERCHANT_TRANS_AMOUNT' => $pay->amount,
+            'MERCHANT_TRANS_AMOUNT' => $amount,
             'MERCHANT_ID' => $config['merchant_id'],
             'MERCHANT_USER_ID' => $config['merchant_user_id'],
             'MERCHANT_SERVICE_ID' => $config['service_id'],
-            'MERCHANT_TRANS_ID' => $pay->invoice_id, //TODO change key
+            'MERCHANT_TRANS_ID' => PaymentService::convertModelToKey($model),
             'MERCHANT_TRANS_NOTE' => '',
             'MERCHANT_USER_PHONE' => '',
             'MERCHANT_USER_EMAIL' => '',
             'SIGN_TIME' => $time,
             'SIGN_STRING' => $sign,
-            'RETURN_URL' => 'http://dev.pay.uz',
+            'RETURN_URL' => url('/'),
             'url'       => 'https://my.click.uz/pay/'
         ];
     }

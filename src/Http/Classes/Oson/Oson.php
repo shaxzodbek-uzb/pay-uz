@@ -10,7 +10,7 @@ use App\Order;
 use App\Transaction;
 use Illuminate\Support\Facades\Log;
 
-class OsonController extends Controller
+class Oson
 {
     public $config;
     public $request;

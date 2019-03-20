@@ -74,11 +74,11 @@ class Payme {
         if (!PaymentService::isProperModelAndAmount($model, $this->request->params['amount'])){
             $this->response->error(
                 Response::ERROR_COULD_NOT_PERFORM,
-                'There is other active/completed transaction for this invoice.'
+                'There is other active/completed transaction for this object.'
             );
         }
 
-        PaymentService::payListerner($model,$this->request->params['amount'],'before-pay');
+        PaymentService::payListener($model,$this->request->params['amount'],'before-pay');
         
         $this->response->success(['allow' => true]);
     }
@@ -113,7 +113,7 @@ class Payme {
         if (!isset($params['account']['key'])) {
             $this->response->error(
                 Response::ERROR_INVALID_ACCOUNT,
-                Response::message( 'Неверный код Счет.', 'Billing kodida xatolik.', 'Incorrect invoice code.'),
+                Response::message( 'Неверный код Счет.', 'Billing kodida xatolik.', 'Incorrect object code.'),
                 'key'
             );
         }
@@ -185,7 +185,7 @@ class Payme {
                 'transactionable_id'    => $this->request->params['account']['key']
             ]);
         }
-        PaymentService::payListerner($model,1*($this->request->amount/100),'paying');
+        PaymentService::payListener($model,1*($this->request->amount/100),'paying');
         // send response
         $this->response->success([
             'create_time' => 1*$transaction->updated_time,
@@ -226,7 +226,7 @@ class Payme {
 
                     $transaction->save();
 
-                    PaymentService::payListerner($model,1*($this->request->amount/100),'after-pay');
+                    PaymentService::payListener($model,1*($this->request->amount/100),'after-pay');
 
                     $this->response->success([
                         'transaction'  => (string)$transaction->system_transaction_id,
@@ -244,7 +244,7 @@ class Payme {
                     'state'        => 1*$transaction->state,
                 ]);
 
-                PaymentService::payListerner($model,1*($this->request->amount/100),'after-pay');
+                PaymentService::payListener($model,1*($this->request->amount/100),'after-pay');
 
                 break;
 
@@ -420,14 +420,14 @@ class Payme {
         return $result;
 
     }
-    public static function getRedirectParams($model, $amount){
+    public static function getRedirectParams($model, $amount, $currency){
         $config = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::PAYME);
         return [
             'merchant' => $config['merchant_id'],
             'amount' => $amount*1,
             'account[key]' => PaymentService::convertModelToKey($model),
             'lang' => 'ru',
-            'currency' => Transaction::CURRENCY_CODE_UZS,
+            'currency' => , $currency,
             'callback' => url('/'),
             'callback_timeout' => 20000,
             'url'   => "https://checkout.paycom.uz/",
