@@ -3,11 +3,9 @@ namespace Goodoneuz\PayUz\Http\Classes\Payme;
 
 use App;
 use Goodoneuz\PayUz\Http\Classes\DataFormat;
-use Goodoneuz\PayUz\Models\Invoice;
 use Goodoneuz\PayUz\Models\PaymentSystem;
 use Goodoneuz\PayUz\Models\PaymentSystemParam;
 use Goodoneuz\PayUz\Models\Transaction;
-use Goodoneuz\PayUz\Services\InvoiceService;
 use Goodoneuz\PayUz\Services\PaymentSystemService;
 
 
@@ -28,6 +26,10 @@ class Payme {
         $this->request  = new Request($this->response);
         $this->response->setRequest($this->request);
         $this->merchant = new Merchant($this->config, $this->response);
+    }
+    public function setAccountKey($accountKey){
+        $this->accountKey = $accountKey;
+        return $this->accountKey;
     }
     public function run()
     {
@@ -66,6 +68,24 @@ class Payme {
                 );
         }
     }
+    
+    private function CheckPerformTransaction()
+    {
+        $this->validateParams($this->request->params);
+
+        $invoice = $this->findInvoiceByParams($this->request->params['account']);
+        if (!$invoice->isPayable($this->request->params['amount'])){
+            $this->response->error(
+                Response::ERROR_COULD_NOT_PERFORM,
+                'There is other active/completed transaction for this invoice.'
+            );
+        }
+        
+
+        // if control is here, then we pass all validations and checks
+        // send response, that order is ready to be paid.
+        $this->response->success(['allow' => true]);
+    }
     private function CheckTransaction()
     {
         $found  =  $this->findTransactionByParams($this->request->params);
@@ -85,30 +105,13 @@ class Payme {
             'reason'       => ($found->comment && is_numeric($found->comment)) ? 1 * $found->comment : null,
         ]);
     }
-    private function CheckPerformTransaction()
-    {
-        $this->validateParams($this->request->params);
 
-        $invoice = $this->findOrderByParams($this->request->params['account']);
-        if (!$invoice->isPayable($this->request->params['amount'])){
-            $this->response->error(
-                Response::ERROR_COULD_NOT_PERFORM,
-                'There is other active/completed transaction for this invoice.'
-            );
-        }
-        
-
-        // if control is here, then we pass all validations and checks
-        // send response, that order is ready to be paid.
-        $this->response->success(['allow' => true]);
-    }
-
-    private function findOrderByParams($account)
+    private function findInvoiceByParams($account)
     {
         $invoice = false;
         // Example implementation to load order by id
-       if (isset($account['invoice_id'])) {
-           $invoice = Invoice::where('id',$account['invoice_id'])->first();
+       if (isset($account[$this->accountKey])) {
+           $invoice = Invoice::where('id',$account[$this->accountKey])->first();
            if ($invoice)
                return $invoice;
        }
@@ -117,7 +120,7 @@ class Payme {
            $this->response->error(
             Response::ERROR_INVALID_ACCOUNT,
             Response::message( 'Invoice not found.', 'Счет не найден.', 'Billing yo\'q.'),
-               'invoice_id'
+               $this->accountKey
            );
        }
     }
@@ -129,11 +132,11 @@ class Payme {
         }
 
         // assume, we should have order_id
-        if (!isset($params['account']['invoice_id'])) {
+        if (!isset($params['account'][$this->accountKey])) {
             $this->response->error(
                 Response::ERROR_INVALID_ACCOUNT,
                 Response::message( 'Неверный код Счет.', 'Billing kodida xatolik.', 'Incorrect invoice code.'),
-                'invoice_id'
+                $this->accountKey
             );
         }
 
@@ -142,7 +145,7 @@ class Payme {
     private function CreateTransaction()
     {
 
-        $invoice = $this->findOrderByParams($this->request->params['account']);
+        $invoice = $this->findInvoiceByParams($this->request->params['account']);
         $this->validateParams($this->request->params);
 
 
@@ -203,7 +206,7 @@ class Payme {
                 'system_transaction_id' => $this->request->params['id'],
                 'amount'                =>1*($this->request->amount / 100),
                 'currency_code'         => Transaction::CURRENCY_CODE_UZS,
-                'invoice_id'            => $this->request->account('invoice_id'),
+                'invoice_id'            => $this->request->account($this->accountKey),
                 'state'                 => Transaction::STATE_CREATED,
                 'updated_time'          => 1*$create_time,
                 'comment'               => (isset($this->request->params['error_note'])?$this->request->params['error_note']:''),
@@ -456,7 +459,7 @@ class Payme {
         return [
             'merchant' => $config['merchant_id'],
             'amount' => $pay->amount*100,
-            'account[invoice_id]' => $pay->id,
+            'account[key]' => $pay->id,
             'lang' => 'ru',
             'currency' => Transaction::CURRENCY_CODE_UZS,
             'callback' => 'http://dev.pay.uz',

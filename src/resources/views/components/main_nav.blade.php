@@ -27,14 +27,6 @@
                 Transactions</span>
                 </a>
             </li>
-            <li class="nav-item @if($current_route == 'payment.invoices.index') active @endif" data-toggle="tooltip" data-placement="right" title="Invoices">
-                <a class="nav-link" href="{{ route('payment.invoices.index') }}">
-                    <i class="fa fa-fw fa-building"></i>
-                    <span class="nav-link-text">
-                 Invoices
-                </span>
-                </a>
-            </li>
             <li class="nav-item @if($current_route == 'payment.settings.index') active @endif" data-toggle="tooltip" data-placement="right" title="Settings">
                 <a class="nav-link" href="{{ route('payment.settings') }}">
                     <i class="fa fa-fw fa-cog"></i>

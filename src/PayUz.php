@@ -7,7 +7,6 @@ use Goodoneuz\PayUz\Http\Classes\Payme\Payme;
 use Goodoneuz\PayUz\Http\Classes\PaymentException;
 use Goodoneuz\PayUz\Models\PaymentSystem;
 use Goodoneuz\PayUz\Models\Transaction;
-use Goodoneuz\PayUz\Services\InvoiceService;
 use Illuminate\Support\Facades\View;
 
 class PayUz
@@ -22,17 +21,7 @@ class PayUz
     {
     }
 
-    /**
-     * @param $model
-     * @param $amount
-     * @param $currency_code
-     * @return mixed
-     * @throws \Exception
-     */
-    public function createInvoice($model, $amount, $currency_code){
-        $this->validateModel($model, $amount, $currency_code);
-        return InvoiceService::createInvoice($model,$amount,$currency_code);
-    }
+
 
     /**
      * Select payment driver

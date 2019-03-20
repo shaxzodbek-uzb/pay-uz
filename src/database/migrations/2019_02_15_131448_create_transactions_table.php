@@ -19,7 +19,6 @@ class CreateTransactionsTable extends Migration
             $table->string('system_transaction_id');
             $table->double('amount',15,5);
             $table->integer('currency_code');
-            $table->integer('invoice_id')->nullable();
             $table->integer('state');
             $table->dateTime('updated_time')->nullable();
             $table->string('comment')->nullable();

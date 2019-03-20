@@ -33,7 +33,6 @@
                     <thead class="thead-default">
                     <tr>
                         <th>Transaction code</th>
-                        <th>Invoice code</th>
                         <th>Payment system</th>
                         <th>Amount</th>
                         <th>Currency</th>
@@ -44,7 +43,6 @@
                     <tfoot class="thead-default">
                     <tr>
                         <th>Transaction code</th>
-                        <th>Invoice code</th>
                         <th>Payment system</th>
                         <th>Amount</th>
                         <th>Currency</th>
@@ -56,7 +54,6 @@
                     @foreach($transactions as $transaction)
                         <tr>
                             <td>{{ $transaction->id }}</td>
-                            <td>{{ $transaction->invoice }}</td>
                             <td>{{ $transaction->end_point_url }}</td>
                             <td>{{ $transaction->created_at }}</td>
                             <td class="text-center">

@@ -3,10 +3,8 @@ namespace Goodoneuz\PayUz\Http\Classes\Click;
 
 use Goodoneuz\PayUz\Http\Classes\PaymentException;
 use Goodoneuz\PayUz\Http\Classes\DataFormat;
-use Goodoneuz\PayUz\Models\Invoice;
 use Goodoneuz\PayUz\Models\PaymentSystem;
 use Goodoneuz\PayUz\Models\Transaction;
-use Goodoneuz\PayUz\Services\InvoiceService;
 use Goodoneuz\PayUz\Services\PaymentSystemService;
 
 class Click{
@@ -83,7 +81,6 @@ class Click{
             'system_transaction_id' => $params['click_trans_id'],
             'amount'                => $params['amount'],
             'currency_code'         => Transaction::CURRENCY_CODE_UZS,
-            'invoice_id'            => $params['merchant_trans_id'],
             'state'                 => Transaction::STATE_CREATED,
             'updated_time'          => 1*$create_time,
             'comment'               => $params['error_note'],
