@@ -9,7 +9,7 @@
 - [Payme](http://payme.uz) - Merchant <img src="https://cdn.paycom.uz/documentation_assets/payme_01.png" alt="Payme" width="80"/>
 - [Click](http://click.uz) - Merchant <img src="http://click.uz/wp-content/themes/click_theme/assets/img/logo.png" alt="Click" width="80"/>
 
-**Planed**
+**Planned**
 ------
 - Paynet
 - Upay
@@ -27,8 +27,8 @@ composer require goodoneuz/pay-uz
 
 ## Usage
 ------
-- Request handle: `PayUz::driver('payme')->redirect($model, $amount, $currency)`
-- Redirect user:  `PayUz::driver('payme')->handle()`
+- Request handle:  `PayUz::driver('payme')->handle()`
+- Redirect user: `PayUz::driver('payme')->redirect($model, $amount, $currency)`
 - Get Invoices: `PayUz::getInvoices($model)` - returns collection
 - Get invoice transactions: `PayUz::getTransactions($invoice)` - returns collection
 
@@ -39,7 +39,7 @@ PaymentException
 
 ### Testing
 
-``` bash
+```bash
 composer test
 ```
 
