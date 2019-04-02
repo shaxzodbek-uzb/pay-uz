@@ -9,7 +9,7 @@
 - [Payme](http://payme.uz) - Merchant <img src="https://cdn.paycom.uz/documentation_assets/payme_01.png" alt="Payme" width="80"/>
 - [Click](http://click.uz) - Merchant <img src="http://click.uz/wp-content/themes/click_theme/assets/img/logo.png" alt="Click" width="80"/>
 
-**Planed**
+**Planned**
 ------
 - Paynet
 - Upay
@@ -37,7 +37,7 @@ PaymentException
 
 ### Testing
 
-``` bash
+```bash
 composer test
 ```
 
