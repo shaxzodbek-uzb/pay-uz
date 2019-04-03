@@ -30,6 +30,7 @@ composer require goodoneuz/pay-uz
 - Request handle: `PayUz::driver('payme')->redirect($model, $amount, $currency)`
 - Redirect user:  `PayUz::driver('payme')->handle()`
 
+
 **Exception:**
 ------
 
