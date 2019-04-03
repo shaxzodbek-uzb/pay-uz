@@ -75,8 +75,8 @@ class PaymentSystemService
         $params = PaymentSystemParam::where('system',$driver)->get();
 
         if (count($params)>0)
-            return $params->mapWithKeys(
-                function ($item) {
+        
+            return $params->mapWithKeys(function ($item) {
                 return [$item['name'] => $item['value']];
             });
 

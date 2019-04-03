@@ -20,7 +20,7 @@ class CreateTransactionsTable extends Migration
             $table->double('amount',15,5);
             $table->integer('currency_code');
             $table->integer('state');
-            $table->dateTime('updated_time')->nullable();
+            $table->string('updated_time')->nullable();
             $table->string('comment')->nullable();
             $table->string('detail')->nullable();
             $table->string('transactionable_type')->nullable();

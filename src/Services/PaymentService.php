@@ -5,12 +5,15 @@
  */
 namespace Goodoneuz\PayUz\Services;
 
+use App\User;
+use Illuminate\Support\Facades\Log;
+
 
 class PaymentService
 {
 
     public static function convertModelToKey($model){
-        return $model->id;
+        require __DIR__ . './editable/logics/key_model.php';
     }
     /*
     * $key - key of model
@@ -18,11 +21,11 @@ class PaymentService
     *
     */    
     public static function convertKeyToModel($key){
-        return App\User::find($key);
+        require __DIR__ . './editable/logics/model_key.php';
     }
 
     public static function isProperModelAndAmount($model, $amount){
-        return true;
+        require __DIR__ . './editable/logics/is_proper.php';
     }
 
     /*
@@ -30,21 +33,22 @@ class PaymentService
     * $amount - amount for pay
     * $action_type - type of action: before-pay, paying, after-pay, cancelled
     */
-    public function payListener($model, $amount, $action_type){
+    public static function payListener($model, $transaction, $action_type){
         switch($action_type){
             case 'before-pay': 
-                Log::info('Before pay:' . $model->id . ' -> ' . $amount);
+                require __DIR__ . './editable/listeners/before_pay.php';
                 break;    
-            case 'paying': 
-                Log::info('Paying:' . $model->id . ' -> ' . $amount);
-                break;
 
-                case 'after-pay': 
-                Log::info('After pay:' . $model->id . ' -> ' . $amount);
+            case 'paying': 
+                require __DIR__ . './editable/listeners/paying.php';
+            break;
+
+            case 'after-pay': 
+                require __DIR__ . './editable/listeners/after_pay.php';
                 break;
                 
-            case 'after-pay': 
-                Log::info('Cancelled:' . $model->id . ' -> ' . $amount);
+            case 'cancel-pay': 
+                require __DIR__ . './editable/listeners/cancel_pay.php';
                 break;                
         }
     }

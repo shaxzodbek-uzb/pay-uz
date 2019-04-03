@@ -71,6 +71,12 @@ class Payme {
     {
         $this->validateParams($this->request->params);
         $model = PaymentService::convertKeyToModel($this->request->params['account']['key']);
+        if ($model == null){
+            $this->response->error(
+                Response::ERROR_INVALID_ACCOUNT,
+                'Object not fount.'
+            );
+        }
         if (!PaymentService::isProperModelAndAmount($model, $this->request->params['amount'])){
             $this->response->error(
                 Response::ERROR_COULD_NOT_PERFORM,
@@ -78,7 +84,7 @@ class Payme {
             );
         }
 
-        PaymentService::payListener($model,$this->request->params['amount'],'before-pay');
+        PaymentService::payListener($model,null,'before-pay');
         
         $this->response->success(['allow' => true]);
     }
@@ -92,10 +98,11 @@ class Payme {
             );
         }
 
+        $detail = json_decode($transaction->detail,true);
         $this->response->success([
-            'create_time'  => 1*$transaction->create_time,
-            'perform_time' => 1*$transaction->perform_time,
-            'cancel_time'  => 1*$transaction->cancel_time,
+            'create_time'  => 1*$detail['create_time'],
+            'perform_time' => 1*$detail['perform_time'],
+            'cancel_time'  => 1*$detail['cancel_time'],
             'transaction'  => (string)$transaction->id,
             'state'        => 1*$transaction->state,
             'reason'       => ($transaction->comment && is_numeric($transaction->comment)) ? 1 * $transaction->comment : null,
@@ -124,10 +131,8 @@ class Payme {
     {
 
         $this->validateParams($this->request->params);
-
         $model = PaymentService::convertKeyToModel($this->request->params['account']['key']);
         //todo alert if model is null
-
         $transaction = $this->findTransactionByParams($this->request->params);
         if ($transaction) {
             if ($transaction->state != Transaction::STATE_CREATED) {
@@ -147,7 +152,7 @@ class Payme {
             try{
                 $this->CheckPerformTransaction();
             } catch(PaymentException $e){
-                if ($e->response['error'] != null)
+                if ($e->response->response['error'] != null)
                 throw $e;
             }
 
@@ -175,18 +180,19 @@ class Payme {
             $transaction = Transaction::create([
                 'payment_system'        => PaymentSystem::PAYME,
                 'system_transaction_id' => $this->request->params['id'],
-                'amount'                =>1*($this->request->amount / 100),
+                'amount'                =>1*($this->request->amount),
                 'currency_code'         => Transaction::CURRENCY_CODE_UZS,
                 'state'                 => Transaction::STATE_CREATED,
                 'updated_time'          => 1*$create_time,
                 'comment'               => (isset($this->request->params['error_note'])?$this->request->params['error_note']:''),
                 'detail'                => $detail,
                 'transactionable_type'  => get_class($model),
-                'transactionable_id'    => $this->request->params['account']['key']
+                'transactionable_id'    => $model->id
             ]);
         }
-        PaymentService::payListener($model,1*($this->request->amount/100),'paying');
-        // send response
+         
+        PaymentService::payListener($model,$transaction,'paying');
+        
         $this->response->success([
             'create_time' => 1*$transaction->updated_time,
             'transaction' => (string)$transaction->system_transaction_id,
@@ -219,14 +225,14 @@ class Payme {
                     $transaction->updated_time  = $perform_time;
 
                     $detail = json_decode($transaction->detail,true);
-                    $detail->perform_time   =   $perform_time;
+                    $detail['perform_time']   =   $perform_time;
                     $detail = json_encode($detail);
 
                     $transaction->detail = $detail;
 
-                    $transaction->save();
+                    $transaction->update();
 
-                    PaymentService::payListener($model,1*($this->request->amount/100),'after-pay');
+                    PaymentService::payListener(null,$transaction,'after-pay');
 
                     $this->response->success([
                         'transaction'  => (string)$transaction->system_transaction_id,
@@ -240,11 +246,11 @@ class Payme {
                 $detail = json_decode($transaction->detail,true);
                 $this->response->success([
                     'transaction'  => (string)$transaction->system_transaction_id,
-                    'perform_time' => 1*$detail->perform_time,
+                    'perform_time' => 1*$detail['perform_time'],
                     'state'        => 1*$transaction->state,
                 ]);
 
-                PaymentService::payListener($model,1*($this->request->amount/100),'after-pay');
+                PaymentService::payListener(null,$transaction,'after-pay');
 
                 break;
 
@@ -273,7 +279,7 @@ class Payme {
                 $detail = json_decode($transaction->detail,true);
                 $this->response->success([
                     'transaction' => (string)$transaction->id,
-                    'cancel_time' => 1*$detail->cancel_time,
+                    'cancel_time' => 1*$detail['cancel_time'],
                     'state'       => 1*$transaction->state,
                 ]);
                 break;
@@ -286,13 +292,15 @@ class Payme {
                 $cancel_time               = DataFormat::timestamp(true);
                 
                 $detail = json_decode($transaction->detail,true);
-                $detail->cancel_time   =   $cancel_time;
+                $detail['cancel_time']   =   $cancel_time;
                 
                 $transaction->update([
                     'updated_time'=> $cancel_time,
                     'detail' => json_encode($detail)]);
 
-                // send response
+
+                PaymentService::payListener(null,$transaction,'cancel-pay');
+
                 $this->response->success([
                     'transaction' => (string)$transaction->id,
                     'cancel_time' => 1*$cancel_time,
@@ -306,9 +314,11 @@ class Payme {
 
                     $detail = json_decode($transaction->detail,true);
 
+                    PaymentService::payListener(null,$transaction,'cancel-pay');
+
                     $this->response->success([
                         'transaction' => (string)$transaction->id,
-                        'cancel_time' => 1*$detail->cancel_time,
+                        'cancel_time' => 1*$detail['cancel_time'],
                         'state'       => 1*$transaction->state,
                     ]);
                 } else {
@@ -427,7 +437,7 @@ class Payme {
             'amount' => $amount*1,
             'account[key]' => PaymentService::convertModelToKey($model),
             'lang' => 'ru',
-            'currency' => , $currency,
+            'currency' => $currency,
             'callback' => url('/'),
             'callback_timeout' => 20000,
             'url'   => "https://checkout.paycom.uz/",

@@ -22,7 +22,6 @@ class PayUz
     }
 
 
-
     /**
      * Select payment driver
      * @param null $driver
@@ -61,9 +60,9 @@ class PayUz
     public function handle(){
         $this->validateDriver();
         try{
-            (new $this->driverClass)->run();
+            return (new $this->driverClass)->run();
         }catch(PaymentException $e){
-            $e->response();
+            return $e->response();
         }
 
         return $this;

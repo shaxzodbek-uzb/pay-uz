@@ -29,6 +29,9 @@ class Request
         $this->response = $response;
         $request_body  = file_get_contents('php://input');
 
+        if(env('APP_ENV') == 'testing')
+            $request_body = request()->all()['request'];
+    
         $this->payload = json_decode($request_body, true);
         if (!$this->payload) {
             $this->response->error(Response::ERROR_INVALID_JSON_RPC_OBJECT,'Invalid JSON-RPC object.');
