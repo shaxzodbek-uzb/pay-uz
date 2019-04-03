@@ -3,13 +3,12 @@ namespace Goodoneuz\PayUz\Http\Classes\Payme;
 
 use App;
 use Goodoneuz\PayUz\Http\Classes\DataFormat;
-use Goodoneuz\PayUz\Models\Invoice;
 use Goodoneuz\PayUz\Models\PaymentSystem;
 use Goodoneuz\PayUz\Models\PaymentSystemParam;
 use Goodoneuz\PayUz\Models\Transaction;
-use Goodoneuz\PayUz\Services\InvoiceService;
 use Goodoneuz\PayUz\Services\PaymentSystemService;
-
+use Goodoneuz\PayUz\Services\PaymentService;
+use Goodoneuz\PayUz\Http\Classes\PaymentException;
 
 class Payme {
     public $config;
@@ -29,6 +28,7 @@ class Payme {
         $this->response->setRequest($this->request);
         $this->merchant = new Merchant($this->config, $this->response);
     }
+
     public function run()
     {
 
@@ -66,10 +66,26 @@ class Payme {
                 );
         }
     }
+    
+    private function CheckPerformTransaction()
+    {
+        $this->validateParams($this->request->params);
+        $model = PaymentService::convertKeyToModel($this->request->params['account']['key']);
+        if (!PaymentService::isProperModelAndAmount($model, $this->request->params['amount'])){
+            $this->response->error(
+                Response::ERROR_COULD_NOT_PERFORM,
+                'There is other active/completed transaction for this object.'
+            );
+        }
+
+        PaymentService::payListener($model,$this->request->params['amount'],'before-pay');
+        
+        $this->response->success(['allow' => true]);
+    }
     private function CheckTransaction()
     {
-        $found  =  $this->findTransactionByParams($this->request->params);
-        if (!$found) {
+        $transaction  =  $this->findTransactionByParams($this->request->params);
+        if (!$transaction) {
             $this->response->error(
                 Response::ERROR_TRANSACTION_NOT_FOUND,
                 'Transaction not found.'
@@ -77,50 +93,15 @@ class Payme {
         }
 
         $this->response->success([
-            'create_time'  => 1*$found->create_time,
-            'perform_time' => 1*$found->perform_time,
-            'cancel_time'  => 1*$found->cancel_time,
-            'transaction'  => (string)$found->id,
-            'state'        => 1*$found->state,
-            'reason'       => ($found->comment && is_numeric($found->comment)) ? 1 * $found->comment : null,
+            'create_time'  => 1*$transaction->create_time,
+            'perform_time' => 1*$transaction->perform_time,
+            'cancel_time'  => 1*$transaction->cancel_time,
+            'transaction'  => (string)$transaction->id,
+            'state'        => 1*$transaction->state,
+            'reason'       => ($transaction->comment && is_numeric($transaction->comment)) ? 1 * $transaction->comment : null,
         ]);
     }
-    private function CheckPerformTransaction()
-    {
-        $this->validateParams($this->request->params);
 
-        $invoice = $this->findOrderByParams($this->request->params['account']);
-        if (!$invoice->isPayable($this->request->params['amount'])){
-            $this->response->error(
-                Response::ERROR_COULD_NOT_PERFORM,
-                'There is other active/completed transaction for this invoice.'
-            );
-        }
-        
-
-        // if control is here, then we pass all validations and checks
-        // send response, that order is ready to be paid.
-        $this->response->success(['allow' => true]);
-    }
-
-    private function findOrderByParams($account)
-    {
-        $invoice = false;
-        // Example implementation to load order by id
-       if (isset($account['invoice_id'])) {
-           $invoice = Invoice::where('id',$account['invoice_id'])->first();
-           if ($invoice)
-               return $invoice;
-       }
-
-       if (!$invoice) {
-           $this->response->error(
-            Response::ERROR_INVALID_ACCOUNT,
-            Response::message( 'Invoice not found.', 'Счет не найден.', 'Billing yo\'q.'),
-               'invoice_id'
-           );
-       }
-    }
     public function validateParams(array $params)
     {
         // for example, check amount is numeric
@@ -129,11 +110,11 @@ class Payme {
         }
 
         // assume, we should have order_id
-        if (!isset($params['account']['invoice_id'])) {
+        if (!isset($params['account']['key'])) {
             $this->response->error(
                 Response::ERROR_INVALID_ACCOUNT,
-                Response::message( 'Неверный код Счет.', 'Billing kodida xatolik.', 'Incorrect invoice code.'),
-                'invoice_id'
+                Response::message( 'Неверный код Счет.', 'Billing kodida xatolik.', 'Incorrect object code.'),
+                'key'
             );
         }
 
@@ -142,53 +123,46 @@ class Payme {
     private function CreateTransaction()
     {
 
-        $invoice = $this->findOrderByParams($this->request->params['account']);
         $this->validateParams($this->request->params);
 
-
-//        // todo: Check, is there any other transaction for this order/service
-//        $transaction = $this->findTransactionByParams(['account' => $this->request->params['account']]);
-//        if ($transaction) {
-//            if (($transaction->state == Transaction::STATE_CREATED || $transaction->state == Transaction::STATE_COMPLETED)
-//                && $transaction->system_transaction_id !== $this->request->params['id']) {
-//                $this->response->error(
-//                    Response::ERROR_INVALID_ACCOUNT,
-//                    'There is other active/completed transaction for this order.'
-//                );
-//            }
-//        }
+        $model = PaymentService::convertKeyToModel($this->request->params['account']['key']);
+        //todo alert if model is null
 
         $transaction = $this->findTransactionByParams($this->request->params);
         if ($transaction) {
-            if ($transaction->state != Transaction::STATE_CREATED) { // validate transaction state
+            if ($transaction->state != Transaction::STATE_CREATED) {
                 $this->response->error(
                     Response::ERROR_COULD_NOT_PERFORM,
                     'Transaction found, but is not active.'
                 );
-            } elseif ($transaction->isExpired()) { // if transaction timed out, cancel it and send error
+            } elseif ($transaction->isExpired()) {
                 $transaction->cancel(Transaction::REASON_CANCELLED_BY_TIMEOUT);
                 $this->response->error(
                     Response::ERROR_COULD_NOT_PERFORM,
                     'Transaction is expired.'
                 );
             }
-        } else { // transaction not found, create new one
+        } else {
+            
+            try{
+                $this->CheckPerformTransaction();
+            } catch(PaymentException $e){
+                if ($e->response['error'] != null)
+                throw $e;
+            }
 
-            // validate new transaction time
             if (DataFormat::timestamp2milliseconds(1 * $this->request->params['time']) - DataFormat::timestamp(true) >= Transaction::TIMEOUT) {
                 $this->response->error(
                     Response::ERROR_INVALID_ACCOUNT,
                     Response::message(
                         'С даты создания транзакции прошло ' . Transaction::TIMEOUT . 'мс',
-                        'Tranzaksiya yaratilgan sanadan ' . Transaction::TIMEOUT . 'ms o`tgan',
+                        'Tranzaksiya yaratilgan vaqtdan ' . Transaction::TIMEOUT . 'ms o`tgan',
                         'Since create time of the transaction passed ' . Transaction::TIMEOUT . 'ms'
                     ),
                     'time'
                 );
             }
 
-            // create new transaction
-            // keep create_time as timestamp, it is necessary in response
             $create_time = DataFormat::timestamp(true);
 
             $detail = json_encode(array(
@@ -203,14 +177,15 @@ class Payme {
                 'system_transaction_id' => $this->request->params['id'],
                 'amount'                =>1*($this->request->amount / 100),
                 'currency_code'         => Transaction::CURRENCY_CODE_UZS,
-                'invoice_id'            => $this->request->account('invoice_id'),
                 'state'                 => Transaction::STATE_CREATED,
                 'updated_time'          => 1*$create_time,
                 'comment'               => (isset($this->request->params['error_note'])?$this->request->params['error_note']:''),
-                'detail'                => $detail
+                'detail'                => $detail,
+                'transactionable_type'  => get_class($model),
+                'transactionable_id'    => $this->request->params['account']['key']
             ]);
         }
-
+        PaymentService::payListener($model,1*($this->request->amount/100),'paying');
         // send response
         $this->response->success([
             'create_time' => 1*$transaction->updated_time,
@@ -220,11 +195,6 @@ class Payme {
         ]);
     }
 
-    public function findTransactionByParams($params)
-    {
-        $transaction = Transaction::where('payment_system',PaymentSystem::PAYME)->where('system_transaction_id',$params['id'])->first();
-        return $transaction;  
-    }
     private function PerformTransaction()
     {
         $transaction = $this->findTransactionByParams($this->request->params);
@@ -235,16 +205,15 @@ class Payme {
         }
 
         switch ($transaction->state) {
-            case Transaction::STATE_CREATED: // handle active transaction
-                if ($transaction->isExpired()) { // if transaction is expired, then cancel it and send error
+            case Transaction::STATE_CREATED:
+                if ($transaction->isExpired()) {
                     $transaction->cancel(Transaction::REASON_CANCELLED_BY_TIMEOUT);
                     $this->response->error(
                         Response::ERROR_COULD_NOT_PERFORM,
                         'Transaction is expired.'
                     );
-                } else { // perform active transaction
+                } else {
 
-                    //todo taobao saytiga jo'natish
                     $perform_time               = DataFormat::timestamp(true);
                     $transaction->state         = Transaction::STATE_COMPLETED;
                     $transaction->updated_time  = $perform_time;
@@ -252,12 +221,12 @@ class Payme {
                     $detail = json_decode($transaction->detail,true);
                     $detail->perform_time   =   $perform_time;
                     $detail = json_encode($detail);
+
                     $transaction->detail = $detail;
 
                     $transaction->save();
 
-                    InvoiceService::getInvoiceById($transaction->invoice_id)->pay($transaction->id);
-                    // TODO:: Add EventListener For Billing close.
+                    PaymentService::payListener($model,1*($this->request->amount/100),'after-pay');
 
                     $this->response->success([
                         'transaction'  => (string)$transaction->system_transaction_id,
@@ -268,7 +237,6 @@ class Payme {
                 break;
 
             case Transaction::STATE_COMPLETED: // handle complete transaction
-
                 $detail = json_decode($transaction->detail,true);
                 $this->response->success([
                     'transaction'  => (string)$transaction->system_transaction_id,
@@ -276,7 +244,8 @@ class Payme {
                     'state'        => 1*$transaction->state,
                 ]);
 
-                InvoiceService::getInvoiceById($transaction->invoice_id)->pay($transaction->id);
+                PaymentService::payListener($model,1*($this->request->amount/100),'after-pay');
+
                 break;
 
             default:
@@ -313,20 +282,15 @@ class Payme {
             case Transaction::STATE_CREATED:
                 // cancel transaction with given reason
                 $transaction->cancel(1 * $this->request->params['reason']);
-                // after $found->cancel(), cancel_time and state properties populated with data
-
-
+                
                 $cancel_time               = DataFormat::timestamp(true);
-                $transaction->updated_time  = $cancel_time;
-
+                
                 $detail = json_decode($transaction->detail,true);
                 $detail->cancel_time   =   $cancel_time;
-                $detail = json_encode($detail);
-                $transaction->detail = $detail;
-
-                $transaction->save();
-
-                // change order state to cancelled
+                
+                $transaction->update([
+                    'updated_time'=> $cancel_time,
+                    'detail' => json_encode($detail)]);
 
                 // send response
                 $this->response->success([
@@ -337,14 +301,11 @@ class Payme {
                 break;
 
             case Transaction::STATE_COMPLETED:
-                // find order and check, whether cancelling is possible this order
                 if (true) {
-                    // cancel and change state to cancelled
                     $transaction->cancel(1 * $this->request->params['reason']);
-                    // after $found->cancel(), cancel_time and state properties populated with data
 
                     $detail = json_decode($transaction->detail,true);
-                    // send response
+
                     $this->response->success([
                         'transaction' => (string)$transaction->id,
                         'cancel_time' => 1*$detail->cancel_time,
@@ -358,6 +319,12 @@ class Payme {
                 }
                 break;
         }
+    }
+
+    public function findTransactionByParams($params)
+    {
+        $transaction = Transaction::where('payment_system',PaymentSystem::PAYME)->where('system_transaction_id',$params['id'])->first();
+        return $transaction;  
     }
 
     /**
@@ -377,19 +344,21 @@ class Payme {
 
         $completed = false;
         $payment_system = PaymentSystem::find($this->config['id']);
-        if (!is_null($payment_system))
-        {
-            $payment_system->password = $this->request->params['password'];
-            $payment_system->update();
-            $completed = true;
+        if (!is_null($payment_system)){
+            $params = PaymentSystemParam::where('system',$driver)->get();
+            foreach($params as $param){
+                if($param->name == 'password'){
+                    $param->update([
+                        'value' =>  $this->request->params['password']
+                    ]);
+                    $completed = true;
+                }
+            }
         }
-        // example implementation, that saves new password into file specified in the configuration
-        if (!$completed) {
+        if (!$completed){
             $this->response->error(Response::ERROR_INTERNAL_SYSTEM, 'Internal System Error.');
         }
 
-        // if control is here, then password is saved into data store
-        // send success response
         $this->response->success(['success' => true]);
     }
 
@@ -436,7 +405,7 @@ class Payme {
                 'time'         => 1 * $detail['system_time_datetime'], // paycom transaction timestamp as is
                 'amount'       => 1 * $row['amount'],
                 'account'      => [
-                    'user_key' => 1 * $row['user_key'], // account parameters to identify client/order/service
+                    'key' => 1 * $row['key'], // account parameters to identify client/order/service
                     // ... additional parameters may be listed here, which are belongs to the account
                 ],
                 'create_time'  => DataFormat::datetime2timestamp($detail['create_time']),
@@ -451,15 +420,15 @@ class Payme {
         return $result;
 
     }
-    public static function getRedirectParams($pay){
+    public static function getRedirectParams($model, $amount, $currency){
         $config = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::PAYME);
         return [
             'merchant' => $config['merchant_id'],
-            'amount' => $pay->amount*100,
-            'account[invoice_id]' => $pay->id,
+            'amount' => $amount*1,
+            'account[key]' => PaymentService::convertModelToKey($model),
             'lang' => 'ru',
-            'currency' => Transaction::CURRENCY_CODE_UZS,
-            'callback' => 'http://dev.pay.uz',
+            'currency' => , $currency,
+            'callback' => url('/'),
             'callback_timeout' => 20000,
             'url'   => "https://checkout.paycom.uz/",
         ];

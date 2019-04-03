@@ -9,12 +9,8 @@
 namespace Goodoneuz\PayUz;
 
 
-use Goodoneuz\PayUz\Models\Invoice;
 
 trait Payable
 {
-    public function invoices()
-    {
-        return $this->morphMany(Invoice::class, 'invoiceable');
-    }
+
 }

@@ -18,7 +18,7 @@ class PayUzServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'pay-uz');
         $this->loadViewsFrom(__DIR__.'/resources/views', 'pay-uz');
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
-        $this->loadRoutesFrom(__DIR__.'/routes/routes.php');
+        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
 
         if ($this->app->runningInConsole()) {
             /*$this->publishes([

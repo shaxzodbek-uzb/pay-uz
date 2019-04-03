@@ -9,6 +9,5 @@ Route::middleware('web')->name('payment.')->prefix('payment')->namespace('Goodon
     Route::resource('payment_systems','PaymentSystemController');
     Route::get('payment_params/delete/{param_id}','PaymentSystemController@deleteParam')->name('payment_systems.delete_param');
     Route::get('payment_systems/edit/status/{payment_system}','PaymentSystemController@editStatus')->name('payment_systems.edit_status');
-    Route::resource('invoices','InvoiceController');
     Route::resource('transactions','TransactionController');
 });

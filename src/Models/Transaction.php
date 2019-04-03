@@ -19,10 +19,11 @@ class Transaction extends Model
         'system_transaction_id', // varchar 191
         'amount', // double (15,5)
         'currency_code', // int(11)
-        'invoice_id', // int(11)
         'state', // int(11)
         'updated_time', //datetime
         'comment', // varchar 191
+        'transactionable_type',
+        'transactionable_id'
     ];
     const TIMEOUT = 43200000;
 
@@ -63,8 +64,5 @@ class Transaction extends Model
     {
         return $this->state == self::STATE_CREATED && DataFormat::datetime2timestamp($this->updated_time) - time() > self::TIMEOUT;
     }
-    public function invoice()
-    {
-        return $this->belongsTo(Invoice::class,'invoice_id','id');
-    }
+
 }

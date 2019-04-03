@@ -7,7 +7,6 @@ use Goodoneuz\PayUz\Http\Classes\Payme\Payme;
 use Goodoneuz\PayUz\Http\Classes\PaymentException;
 use Goodoneuz\PayUz\Models\PaymentSystem;
 use Goodoneuz\PayUz\Models\Transaction;
-use Goodoneuz\PayUz\Services\InvoiceService;
 use Illuminate\Support\Facades\View;
 
 class PayUz
@@ -22,17 +21,7 @@ class PayUz
     {
     }
 
-    /**
-     * @param $model
-     * @param $amount
-     * @param $currency_code
-     * @return mixed
-     * @throws \Exception
-     */
-    public function createInvoice($model, $amount, $currency_code){
-        $this->validateModel($model, $amount, $currency_code);
-        return InvoiceService::createInvoice($model,$amount,$currency_code);
-    }
+
 
     /**
      * Select payment driver
@@ -59,10 +48,9 @@ class PayUz
      * @return PayUz
      * @throws \Exception
      */
-    public function redirect($model, $amount, $currency_code = 860){
+    public function redirect($model, $amount, $currency_code = Transaction::CURRENCY_CODE_UZS){
         $this->validateDriver();
-        $invoice = $this->createInvoice($model, $amount, $currency_code);
-        $params = $this->driverClass::getRedirectParams($invoice);
+        $params = $this->driverClass::getRedirectParams($model, $amount, $currency_code);
         echo view('pay-uz::redirect.redirect',compact('params'));
     }
 

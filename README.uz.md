@@ -29,8 +29,6 @@ composer require goodoneuz/pay-uz
 ------
 - Request handle: `PayUz::driver('payme')->redirect($model, $amount, $currency)`
 - Redirect user:  `PayUz::driver('payme')->handle()`
-- Get Invoices: `PayUz::getInvoices($model)` - returns collection
-- Get invoice transactions: `PayUz::getTransactions($invoice)` - returns collection
 
 **Exception:**
 ------
