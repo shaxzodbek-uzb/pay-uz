@@ -4,7 +4,7 @@ namespace Goodoneuz\PayUz\Http\Classes;
 
 class PaymentException extends \Exception{
 
-    private $response;
+    public $response;
     
     public function __construct($response)
     {
@@ -16,10 +16,8 @@ class PaymentException extends \Exception{
         $this->response = $reponse;
     }
 
-    public function response()
-    {
-        $this->response->send();
-        return $this->response;
+    public function response(){
+        return $this->response->send();
     }
     
 

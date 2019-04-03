@@ -23,7 +23,8 @@ class Transaction extends Model
         'updated_time', //datetime
         'comment', // varchar 191
         'transactionable_type',
-        'transactionable_id'
+        'transactionable_id',
+        'detail', // details
     ];
     const TIMEOUT = 43200000;
 
@@ -57,6 +58,12 @@ class Transaction extends Model
         }
 
         $this->comment = $reason;
+        $detail = json_decode($this->detail,true);
+        $detail['cancel_time'] = $this->updated_time;
+        $detail = json_encode($detail);
+        $this->detail = $detail;
+
+
 
         $this->update();
     }

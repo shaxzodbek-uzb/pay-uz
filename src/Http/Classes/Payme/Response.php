@@ -37,9 +37,9 @@ class Response
      */
     public function send()
     {
-        header('Content-Type: application/json; charset=UTF-8');
-        echo json_encode($this->response);
-        exit();
+        if(env('APP_ENV') != 'testing')
+            header('Content-Type: application/json; charset=UTF-8');
+        return $this->response;
     }
 
     /**

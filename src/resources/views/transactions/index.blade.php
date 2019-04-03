@@ -33,6 +33,7 @@
                     <thead class="thead-default">
                     <tr>
                         <th>Transaction code</th>
+                        <th>System transaction id</th>
                         <th>Payment system</th>
                         <th>Amount</th>
                         <th>Currency</th>
@@ -43,6 +44,7 @@
                     <tfoot class="thead-default">
                     <tr>
                         <th>Transaction code</th>
+                        <th>System transaction id</th>
                         <th>Payment system</th>
                         <th>Amount</th>
                         <th>Currency</th>
@@ -53,14 +55,13 @@
                     <tbody>
                     @foreach($transactions as $transaction)
                         <tr>
-                            <td>{{ $transaction->id }}</td>
-                            <td>{{ $transaction->end_point_url }}</td>
-                            <td>{{ $transaction->created_at }}</td>
-                            <td class="text-center">
-                                <a href="#" data-system_id="{{ $transaction->id }}" class="deleteBtn"><span class="fa fa-trash" data-toggle="tooltip" data-placement="top" title="O'chirish"></span></a> &nbsp;
-                                <a href="{{ route('payment.transactions.edit',['id'  => $transaction->id]) }}"><span class="fa fa-cog" data-toggle="tooltip" data-placement="top" title="Sozlash"></span></a> &nbsp;
-                                 <a href="{{ route('payment.transactions.edit_status',['id'  => $transaction->id]) }}"><span class="fa @if($transaction->status == \Goodoneuz\PayUz\Models\PaymentSystem::NOT_ACTIVE) fa-lock @else fa-unlock-alt @endif " data-toggle="tooltip" data-placement="top" title="Bloklash"></span></a>
-                            </td>
+                            <td>#{{ $transaction->id }}</td>
+                            <td>{{ $transaction->system_transaction_id }}</td>
+                            <td>{{ $transaction->payment_system }}</td>
+                            <td>{{ $transaction->amount }}</td>
+                            <td>{{ $transaction->currency_code }} </td>
+                            <td>{{ $transaction->state }} </td>
+                            <td>{{ $transaction->created_at }} </td>
                         </tr>
                     @endforeach
                     </tbody>
