@@ -35,6 +35,12 @@ Migrate tables:
 php artisan migrate
 ```
 
+Seed settings:
+
+```bash
+php artisan db:seed --class="Goodoneuz\PayUz\database\seeds\PayUzSeeder"
+```
+
 ## Usage
 ------
 - Request handle: `PayUz::driver('payme')->redirect($model, $amount, $currency)`
