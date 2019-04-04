@@ -73,19 +73,15 @@
                 let editor= ace.edit(key);
                 editor.setTheme(theme);
                 editor.getSession().setMode(mode);
-                // let saveButton = $(`button[data-event='${key}']`);
-                // editor.on("input", function() {
-                //     saveButton.disabled = editor.session.getUndoManager().isClean();
-                // });
             }
         }
 
         // Move to pay.js -------------
         $(".save_listener_btn").on('click',function (e) {
             e.preventDefault();
-            let savedEvent = $(this).data('event');
-            let value =  ace.edit(savedEvent).getValue();
-            let params = {'content': value,'file_name' : savedEvent};
+            let file_name = $(this).data('event');
+            let value =  ace.edit(file_name).getValue();
+            let params = {'content': value,'file_name' : file_name};
             installAjax('post','/payment/api/editable/update',params)
         });
 
@@ -103,7 +99,5 @@
             });
         }
         //-----------------------
-
-
     </script>
 @stop
