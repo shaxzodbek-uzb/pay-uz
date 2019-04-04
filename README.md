@@ -22,7 +22,7 @@
 You can install the package via composer:
 
 ```bash
-composer require goodoneuz/pay-uz "1.3^"
+composer require goodoneuz/pay-uz "1.4^"
 ```
 Publishing required files of package:
 
