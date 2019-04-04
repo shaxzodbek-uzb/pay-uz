@@ -22,7 +22,17 @@
 You can install the package via composer:
 
 ```bash
-composer require goodoneuz/pay-uz
+composer require goodoneuz/pay-uz "1.3^"
+```
+Publishing required files of package:
+
+```bash
+php artisan vendor:publish --provider="Goodoneuz\PayUz\PayUzServiceProvider"
+```
+Migrate tables:
+
+```bash
+php artisan migrate
 ```
 
 ## Usage
@@ -35,12 +45,6 @@ composer require goodoneuz/pay-uz
 ------
 
 PaymentException 
-
-### Testing
-
-```bash
-composer test
-```
 
 ### Changelog
 
