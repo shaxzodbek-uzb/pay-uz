@@ -9,6 +9,7 @@
 namespace Goodoneuz\PayUz\Services;
 
 
+use Illuminate\Support\Facades\DB;
 use Goodoneuz\PayUz\Models\PaymentSystem;
 use Goodoneuz\PayUz\Models\PaymentSystemParam;
 
@@ -38,17 +39,12 @@ class PaymentSystemService
         if (is_array($params) && count($params)>0)
             foreach ($params as $param)
             {
-                $attr = PaymentSystemParam::where('system',$payment_system->system)->where('name',$param['name'])->first();
-                if (is_null($attr))
-                {
-                    $attr = new PaymentSystemParam();
-                }
-                $attr['system'] = $payment_system->system;
-                $attr['label']  = $param['label'];
-                $attr['name']  = $param['name'];
-                $attr['value']  = $param['value'];
-                $attr->save();
-                $attr=null;
+                PaymentSystemParam::create([
+                    'system'    => $payment_system->system,
+                    'label'     => $param['label'],
+                    'name'      => $param['name'],
+                    'value'     => $param['value']    
+                ]);
             }
     }
 
@@ -60,9 +56,13 @@ class PaymentSystemService
             'status'    => $request['status']
         ]);
         if (isset($request['params']) && is_array($request['params']))
+        {
+            DB::table('payment_system_params')
+            ->where('system',$request['system'])
+            ->delete();
 
             self::storeParams($request['params'],$payment_system);
-
+        }
         return $payment_system;
     }
 
