@@ -26,6 +26,11 @@ class PayUzServiceProvider extends ServiceProvider
             ], 'config');
             */
 
+            $this->publishes([
+                __DIR__.'/../publishable/Payments' => base_path('/app/Http/Controllers/Payments'),
+            ], 'pay-uz-editable');
+            
+
             // Publishing the views.
             /*$this->publishes([
                 __DIR__.'/../resources/views' => resource_path('views/vendor/pay-uz'),
@@ -34,7 +39,7 @@ class PayUzServiceProvider extends ServiceProvider
             // Publishing assets.
             $this->publishes([
                 __DIR__.'/resources/assets' => public_path('vendor/pay-uz'),
-            ], 'assets');
+            ], 'pay-uz-assets');
 
             // Publishing the translation files.
             /*$this->publishes([
