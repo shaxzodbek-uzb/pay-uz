@@ -22,12 +22,12 @@
 You can install the package via composer:
 
 ```bash
-composer require goodoneuz/pay-uz
+composer require goodoneuz/pay-uz "1.3^"
 ```
 Publishing required files of package:
 
 ```bash
-php artisan vendor:publish --provider="Goodoneuz\PayUZ\PayUzServiceProvider"
+php artisan vendor:publish --provider="Goodoneuz\PayUz\PayUzServiceProvider"
 ```
 
 ## Usage
