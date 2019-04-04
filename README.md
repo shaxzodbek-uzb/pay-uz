@@ -24,6 +24,11 @@ You can install the package via composer:
 ```bash
 composer require goodoneuz/pay-uz
 ```
+Publishing required files of package:
+
+```bash
+php artisan vendor:publish --provider="Goodoneuz\PayUZ\PayUzServiceProvider"
+```
 
 ## Usage
 ------
@@ -35,12 +40,6 @@ composer require goodoneuz/pay-uz
 ------
 
 PaymentException 
-
-### Testing
-
-```bash
-composer test
-```
 
 ### Changelog
 
