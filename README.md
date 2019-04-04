@@ -31,7 +31,7 @@ php artisan vendor:publish --provider="Goodoneuz\PayUz\PayUzServiceProvider"
 ```
 Migrate tables:
 
-``bash
+```bash
 php artisan migrate
 ```
 
