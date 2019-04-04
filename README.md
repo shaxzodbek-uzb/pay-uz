@@ -29,6 +29,11 @@ Publishing required files of package:
 ```bash
 php artisan vendor:publish --provider="Goodoneuz\PayUz\PayUzServiceProvider"
 ```
+Migrate tables:
+
+``bash
+php artisan migrate
+```
 
 ## Usage
 ------
