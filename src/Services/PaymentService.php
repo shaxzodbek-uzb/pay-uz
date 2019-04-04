@@ -13,7 +13,7 @@ class PaymentService
 {
 
     public static function convertModelToKey($model){
-        require __DIR__ . './editable/logics/key_model.php';
+        require base_path('/app/Http/Controllers/Payments/logics/model_key.php');
     }
     /*
     * $key - key of model
@@ -21,11 +21,11 @@ class PaymentService
     *
     */    
     public static function convertKeyToModel($key){
-        require __DIR__ . './editable/logics/model_key.php';
+        require base_path('/app/Http/Controllers/Payments/logics/key_model.php');
     }
 
     public static function isProperModelAndAmount($model, $amount){
-        require __DIR__ . './editable/logics/is_proper.php';
+        require base_path('/app/Http/Controllers/Payments/logics/is_proper.php');
     }
 
     /*
@@ -36,19 +36,19 @@ class PaymentService
     public static function payListener($model, $transaction, $action_type){
         switch($action_type){
             case 'before-pay': 
-                require __DIR__ . './editable/listeners/before_pay.php';
+                require base_path('/app/Http/Controllers/Payments/listeners/before_pay.php');
                 break;    
 
             case 'paying': 
-                require __DIR__ . './editable/listeners/paying.php';
+                require base_path('/app/Http/Controllers/Payments/listeners/paying.php');
             break;
 
             case 'after-pay': 
-                require __DIR__ . './editable/listeners/after_pay.php';
+                require base_path('/app/Http/Controllers/Payments/listeners/after_pay.php');
                 break;
                 
             case 'cancel-pay': 
-                require __DIR__ . './editable/listeners/cancel_pay.php';
+                require base_path('/app/Http/Controllers/Payments/listeners/cancel_pay.php');
                 break;                
         }
     }

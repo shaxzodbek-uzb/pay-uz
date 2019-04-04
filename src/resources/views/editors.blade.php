@@ -37,53 +37,21 @@
         <div class="col-12 box-admin pt-3 pb-3">
             <div class="col-12 pb-2 mb-4" style="border-bottom: solid 1px; border-color: #eeeeee;">
                 <div class="row">
-                    <span class="text-topics h6">Editros</span>
+                    Events editor.
                 </div>
             </div>
-            <div class="col-12">
-                <div class="row">
-                    <h4>
-                        Start pay
-                    </h4>
+            @foreach($file_contents as $key => $item)
+                <div class="col-12">
+                    <span class="text-topics h6">{{ $item['title'] }}</span>
+                    <div class="wrapper">
+                        <code id="{{ $key }}">{{ $item['content'] }}</code>
+                    </div>
                 </div>
-                <div class="wrapper">
-                    <code id="ace-start">
-                        public function start(){
-                            dd("Hello");
-                        }
-                    </code>
+                <div class="col-12 text-right mt-1">
+                    <button data-event="{{ $key }}" class="btn btn-success save_listener_btn"><span class="fa fa-save"></span> Save</button>
                 </div>
-            </div>
-            <br>
-            <div class="col-12">
-                <div class="row">
-                    <h4>
-                        Doing pay
-                    </h4>
-                </div>
-                <div class="wrapper">
-                    <code id="ace-doing">
-                        public function start(){
-                            dd("Hello");
-                        }
-                    </code>
-                </div>
-            </div>
-            <br>
-            <div class="col-12">
-                <div class="row">
-                    <h4>
-                        End of pay
-                    </h4>
-                </div>
-                <div class="wrapper">
-                    <code id="ace-end">
-                        public function start(){
-                            dd("Hello");
-                        }
-                    </code>
-                </div>
-            </div>
+                <br>
+            @endforeach
         </div>
     </div>
 
@@ -97,14 +65,45 @@
     <script type="text/javascript">
         let theme='ace/theme/monokai';
         let mode='ace/mode/scss';
-        let editor_start    = ace.edit('ace-start');
-        let editor_doing    = ace.edit('ace-doing');
-        let editor_end      = ace.edit('ace-end');
-        editor_start.setTheme(theme);
-        editor_start.getSession().setMode(mode);
-        editor_doing.setTheme(theme);
-        editor_doing.getSession().setMode(mode);
-        editor_end.setTheme(theme);
-        editor_end.getSession().setMode(mode);
+        var contents = {!! json_encode($file_contents) !!};
+
+        for (const key in contents) {
+            if (contents.hasOwnProperty(key)) {
+                const element = contents[key];
+                let editor= ace.edit(key);
+                editor.setTheme(theme);
+                editor.getSession().setMode(mode);
+                // let saveButton = $(`button[data-event='${key}']`);
+                // editor.on("input", function() {
+                //     saveButton.disabled = editor.session.getUndoManager().isClean();
+                // });
+            }
+        }
+
+        // Move to pay.js -------------
+        $(".save_listener_btn").on('click',function (e) {
+            e.preventDefault();
+            let savedEvent = $(this).data('event');
+            let value =  ace.edit(savedEvent).getValue();
+            let params = {'content': value,'file_name' : savedEvent};
+            installAjax('post','/payment/api/editable/update',params)
+        });
+
+        function installAjax(method,url,params) {
+            $.ajax({
+                url: url,
+                type: method,
+                success: function (data) {
+                    pay_toastr.success(data.message);
+                },
+                error: function(data) {
+                    pay_toastr.error(data.status + ' ' + data.statusText);
+                },
+                data: params,
+            });
+        }
+        //-----------------------
+
+
     </script>
 @stop
