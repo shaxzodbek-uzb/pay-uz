@@ -35,23 +35,63 @@
         </div>
         <!-- </div> -->
         <div class="col-12 box-admin pt-3 pb-3">
-            <div class="col-12 pb-2 mb-4" style="border-bottom: solid 1px; border-color: #eeeeee;">
-                <div class="row">
-                    Events editor.
+            <ul class="nav nav-tabs" id="editorTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="listeners-tab" data-toggle="tab" href="#listeners" role="tab" aria-controls="listeners" aria-selected="true">Listeners</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="converters-tab" data-toggle="tab" href="#converters" role="tab" aria-controls="events" aria-selected="false">Converters</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="editorContent">
+                <div class="tab-pane fade show active" id="listeners" role="tabpanel" aria-labelledby="listeners-tab">
+                <hr>
+                    @foreach($listeners as $key => $item)
+                    <div class="card">
+                        <div class="card-header" id="heading{{ $key }}" data-toggle="collapse" data-target="#collapse{{ $key }}" aria-expanded="false" aria-controls="collapse{{ $key }}">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link">
+                                    {{ $item['title'] }}
+                                    <button data-event="{{ $key }}" class="btn btn-success save_listener_btn pull-right"><span class="fa fa-save"></span> Save</button>
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapse{{ $key }}" class="collapse" aria-labelledby="heading{{ $key }}" data-parent="#accordion">
+                            <div class="card-body">
+                                <div class="wrapper">
+                                    <code id="{{ $key }}">{{ $item['content'] }}</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    @endforeach
+                </div>
+                <div class="tab-pane fade" id="converters" role="tabpanel" aria-labelledby="converters-tab">
+                <hr>
+                    @foreach($converters as $key => $item)
+                    <div class="card">
+                        <div class="card-header" id="heading{{ $key }}" data-toggle="collapse" data-target="#collapse{{ $key }}" aria-expanded="false" aria-controls="collapse{{ $key }}">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link">
+                                    {{ $item['title'] }}
+                                    <button data-event="{{ $key }}" class="btn btn-success save_listener_btn pull-right"><span class="fa fa-save"></span> Save</button>
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapse{{ $key }}" class="collapse" aria-labelledby="heading{{ $key }}" data-parent="#accordion">
+                            <div class="card-body">
+                                <div class="wrapper">
+                                    <code id="{{ $key }}">{{ $item['content'] }}</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    @endforeach
                 </div>
             </div>
-            @foreach($file_contents as $key => $item)
-                <div class="col-12">
-                    <span class="text-topics h6">{{ $item['title'] }}</span>
-                    <div class="wrapper">
-                        <code id="{{ $key }}">{{ $item['content'] }}</code>
-                    </div>
-                </div>
-                <div class="col-12 text-right mt-1">
-                    <button data-event="{{ $key }}" class="btn btn-success save_listener_btn"><span class="fa fa-save"></span> Save</button>
-                </div>
-                <br>
-            @endforeach
+            
         </div>
     </div>
 
@@ -65,8 +105,10 @@
     <script type="text/javascript">
         let theme='ace/theme/monokai';
         let mode='ace/mode/scss';
-        var contents = {!! json_encode($file_contents) !!};
-
+        var converters = {!! json_encode($converters) !!};
+        var listeners = {!! json_encode($listeners) !!};
+        var contents = Object.assign(converters, listeners);
+        console.log(contents);
         for (const key in contents) {
             if (contents.hasOwnProperty(key)) {
                 const element = contents[key];

@@ -25,29 +25,30 @@ class PageController extends Controller
      */
     public function editors(){
 
-        $file_contents = [];
-        $file_contents['after_pay']['content']     = file_get_contents(base_path('/app/Http/Controllers/Payments/after_pay.php'));
-        $file_contents['after_pay']['title']       = "After pay listener content.";
+        $converters = [];
+        $listeners = [];
+        $listeners['after_pay']['content']     = file_get_contents(base_path('/app/Http/Controllers/Payments/after_pay.php'));
+        $listeners['after_pay']['title']       = "After pay listener content.";
         
-        $file_contents['before_pay']['content']    = file_get_contents(base_path('/app/Http/Controllers/Payments/before_pay.php'));
-        $file_contents['before_pay']['title']      = "Before pay listener content.";
+        $listeners['before_pay']['content']    = file_get_contents(base_path('/app/Http/Controllers/Payments/before_pay.php'));
+        $listeners['before_pay']['title']      = "Before pay listener content.";
         
-        $file_contents['cancel_pay']['content']    = file_get_contents(base_path('/app/Http/Controllers/Payments/cancel_pay.php'));
-        $file_contents['cancel_pay']['title']      = "Cancel pay listener content.";
+        $listeners['cancel_pay']['content']    = file_get_contents(base_path('/app/Http/Controllers/Payments/cancel_pay.php'));
+        $listeners['cancel_pay']['title']      = "Cancel pay listener content.";
         
-        $file_contents['paying']['content']        = file_get_contents(base_path('/app/Http/Controllers/Payments/paying.php'));
-        $file_contents['paying']['title']          = "Cancel pay listenr content.";
-
-        $file_contents['is_proper']['content']     = file_get_contents(base_path('/app/Http/Controllers/Payments/is_proper.php'));
-        $file_contents['is_proper']['title']       = "Is proper function content";
+        $listeners['paying']['content']        = file_get_contents(base_path('/app/Http/Controllers/Payments/paying.php'));
+        $listeners['paying']['title']          = "Cancel pay listenr content.";
         
-        $file_contents['key_model']['content']     = file_get_contents(base_path('/app/Http/Controllers/Payments/key_model.php'));
-        $file_contents['key_model']['title']       = "Key to Model function content";
+        $converters['key_model']['content']     = file_get_contents(base_path('/app/Http/Controllers/Payments/key_model.php'));
+        $converters['key_model']['title']       = "Key to Model function content";
         
-        $file_contents['model_key']['content']     = file_get_contents(base_path('/app/Http/Controllers/Payments/model_key.php'));
-        $file_contents['model_key']['title']       = "Model to Key function content";
+        $converters['model_key']['content']     = file_get_contents(base_path('/app/Http/Controllers/Payments/model_key.php'));
+        $converters['model_key']['title']       = "Model to Key function content";
         
-        return view('pay-uz::editors',compact('file_contents'));
+        $converters['is_proper']['content']     = file_get_contents(base_path('/app/Http/Controllers/Payments/is_proper.php'));
+        $converters['is_proper']['title']       = "Is proper function content";
+        
+        return view('pay-uz::editors',compact('listeners','converters'));
     }
 
     /**

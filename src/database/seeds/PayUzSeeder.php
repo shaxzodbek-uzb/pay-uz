@@ -21,6 +21,11 @@ class PayUzSeeder extends Seeder
                 'name'      => 'Payme',
                 'system'    => 'payme'
             ]);
+            PaymentSystem::firstOrCreate([
+                'name'      => 'Click',
+                'system'    => 'click'
+            ]);
+            
         }
         if (Schema::hasTable('payment_system_params')) {
             PaymentSystemParam::firstOrCreate([
@@ -34,6 +39,18 @@ class PayUzSeeder extends Seeder
                 'label'     => 'Password',
                 'name'      => 'password',
                 'value'     => 'password'
+            ]);
+            PaymentSystemParam::firstOrCreate([
+                'system'    => 'click',
+                'label'     => 'Service id',
+                'name'      => 'service_id',
+                'value'     => 'service_id'
+            ]);
+            PaymentSystemParam::firstOrCreate([
+                'system'    => 'click',
+                'label'     => 'Secret key',
+                'name'      => 'secret_key',
+                'value'     => 'key'
             ]);
         }
     }
