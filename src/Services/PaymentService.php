@@ -11,9 +11,11 @@ use Illuminate\Support\Facades\Log;
 
 class PaymentService
 {
-
+    /*
+    *   return string
+    */
     public static function convertModelToKey($model){
-        require base_path('/app/Http/Controllers/Payments/model_key.php');
+        return require base_path('/app/Http/Controllers/Payments/model_key.php');
     }
     /*
     * $key - key of model
@@ -21,11 +23,13 @@ class PaymentService
     *
     */    
     public static function convertKeyToModel($key){
-        require base_path('/app/Http/Controllers/Payments/key_model.php');
+        return require base_path('/app/Http/Controllers/Payments/key_model.php');
     }
-
+    /*
+    * returns true/false 
+    */
     public static function isProperModelAndAmount($model, $amount){
-        require base_path('/app/Http/Controllers/Payments/is_proper.php');
+        return require base_path('/app/Http/Controllers/Payments/is_proper.php');
     }
 
     /*
