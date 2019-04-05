@@ -353,16 +353,13 @@ class Payme {
         }
 
         $completed = false;
-        $payment_system = PaymentSystem::find($this->config['id']);
-        if (!is_null($payment_system)){
-            $params = PaymentSystemParam::where('system',$driver)->get();
-            foreach($params as $param){
-                if($param->name == 'password'){
-                    $param->update([
-                        'value' =>  $this->request->params['password']
-                    ]);
-                    $completed = true;
-                }
+        $params = PaymentSystemParam::where('system',PaymentSystem::PAYME)->get();
+        foreach($params as $param){
+            if($param->name == 'password'){
+                $param->update([
+                    'value' =>  $this->request->params['password']
+                ]);
+                $completed = true;
             }
         }
         if (!$completed){

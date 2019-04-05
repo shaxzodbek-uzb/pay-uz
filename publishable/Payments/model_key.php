@@ -1,2 +1,3 @@
 <?php
-    return \App\User::find($key);
+    return $model->id;
+    

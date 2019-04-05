@@ -27,8 +27,7 @@ class Merchant
                 }
             }
 
-            if (!$headers ||
-                !($auth == '') ||
+            if (($auth == '') ||
                 !preg_match('/^\s*Basic\s+(\S+)\s*$/i', $auth, $matches) ||
                 base64_decode($matches[1]) != $this->config['login'] . ":" . $this->config['password'])
             {
