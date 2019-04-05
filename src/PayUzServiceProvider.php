@@ -21,33 +21,12 @@ class PayUzServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/routes/web.php');
 
         if ($this->app->runningInConsole()) {
-            /*$this->publishes([
-                __DIR__.'/../config/config.php' => config_path('pay-uz.php'),
-            ], 'config');
-            */
-
             $this->publishes([
                 __DIR__.'/../publishable/Payments' => base_path('/app/Http/Controllers/Payments'),
             ], 'pay-uz-editable');
-            
-
-            // Publishing the views.
-            /*$this->publishes([
-                __DIR__.'/../resources/views' => resource_path('views/vendor/pay-uz'),
-            ], 'views');*/
-
-            // Publishing assets.
             $this->publishes([
                 __DIR__.'/resources/assets' => public_path('vendor/pay-uz'),
             ], 'pay-uz-assets');
-
-            // Publishing the translation files.
-            /*$this->publishes([
-                __DIR__.'/../resources/lang' => resource_path('lang/vendor/pay-uz'),
-            ], 'lang');*/
-
-            // Registering package commands.
-            // $this->commands([]);
         }
     }
 
