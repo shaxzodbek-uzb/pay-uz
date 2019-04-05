@@ -16,9 +16,9 @@ class Click {
     const REQUEST_PREPARE = 0;
     const REQUEST_COMPLATE = 1;
 
-    public function __construct($request)
+    public function __construct()
     {
-        $this->request  = $request;
+        $this->request  = request();
         $this->response = new Response();
         $this->merchant = new Merchant($this->response);
         
@@ -62,9 +62,10 @@ class Click {
             'merchant_trans_id' => null
         ];
         $model = PaymentService::convertKeyToModel($this->request['merchant_trans_id']);
-        PaymentService::payListener($model,1*($this->request->amount/100),'before-pay');
         if(!$model)
             $this->response->setResult(Response::ERROR_ORDER_NOT_FOUND);
+        
+        PaymentService::payListener($model,1*($this->request->amount/100),'before-pay');
 
         if (!PaymentService::isProperModelAndAmount($model, $params['amount']))
             $this->response->setResult(Response::ERROR_INVALID_AMOUNT);
@@ -89,7 +90,7 @@ class Click {
             'comment'               => $params['error_note'],
             'detail'                => $detail,
             'transactionable_type'  => get_class($model),
-            'transactionable_id'    => $this->request['merchant_trans_id']
+            'transactionable_id'    => $model->id
         ]);
         $additional_params['merchant_prepare_id'] = $transaction->id;
         $this->response->setResult(Response::SUCCESS,$additional_params);
