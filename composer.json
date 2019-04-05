@@ -17,6 +17,7 @@
     ],
     "require": {
         "php": "^7.1",
+        "goodoneuz/pay-uz": "^1.5",
         "illuminate/support": "5.7.*|5.8.*"
     },
     "require-dev": {
@@ -47,7 +48,7 @@
                 "Goodoneuz\\PayUz\\PayUzServiceProvider"
             ],
             "aliases": {
-                "PayUz": "Goodone\\PayUz\\PayUzFacade"
+                "PayUz": "Goodoneuz\\PayUz\\PayUzFacade"
             }
         }
     }
