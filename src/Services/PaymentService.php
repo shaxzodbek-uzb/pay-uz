@@ -39,9 +39,9 @@ class PaymentService
     */
     public static function payListener($model, $transaction, $action_type){
         switch($action_type){
-            case 'before-pay': 
+            case 'before-pay':
                 require base_path('/app/Http/Controllers/Payments/before_pay.php');
-                break;    
+                break;
 
             case 'paying': 
                 require base_path('/app/Http/Controllers/Payments/paying.php');

@@ -3,6 +3,9 @@
 namespace Goodoneuz\PayUz\Http\Classes\Click;
 
 use Goodoneuz\PayUz\Http\Classes\PaymentException;
+use Goodoneuz\PayUz\Models\PaymentSystem;
+use Goodoneuz\PayUz\Services\PaymentService;
+use Goodoneuz\PayUz\Services\PaymentSystemService;
 
 class Response{
     
@@ -74,11 +77,17 @@ class Response{
      *
      */
     public function send(){
-        header('Content-Type: application/json;');
+
+        if (env('APP_ENV') != 'testing')
+            header('Content-Type: application/json;');
+
+        $params = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::CLICK);
         $timestamp = time();
-        $digest = sha1($timestamp .  env('CLICK_SECRET_KEY'));
-        header('Auth: '.env('CLICK_MERCHANT_ID').':'.$digest.':'.$timestamp.';');
-        echo json_encode($this->result);
-        exit();
+        $digest = sha1($timestamp .  $params['secret_key']);
+
+        if (env('APP_ENV') != 'testing')
+            header('Auth: ' . $params['merchant_id'].':'.$digest.':'.$timestamp.';');
+
+        return json_encode($this->result);
     }
 }
