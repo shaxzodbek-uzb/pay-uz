@@ -79,7 +79,7 @@ class Payme {
         }
         if (!PaymentService::isProperModelAndAmount($model, $this->request->params['amount'])){
             $this->response->error(
-                Response::ERROR_COULD_NOT_PERFORM,
+                Response::ERROR_INVALID_AMOUNT,
                 'There is other active/completed transaction for this object.'
             );
         }
