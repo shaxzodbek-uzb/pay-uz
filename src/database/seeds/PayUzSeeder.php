@@ -36,6 +36,12 @@ class PayUzSeeder extends Seeder
             ]);
             PaymentSystemParam::firstOrCreate([
                 'system'    => 'payme',
+                'label'     => 'Merchant id',
+                'name'      => 'merchant_id',
+                'value'     => 'merchant'
+            ]);
+            PaymentSystemParam::firstOrCreate([
+                'system'    => 'payme',
                 'label'     => 'Password',
                 'name'      => 'password',
                 'value'     => 'password'
