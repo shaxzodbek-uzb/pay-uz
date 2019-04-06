@@ -108,7 +108,7 @@
         var converters = {!! json_encode($converters) !!};
         var listeners = {!! json_encode($listeners) !!};
         var contents = Object.assign(converters, listeners);
-        console.log(contents);
+
         for (const key in contents) {
             if (contents.hasOwnProperty(key)) {
                 const element = contents[key];
@@ -132,7 +132,11 @@
                 url: url,
                 type: method,
                 success: function (data) {
-                    pay_toastr.success(data.message);
+                    if (data.responseStatus == 'success') {
+                        pay_toastr.success(data.message);                        
+                    }else{
+                        pay_toastr.warning(data.message); 
+                    }
                 },
                 error: function(data) {
                     pay_toastr.error(data.status + ' ' + data.statusText);
