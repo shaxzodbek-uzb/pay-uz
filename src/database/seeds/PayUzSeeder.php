@@ -52,6 +52,18 @@ class PayUzSeeder extends Seeder
                 'name'      => 'secret_key',
                 'value'     => 'key'
             ]);
+            PaymentSystemParam::firstOrCreate([
+                'system'    => 'click',
+                'label'     => 'Merchant Id',
+                'name'      => 'merchant_id',
+                'value'     => '0000'
+            ]);
+            PaymentSystemParam::firstOrCreate([
+                'system'    => 'click',
+                'label'     => 'Merchant user id',
+                'name'      => 'merchant_user_id',
+                'value'     => '0000'
+            ]);
         }
     }
 }

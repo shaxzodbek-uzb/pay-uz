@@ -21,7 +21,7 @@ class Click {
         $this->request  = request();
         $this->response = new Response();
         $this->merchant = new Merchant($this->response);
-        
+
     }
 
 
@@ -61,15 +61,16 @@ class Click {
             'click_trans_id' => null,
             'merchant_trans_id' => null
         ];
+
         $model = PaymentService::convertKeyToModel($this->request['merchant_trans_id']);
+
         if(!$model)
             $this->response->setResult(Response::ERROR_ORDER_NOT_FOUND);
-        
-        PaymentService::payListener($model,1*($this->request->amount/100),'before-pay');
+
+        PaymentService::payListener($model,1*($this->request->amount),'before-pay');
 
         if (!PaymentService::isProperModelAndAmount($model, $params['amount']))
             $this->response->setResult(Response::ERROR_INVALID_AMOUNT);
-            
         $additional_params['click_trans_id'] = $params['click_trans_id'];
         $additional_params['merchant_trans_id'] = $params['merchant_trans_id'];
 
@@ -92,6 +93,7 @@ class Click {
             'transactionable_type'  => get_class($model),
             'transactionable_id'    => $model->id
         ]);
+
         $additional_params['merchant_prepare_id'] = $transaction->id;
         $this->response->setResult(Response::SUCCESS,$additional_params);
     }
@@ -105,7 +107,6 @@ class Click {
             'merchant_confirm_id' => null
         ];
 
-        
         $transaction = Transaction::find($params['merchant_prepare_id']);
         if (!$transaction)
             $this->response->setResult(Response::ERROR_TRANSACTION_NOT_FOUND);
