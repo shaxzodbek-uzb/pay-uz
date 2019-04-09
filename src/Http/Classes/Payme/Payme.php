@@ -103,7 +103,7 @@ class Payme {
             'create_time'  => 1*$detail['create_time'],
             'perform_time' => 1*$detail['perform_time'],
             'cancel_time'  => 1*$detail['cancel_time'],
-            'transaction'  => 1*$transaction->id,
+            'transaction'  => (string)$transaction->id,
             'state'        => 1*$transaction->state,
             'reason'       => ($transaction->comment && is_numeric($transaction->comment)) ? 1 * $transaction->comment : null,
         ]);
@@ -195,7 +195,7 @@ class Payme {
         
         $this->response->success([
             'create_time' => 1*$transaction->updated_time,
-            'transaction' => 1*$transaction->id,
+            'transaction' => (string)$transaction->id,
             'state'       => 1*$transaction->state,
             'receivers'   => $transaction->receivers,
         ]);
@@ -235,7 +235,7 @@ class Payme {
                     PaymentService::payListener(null,$transaction,'after-pay');
 
                     $this->response->success([
-                        'transaction'  => 1*$transaction->id,
+                        'transaction'  => (string)$transaction->id,
                         'perform_time' => 1*$perform_time,
                         'state'        => 1*$transaction->state,
                     ]);
@@ -245,7 +245,7 @@ class Payme {
             case Transaction::STATE_COMPLETED: // handle complete transaction
                 $detail = json_decode($transaction->detail,true);
                 $this->response->success([
-                    'transaction'  => 1*$transaction->id,
+                    'transaction'  => (string)$transaction->id,
                     'perform_time' => 1*$detail['perform_time'],
                     'state'        => 1*$transaction->state,
                 ]);
@@ -278,7 +278,7 @@ class Payme {
             case Transaction::STATE_CANCELLED_AFTER_COMPLETE:
                 $detail = json_decode($transaction->detail,true);
                 $this->response->success([
-                    'transaction' => 1*$transaction->id,
+                    'transaction' => (string)$transaction->id,
                     'cancel_time' => 1*$detail['cancel_time'],
                     'state'       => 1*$transaction->state,
                 ]);
@@ -302,7 +302,7 @@ class Payme {
                 PaymentService::payListener(null,$transaction,'cancel-pay');
 
                 $this->response->success([
-                    'transaction' => 1*$transaction->id,
+                    'transaction' => (string)$transaction->id,
                     'cancel_time' => 1*$cancel_time,
                     'state'       => 1*$transaction->state,
                 ]);
@@ -317,7 +317,7 @@ class Payme {
                     PaymentService::payListener(null,$transaction,'cancel-pay');
 
                     $this->response->success([
-                        'transaction' => 1*$transaction->id,
+                        'transaction' => (string)$transaction->id,
                         'cancel_time' => 1*$detail['cancel_time'],
                         'state'       => 1*$transaction->state,
                     ]);
@@ -408,7 +408,7 @@ class Payme {
             $detail = json_decode($row['detail'],true);
 
             $result[] = [
-                'id'           => $row['system_transaction_id'], // paycom transaction id
+                'id'           => (string)$row['system_transaction_id'], // paycom transaction id
                 'time'         => 1 * $detail['system_time_datetime'], // paycom transaction timestamp as is
                 'amount'       => 1 * $row['amount'],
                 'account'      => [
@@ -418,7 +418,7 @@ class Payme {
                 'create_time'  => DataFormat::datetime2timestamp($detail['create_time']),
                 'perform_time' => DataFormat::datetime2timestamp($detail['perform_time']),
                 'cancel_time'  => DataFormat::datetime2timestamp($detail['cancel_time']),
-                'transaction'  => $row['id'],
+                'transaction'  => (string)$row['id'],
                 'state'        => 1 * $row['state'],
                 'reason'       => isset($row['comment']) ? 1 * $row['comment'] : null,
                 'receivers'    => isset($row['receivers']) ? json_decode($row['receivers'], true) : null,
