@@ -77,17 +77,9 @@ class Response{
      *
      */
     public function send(){
-
-        if (env('APP_ENV') != 'testing')
-            header('Content-Type: application/json;');
-
         $params = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::CLICK);
         $timestamp = time();
         $digest = sha1($timestamp .  $params['secret_key']);
-
-        if (env('APP_ENV') != 'testing')
-            header('Auth: ' . $params['merchant_id'].':'.$digest.':'.$timestamp.';');
-
-        return json_encode($this->result);
+        return $this->result;
     }
 }
