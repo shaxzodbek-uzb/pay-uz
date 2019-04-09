@@ -77,7 +77,7 @@ class Payme {
                 'Object not fount.'
             );
         }
-        if (!PaymentService::isProperModelAndAmount($model, $this->request->params['amount'])){
+        if (!PaymentService::isProperModelAndAmount($model, $this->request->params['amount'])/100){
             $this->response->error(
                 Response::ERROR_INVALID_AMOUNT,
                 'There is other active/completed transaction for this object.'
@@ -180,7 +180,7 @@ class Payme {
             $transaction = Transaction::create([
                 'payment_system'        => PaymentSystem::PAYME,
                 'system_transaction_id' => $this->request->params['id'],
-                'amount'                =>1*($this->request->amount),
+                'amount'                =>1*($this->request->amount)/100,
                 'currency_code'         => Transaction::CURRENCY_CODE_UZS,
                 'state'                 => Transaction::STATE_CREATED,
                 'updated_time'          => 1*$create_time,
@@ -431,7 +431,7 @@ class Payme {
         $config = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::PAYME);
         return [
             'merchant' => $config['merchant_id'],
-            'amount' => $amount*1,
+            'amount' => $amount*100,
             'account[key]' => PaymentService::convertModelToKey($model),
             'lang' => 'ru',
             'currency' => $currency,
