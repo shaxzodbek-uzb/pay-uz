@@ -427,7 +427,7 @@ class Payme {
         return $result;
 
     }
-    public static function getRedirectParams($model, $amount, $currency){
+    public static function getRedirectParams($model, $amount, $currency, $url){
         $config = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::PAYME);
         return [
             'merchant' => $config['merchant_id'],
@@ -435,7 +435,7 @@ class Payme {
             'account[key]' => PaymentService::convertModelToKey($model),
             'lang' => 'ru',
             'currency' => $currency,
-            'callback' => url('/'),
+            'callback' => $url,
             'callback_timeout' => 20000,
             'url'   => "https://checkout.paycom.uz/",
         ];

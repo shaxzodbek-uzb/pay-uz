@@ -160,7 +160,7 @@ class Click {
         return true;
     }
     
-    public static function getRedirectParams($model, $amount, $currency)
+    public static function getRedirectParams($model, $amount, $currency, $url)
     {
         $config   = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::CLICK);
         $time = date('Y-m-d H:i:s', time());
@@ -177,7 +177,7 @@ class Click {
             'MERCHANT_USER_EMAIL' => '',
             'SIGN_TIME' => $time,
             'SIGN_STRING' => $sign,
-            'RETURN_URL' => url('/'),
+            'RETURN_URL' => $url,
             'url'       => 'https://my.click.uz/pay/'
         ];
     }
