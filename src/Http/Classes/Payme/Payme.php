@@ -437,7 +437,7 @@ class Payme {
             'currency' => $currency,
             'callback' => url('/'),
             'callback_timeout' => 20000,
-            'url'   => "https://test.paycom.uz/",
+            'url'   => "https://checkout.paycom.uz/",
         ];
     }
 }
