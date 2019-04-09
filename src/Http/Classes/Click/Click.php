@@ -95,6 +95,8 @@ class Click {
         ]);
 
         $additional_params['merchant_prepare_id'] = $transaction->id;
+        PaymentService::payListener($model,$transaction,'paying');
+        
         $this->response->setResult(Response::SUCCESS,$additional_params);
     }
     private function Complete()
@@ -137,6 +139,8 @@ class Click {
         $transaction->update();
         
         $additional_params['merchant_confirm_id'] = $transaction->id;
+        
+        PaymentService::payListener(null,$transaction,'after-pay');
         $this->response->setResult(Response::SUCCESS,$additional_params);
     }
 
