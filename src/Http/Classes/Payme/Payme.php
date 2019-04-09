@@ -245,14 +245,13 @@ class Payme {
             case Transaction::STATE_COMPLETED: // handle complete transaction
                 $detail = json_decode($transaction->detail,true);
                 PaymentService::payListener(null,$transaction,'after-pay');
+
                 $this->response->success([
                     'transaction'  => (string)$transaction->id,
                     'perform_time' => 1*$detail['perform_time'],
                     'state'        => 1*$transaction->state,
                 ]);
-
-                
-
+            
                 break;
 
             default:
