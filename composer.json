@@ -17,7 +17,7 @@
     ],
     "require": {
         "php": "^7.1",
-        "goodoneuz/pay-uz": "^1.5",
+        "goodoneuz/pay-uz": "1.6.6",
         "illuminate/support": "5.7.*|5.8.*"
     },
     "require-dev": {
