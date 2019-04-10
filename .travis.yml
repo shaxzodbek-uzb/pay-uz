@@ -1,5 +1,7 @@
 language: php
 
+sudo: false
+
 php:
   - 7.1
   - 7.2
@@ -7,14 +9,22 @@ php:
 
 env:
   matrix:
-    - COMPOSER_FLAGS=""
+    - LARAVEL=5.7.*
+    - LARAVEL=5.8.*
+    - LARAVEL=dev-master
 
-before_script:
-  - travis_retry composer self-update
-  - travis_retry composer install  --prefer-dist --no-interaction
+matrix:
+  fast_finish: true
+  exclude:
+    - php: 7.1
+      env: LARAVEL=dev-master
+  allow_failures:
+    - env: LARAVEL=dev-master
 
-script:
-  - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
+before_install:
+  - phpenv config-rm xdebug.ini || true
 
-after_script:
-  - php vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover
+install:
+  - travis_retry composer install --dev --prefer-dist --no-interaction --no-suggest
+
+script: vendor/bin/phpunit --verbose
