@@ -10,7 +10,7 @@
 - [Click](http://click.uz) - Merchant
 - [Oson](http://click.uz) - Merchant
 - [Uzcard](http://uzcard.uz) - Merchant
-- Paynet
+- [Paynet](http://paynet.uz) - Merchant
 
 **Planned**
 ------
