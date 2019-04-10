@@ -55,7 +55,7 @@ Route::any('/handle/{paysys}',function($paysys){
 
 //here user redirects to payment system
 Route::any('/redirect/{paysys}/{user_id}/{amount}',function($paysys, $user_id, $amount){
-    $user = App\User::find($user);
+    $user = App\User::find($user_id);
     $url = 'https://payment.uz';
     PayUz::driver($paysys)->redirect($user, $amount, 860, $url);
 });
