@@ -6,16 +6,17 @@
 
 **Featured**
 ------
-- [Payme](http://payme.uz) - Merchant <img src="https://cdn.paycom.uz/documentation_assets/payme_01.png" alt="Payme" width="80"/>
-- [Click](http://click.uz) - Merchant <img src="http://click.uz/wp-content/themes/click_theme/assets/img/logo.png" alt="Click" width="80"/>
+- [Payme](http://payme.uz) - Merchant
+- [Click](http://click.uz) - Merchant
+- [Oson](http://click.uz) - Merchant
+- [Uzcard](http://uzcard.uz) - Merchant
+- Paynet
 
 **Planned**
 ------
-- Paynet
 - Upay
-- Oson
 - Visa
-- [Uzcard](http://uzcard.uz) - Merchant <img src="http://uzcard.uz/templates/uzcard_ordinary/images/logo-f.png" alt="UZCARD" width="80"/>
+
 
 ## Installation
 
@@ -43,9 +44,22 @@ php artisan db:seed --class="Goodoneuz\PayUz\database\seeds\PayUzSeeder"
 
 ## Usage
 ------
-- Request handle: `PayUz::driver('payme')->redirect($model, $amount, $currency)`
-- Redirect user:  `PayUz::driver('payme')->handle()`
+Placing routes for service in web.php
 
+```php
+
+//here comes requests from payment system
+Route::any('/handle/{paysys}',function($paysys){
+    PayUz::driver($paysys)->handle();
+});
+
+//here user redirects to payment system
+Route::any('/redirect/{paysys}/{user_id}/{amount}',function($paysys, $user_id, $amount){
+    $user = App\User::find($user);
+    $url = 'https://payment.uz';
+    PayUz::driver($paysys)->redirect($user, $amount, 860, $url);
+});
+```
 
 **Exception:**
 ------
