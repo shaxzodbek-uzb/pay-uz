@@ -22,9 +22,7 @@ matrix:
     - env: LARAVEL=dev-master
 
 before_install:
-  - phpenv config-rm xdebug.ini || true
-
-install:
-  - travis_retry composer install --dev --prefer-dist --no-interaction --no-suggest
+  - composer self-update || true
+  - composer install --prefer-dist --no-interaction --no-progress --no-suggest --optimize-autoloader
 
 script: vendor/bin/phpunit --verbose
