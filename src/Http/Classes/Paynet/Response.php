@@ -11,7 +11,7 @@ namespace Goodoneuz\PayUz\Http\Classes\Paynet;
 use App\Transaction;
 use Carbon\Carbon;
 use Goodoneuz\PayUz\Http\Classes\PaymentException;
-
+use Log;
 class Response
 {
     const ERROR_INTERNAL_SYSTEM         = -32400;
@@ -31,11 +31,11 @@ class Response
 
     public function response($request, $body, $code){
         $this->request = $request;
-        $this->body  = $this->makeResponse($body);
+        $this->body  = $body;
         $this->code = $code;
         throw new PaymentException($this);
     }
-    public function makeResponse($body){
+    public static function makeResponse($body){
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>".
                     "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">".
                     "<soapenv:Body>".
@@ -45,7 +45,7 @@ class Response
     }
     public function send(){
         header('content-type: text/xml;');
-        
+        Log::info($this->body);
         if ($this->request == null)
             echo 'error';
         else 

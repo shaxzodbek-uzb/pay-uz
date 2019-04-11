@@ -7,7 +7,7 @@
  */
 
 namespace Goodoneuz\PayUz\Http\Classes\Paynet;
-
+use Log;
 class Request
 {
 
@@ -33,6 +33,7 @@ class Request
         $this->response = $response;
         $this->params = [];
         $arr_params = $this->getRequestArray();
+        // Log::info($arr_params);
         $this->loadAccount($arr_params);
 
         foreach ($arr_params as $key => $value){
@@ -58,6 +59,8 @@ class Request
         }
     }
     public function loadAccount($arr_params){
+       $arr_params = array_values($arr_params)[0];
+
         $this->params['account'] = [
             'login' => $arr_params['username'],
             'password' => $arr_params['password']
