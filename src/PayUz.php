@@ -3,6 +3,7 @@
 namespace Goodoneuz\PayUz;
 
 use Goodoneuz\PayUz\Http\Classes\Click\Click;
+use Goodoneuz\PayUz\Http\Classes\Paynet\Paynet;
 use Goodoneuz\PayUz\Http\Classes\Payme\Payme;
 use Goodoneuz\PayUz\Http\Classes\PaymentException;
 use Goodoneuz\PayUz\Models\PaymentSystem;
@@ -35,6 +36,9 @@ class PayUz
             case PaymentSystem::CLICK:
                 $this->driverClass = Click::class;
                 break;
+            case PaymentSystem::PAYNET:
+                $this->driverClass = Paynet::class;
+                break;
         }
         return $this;
     }
@@ -47,9 +51,9 @@ class PayUz
      * @return PayUz
      * @throws \Exception
      */
-    public function redirect($model, $amount, $currency_code = Transaction::CURRENCY_CODE_UZS){
+    public function redirect($model, $amount, $currency_code = Transaction::CURRENCY_CODE_UZS, $url = null){
         $this->validateDriver();
-        $params = $this->driverClass::getRedirectParams($model, $amount, $currency_code);
+        $params = $this->driverClass::getRedirectParams($model, $amount, $currency_code, $url);
         echo view('pay-uz::redirect.redirect',compact('params'));
     }
 

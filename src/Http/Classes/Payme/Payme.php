@@ -77,9 +77,9 @@ class Payme {
                 'Object not fount.'
             );
         }
-        if (!PaymentService::isProperModelAndAmount($model, $this->request->params['amount'])){
+        if (!PaymentService::isProperModelAndAmount($model, $this->request->params['amount'])/100){
             $this->response->error(
-                Response::ERROR_COULD_NOT_PERFORM,
+                Response::ERROR_INVALID_AMOUNT,
                 'There is other active/completed transaction for this object.'
             );
         }
@@ -180,7 +180,7 @@ class Payme {
             $transaction = Transaction::create([
                 'payment_system'        => PaymentSystem::PAYME,
                 'system_transaction_id' => $this->request->params['id'],
-                'amount'                =>1*($this->request->amount),
+                'amount'                =>1*($this->request->amount)/100,
                 'currency_code'         => Transaction::CURRENCY_CODE_UZS,
                 'state'                 => Transaction::STATE_CREATED,
                 'updated_time'          => 1*$create_time,
@@ -195,7 +195,7 @@ class Payme {
         
         $this->response->success([
             'create_time' => 1*$transaction->updated_time,
-            'transaction' => (string)$transaction->system_transaction_id,
+            'transaction' => (string)$transaction->id,
             'state'       => 1*$transaction->state,
             'receivers'   => $transaction->receivers,
         ]);
@@ -235,7 +235,7 @@ class Payme {
                     PaymentService::payListener(null,$transaction,'after-pay');
 
                     $this->response->success([
-                        'transaction'  => (string)$transaction->system_transaction_id,
+                        'transaction'  => (string)$transaction->id,
                         'perform_time' => 1*$perform_time,
                         'state'        => 1*$transaction->state,
                     ]);
@@ -244,14 +244,14 @@ class Payme {
 
             case Transaction::STATE_COMPLETED: // handle complete transaction
                 $detail = json_decode($transaction->detail,true);
+                PaymentService::payListener(null,$transaction,'after-pay');
+
                 $this->response->success([
-                    'transaction'  => (string)$transaction->system_transaction_id,
+                    'transaction'  => (string)$transaction->id,
                     'perform_time' => 1*$detail['perform_time'],
                     'state'        => 1*$transaction->state,
                 ]);
-
-                PaymentService::payListener(null,$transaction,'after-pay');
-
+            
                 break;
 
             default:
@@ -408,7 +408,7 @@ class Payme {
             $detail = json_decode($row['detail'],true);
 
             $result[] = [
-                'id'           => $row['system_transaction_id'], // paycom transaction id
+                'id'           => (string)$row['system_transaction_id'], // paycom transaction id
                 'time'         => 1 * $detail['system_time_datetime'], // paycom transaction timestamp as is
                 'amount'       => 1 * $row['amount'],
                 'account'      => [
@@ -418,7 +418,7 @@ class Payme {
                 'create_time'  => DataFormat::datetime2timestamp($detail['create_time']),
                 'perform_time' => DataFormat::datetime2timestamp($detail['perform_time']),
                 'cancel_time'  => DataFormat::datetime2timestamp($detail['cancel_time']),
-                'transaction'  => (string)(1 * $row['id']),
+                'transaction'  => (string)$row['id'],
                 'state'        => 1 * $row['state'],
                 'reason'       => isset($row['comment']) ? 1 * $row['comment'] : null,
                 'receivers'    => isset($row['receivers']) ? json_decode($row['receivers'], true) : null,
@@ -427,15 +427,15 @@ class Payme {
         return $result;
 
     }
-    public static function getRedirectParams($model, $amount, $currency){
+    public static function getRedirectParams($model, $amount, $currency, $url){
         $config = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::PAYME);
         return [
             'merchant' => $config['merchant_id'],
-            'amount' => $amount*1,
+            'amount' => $amount*100,
             'account[key]' => PaymentService::convertModelToKey($model),
             'lang' => 'ru',
             'currency' => $currency,
-            'callback' => url('/'),
+            'callback' => $url,
             'callback_timeout' => 20000,
             'url'   => "https://checkout.paycom.uz/",
         ];

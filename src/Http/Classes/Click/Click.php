@@ -95,6 +95,8 @@ class Click {
         ]);
 
         $additional_params['merchant_prepare_id'] = $transaction->id;
+        PaymentService::payListener($model,$transaction,'paying');
+        
         $this->response->setResult(Response::SUCCESS,$additional_params);
     }
     private function Complete()
@@ -137,6 +139,8 @@ class Click {
         $transaction->update();
         
         $additional_params['merchant_confirm_id'] = $transaction->id;
+        
+        PaymentService::payListener(null,$transaction,'after-pay');
         $this->response->setResult(Response::SUCCESS,$additional_params);
     }
 
@@ -156,7 +160,7 @@ class Click {
         return true;
     }
     
-    public static function getRedirectParams($model, $amount, $currency)
+    public static function getRedirectParams($model, $amount, $currency, $url)
     {
         $config   = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::CLICK);
         $time = date('Y-m-d H:i:s', time());
@@ -173,7 +177,7 @@ class Click {
             'MERCHANT_USER_EMAIL' => '',
             'SIGN_TIME' => $time,
             'SIGN_STRING' => $sign,
-            'RETURN_URL' => url('/'),
+            'RETURN_URL' => $url,
             'url'       => 'https://my.click.uz/pay/'
         ];
     }

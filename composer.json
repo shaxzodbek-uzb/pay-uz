@@ -17,8 +17,8 @@
     ],
     "require": {
         "php": "^7.1",
-        "goodoneuz/pay-uz": "^1.5",
-        "illuminate/support": "5.7.*|5.8.*"
+        "illuminate/support": "5.7.*|5.8.*",
+        "stripe/stripe-php": "^6.31"
     },
     "require-dev": {
         "orchestra/testbench": "3.7.*",
