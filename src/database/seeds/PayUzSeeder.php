@@ -29,6 +29,10 @@ class PayUzSeeder extends Seeder
                 'name'      => 'Paynet',
                 'system'    => 'paynet'
             ]);
+            PaymentSystem::firstOrCreate([
+                'name'      => 'Stripe',
+                'system'    => 'stripe'
+            ]);
         }
         if (Schema::hasTable('payment_system_params')) {
             //Paycom
@@ -94,6 +98,20 @@ class PayUzSeeder extends Seeder
                 'label'     => 'service_id',
                 'name'      => 'service_id',
                 'value'     => 'service_id'
+            ]);
+            
+            PaymentSystemParam::firstOrCreate([
+                'system'    => 'stripe',
+                'label'     => 'secret_key',
+                'name'      => 'secret_key',
+                'value'     => 'secret_key'
+            ]);
+            
+            PaymentSystemParam::firstOrCreate([
+                'system'    => 'stripe',
+                'label'     => 'publishable_key',
+                'name'      => 'publishable_key',
+                'value'     => 'publishable_key'
             ]);
         }
     }

@@ -34,7 +34,7 @@ class PaymentSystem extends Model
     const PAYNET    = 'paynet';
     const CASH      = 'cash';
     const TERMINAL  = 'terminal';
-
+    const STRIPE    = 'stripe';
     /**
      * @var array
      */
