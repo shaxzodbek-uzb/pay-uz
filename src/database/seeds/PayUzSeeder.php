@@ -25,9 +25,13 @@ class PayUzSeeder extends Seeder
                 'name'      => 'Click',
                 'system'    => 'click'
             ]);
-            
+            PaymentSystem::firstOrCreate([
+                'name'      => 'Paynet',
+                'system'    => 'paynet'
+            ]);
         }
         if (Schema::hasTable('payment_system_params')) {
+            //Paycom
             PaymentSystemParam::firstOrCreate([
                 'system'    => 'payme',
                 'label'     => 'Login',
@@ -46,6 +50,7 @@ class PayUzSeeder extends Seeder
                 'name'      => 'password',
                 'value'     => 'password'
             ]);
+            //Click
             PaymentSystemParam::firstOrCreate([
                 'system'    => 'click',
                 'label'     => 'Service id',
@@ -69,6 +74,26 @@ class PayUzSeeder extends Seeder
                 'label'     => 'Merchant user id',
                 'name'      => 'merchant_user_id',
                 'value'     => '0000'
+            ]);
+
+            //Paynet
+            PaymentSystemParam::firstOrCreate([
+                'system'    => 'paynet',
+                'label'     => 'Login',
+                'name'      => 'login',
+                'value'     => 'login'
+            ]);
+            PaymentSystemParam::firstOrCreate([
+                'system'    => 'paynet',
+                'label'     => 'password',
+                'name'      => 'password',
+                'value'     => 'password'
+            ]);
+            PaymentSystemParam::firstOrCreate([
+                'system'    => 'paynet',
+                'label'     => 'service_id',
+                'name'      => 'service_id',
+                'value'     => 'service_id'
             ]);
         }
     }

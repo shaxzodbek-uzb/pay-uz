@@ -9,7 +9,7 @@ use Goodoneuz\PayUz\Models\Transaction;
 use Goodoneuz\PayUz\Services\PaymentSystemService;
 use Goodoneuz\PayUz\Services\PaymentService;
 use Goodoneuz\PayUz\Http\Classes\PaymentException;
-
+use Log;
 class Paynet
 {
     public $config;
@@ -21,26 +21,26 @@ class Paynet
         $this->config   = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::PAYNET);
         $this->response  = new Response();
         $this->request  = new Request($this->response);
-        $this->response->setRequest($request);
+        $this->response->setRequest($this->request);
         $this->merchant = new Merchant($this->config, $this->request, $this->response);
     }
     public function run(){
         $this->merchant->Authorize();
         switch ($this->request->params['method']) {
             case Request::METHOD_CheckTransaction:
-                $body = $this->CheckTransaction();
+                $body = Response::makeResponse($this->CheckTransaction());
                 break;
             case Request::METHOD_PerformTransaction:
-                $body = $this->PerformTransaction();
+                $body = Response::makeResponse($this->PerformTransaction());
                 break;
             case Request::METHOD_CancelTransaction:
-                $body = $this->CancelTransaction();
+                $body = Response::makeResponse($this->CancelTransaction());
                 break;
             case Request::METHOD_GetStatement:
                 $body = $this->GetStatement();
                 break;
             case Request::METHOD_GetInformation:
-                $body = $this->GetInformation();
+                $body = Response::makeResponse($this->GetInformation());
                 break;
             default:
                 $this->response->response($this->request, 'Method not found.', PaynetException::ERROR_METHOD_NOT_FOUND);
@@ -100,10 +100,10 @@ class Paynet
             'system_time_datetime'  => DataFormat::timestamp2datetime($this->request->params['transactionTime'])
         ));
         $transaction = Transaction::create([
-            'payment_system'        => Transaction::PAYNET,
+            'payment_system'        => PaymentSystem::PAYNET,
             'system_transaction_id' => $this->request->params['transactionId'],
             'amount'                => 1 * $this->request->params['amount'],
-            'currency_code'         => Transaction::CODE_UZS,
+            'currency_code'         => Transaction::CURRENCY_CODE_UZS,
             'state'                 => Transaction::STATE_CREATED,
             'updated_time'          => 1*$create_time,
             'comment'               => (isset($this->request->params['error_note'])?$this->request->params['error_note']:''),
@@ -152,7 +152,7 @@ class Paynet
     private function GetStatement()
     {
         
-        $transactions = Transaction::where('payment_system', Transaction::PAYNET)
+        $transactions = Transaction::where('payment_system', PaymentSystem::PAYNET)
             ->where('state','<>',Transaction::STATE_CANCELLED)
             ->where('created_at','<=',DataFormat::toDateTime($this->request->params['dateTo']))
             ->where('created_at','>=',DataFormat::toDateTime($this->request->params['dateFrom']))
@@ -168,13 +168,17 @@ class Paynet
                 "<transactionTime>".DataFormat::toDateTimeWithTimeZone($transaction->created_at)."</transactionTime>".
                 "</statements>";
         }
-        
-        return  "<ns1:GetStatementResult>".
-            "<errorMsg>Success</errorMsg>".
-            "<status>0</status>".
-            "<timeStamp>".DataFormat::toDateTimeWithTimeZone(now())."</timeStamp>".
-            $statements .
-            "</ns1:GetStatementResult>";
+
+        return  "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ns1=\"http://uws.provider.com/\">".
+                    "<SOAP-ENV:Body>".
+                        "<ns1:GetStatementResult>".
+                            "<errorMsg>Success</errorMsg>".
+                            "<status>0</status>".
+                            "<timeStamp>".DataFormat::toDateTimeWithTimeZone(now())."</timeStamp>".
+                            $statements .
+                        "</ns1:GetStatementResult>".
+                    "</SOAP-ENV:Body>".
+                "</SOAP-ENV:Envelope>";
     }
 
     private function GetInformation(){
