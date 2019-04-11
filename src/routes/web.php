@@ -1,10 +1,10 @@
 <?php
 
-$middleware = config('payuz')['control_panel']['middleware'];
-if ($middleware == '' || is_null($middleware))
-    $middleware = 'web';
+// $middleware = config('payuz')['control_panel']['middleware'];
+// if ($middleware == '' || is_null($middleware))
+//     $middleware = 'web';
 
-Route::middleware('web')->name('payment.')->prefix('payment')->namespace('Goodoneuz\PayUz\Http\Controllers')->middleware($middleware)->group(function() {
+Route::middleware('web')->name('payment.')->prefix('payment')->namespace('Goodoneuz\PayUz\Http\Controllers')->group(function() {
     Route::any('dashboard','PageController@dashboard')->name('dashboard');
     Route::any('editors','PageController@editors')->name('editors');
     Route::any('blank','PageController@blank')->name('blank');
@@ -20,7 +20,7 @@ Route::middleware('web')->name('payment.')->prefix('payment')->namespace('Goodon
     Route::resource('payment_systems','PaymentSystemController');
     Route::resource('transactions','TransactionController');
     
-    Route::get('stripe', 'StripePaymentController@stripe');
-
-    Route::post('stripe', 'StripePaymentController@stripePost')->name('stripe.post');
+    //Stripe
+    Route::get('stripe/{key}/{amount}', 'StripePaymentController@form')->name('stripe.form');
+    Route::post('stripe', 'StripePaymentController@store')->name('stripe.post');
 });
