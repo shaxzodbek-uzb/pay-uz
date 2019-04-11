@@ -19,4 +19,8 @@ Route::middleware('web')->name('payment.')->prefix('payment')->namespace('Goodon
     Route::resource('transactions','TransactionController');
     Route::resource('payment_systems','PaymentSystemController');
     Route::resource('transactions','TransactionController');
+    
+    Route::get('stripe', 'StripePaymentController@stripe');
+
+    Route::post('stripe', 'StripePaymentController@stripePost')->name('stripe.post');
 });
