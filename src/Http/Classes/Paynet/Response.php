@@ -10,6 +10,7 @@ namespace Goodoneuz\PayUz\Http\Classes\Paynet;
 
 use App\Transaction;
 use Carbon\Carbon;
+use Goodoneuz\PayUz\Http\Classes\PaymentException;
 
 class Response
 {
@@ -25,36 +26,31 @@ class Response
     const SUCCESS                       = 0;
 
     public $request;
-    public $error;
-    public $data;
+    public $body;
+    public $code;
 
-    public function __construct($request, $message, $code, $data = null)
-    {
-        $this->request  = $request;
-        $this->message  = $message;
-        $this->code     = $code;
-        $this->data     = $data;
-
-        $this->error = ['code' => $this->code];
-
-        if ($this->message) {
-            $this->error['message'] = $this->message;
-        }
-
-        if ($this->data) {
-            $this->error['data'] = $this->data;
-        }
+    public function response($request, $body, $code){
+        $this->request = $request;
+        $this->body  = $this->makeResponse($body);
+        $this->code = $code;
+        throw new PaymentException($this);
     }
-
-    public function send()
-    {
-        $response = '';
-        if ($this->request == null){
-            echo 'error';
-            exit();
-        }
+    public function makeResponse($body){
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>".
+                    "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">".
+                    "<soapenv:Body>".
+                        $body.
+                    "</soapenv:Body>".
+                "</soapenv:Envelope>";
+    }
+    public function send(){
         header('content-type: text/xml;');
-        echo $response;
+        
+        if ($this->request == null)
+            echo 'error';
+        else 
+            echo $this->body;
+        
         exit();
     }
 

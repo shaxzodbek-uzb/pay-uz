@@ -96,4 +96,19 @@ class DataFormat{
         return $datetime;
     }
 
+    /**
+     * @param $time '2018-11-06T17:39:31+05:00'
+     * @return false|string
+     */
+    public static function toDateTime($time){
+        return date('Y-m-d H:i:s',strtotime($time));
+    }
+
+    /**
+     * @param $time '2018-11-06 17:39:31'
+     * @return string
+     */
+    public static function toDateTimeWithTimeZone($time){
+        return date('Y-m-d\TH:i:s',strtotime($time)) . '+05:00';
+    }
 }

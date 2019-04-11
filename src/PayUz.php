@@ -3,6 +3,7 @@
 namespace Goodoneuz\PayUz;
 
 use Goodoneuz\PayUz\Http\Classes\Click\Click;
+use Goodoneuz\PayUz\Http\Classes\Paynet\Paynet;
 use Goodoneuz\PayUz\Http\Classes\Payme\Payme;
 use Goodoneuz\PayUz\Http\Classes\PaymentException;
 use Goodoneuz\PayUz\Models\PaymentSystem;
@@ -34,6 +35,9 @@ class PayUz
                 break;
             case PaymentSystem::CLICK:
                 $this->driverClass = Click::class;
+                break;
+            case PaymentSystem::PAYNET:
+                $this->driverClass = Paynet::class;
                 break;
         }
         return $this;
