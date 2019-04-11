@@ -11,6 +11,7 @@
 - [Oson](http://click.uz) - Merchant
 - [Uzcard](http://uzcard.uz) - Merchant
 - [Paynet](http://paynet.uz) - Merchant
+- [Stripe](https://stripe.com/) - Merchant(Subscribe)
 
 **Planned**
 ------
