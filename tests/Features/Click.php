@@ -75,7 +75,6 @@ class Click extends \Illuminate\Foundation\Testing\TestCase
         );
 
         $response = $this->call('post','/handle/click',$arr);
-
         $this->assertEquals(200, $response->getStatusCode());
     }
 }
