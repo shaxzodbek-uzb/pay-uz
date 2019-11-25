@@ -17,7 +17,7 @@
     ],
     "require": {
         "php": "^7.1",
-        "illuminate/support": "5.7.*|5.8.*",
+        "illuminate/support": "5.7.*|5.8.*|6.*",
         "stripe/stripe-php": "^6.31"
     },
     "require-dev": {
