@@ -81,7 +81,7 @@ If you discover any security related issues, please email shaxzodbek.qambaraliye
 
 ## Credits
 
-- [Shaxzodbek](https://github.com/goodoneuz)
+- [Shaxzodbek](https://github.com/shaxzodbek-uzb)
 - [Azizbek](https://github.com/azizbekeshonaliyev)
 - [Rustam Mamadaminov](https://github.com/rustamwin)
 - [All Contributors](../../contributors)
