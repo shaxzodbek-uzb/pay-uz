@@ -26,7 +26,7 @@
                     <span class="text-topics h6">{{ $payment_system->system }}</span>
                 </div>
             </div>
-            <form action="{{ route('payment.payment_systems.update',['id'   => $payment_system->id]) }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('payment.payment_systems.update',['payment_system'   => $payment_system->id]) }}" method="post" enctype="multipart/form-data">
                 @csrf
                 @method('put')
                 <div class="form-group">
