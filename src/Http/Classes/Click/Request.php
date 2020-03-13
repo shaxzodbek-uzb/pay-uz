@@ -9,7 +9,6 @@ class Request{
     public function __construct()
     {
         $this->inputs = file_get_contents('php://input');
-        Log::info($this->inputs);
     }
     public function all(){
         if (!$this->in_array){

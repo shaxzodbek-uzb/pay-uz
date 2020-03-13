@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Oson\Merchant;
-use App\Http\Controllers\Oson\OsonException;
-use App\Http\Controllers\Paycom\Format;
-use App\Http\Controllers\Paycom\Request;
+use Log;
 use App\Order;
 use App\Transaction;
-use Illuminate\Support\Facades\Log;
+use Goodoneuz\PayUz\Http\Classes\BaseGateway;
+use Goodoneuz\PayUz\Controllers\Paycom\Format;
+use Goodoneuz\PayUz\Controllers\Oson\Merchant;
+use Goodoneuz\PayUz\Controllers\Paycom\Request;
+use Goodoneuz\PayUz\Controllers\Oson\OsonException;
 
-class Oson
+class Oson extends BaseGateway
 {
     public $config;
     public $request;

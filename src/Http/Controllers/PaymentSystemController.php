@@ -110,14 +110,14 @@ class PaymentSystemController extends Controller
         $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
-            return redirect()->route('payment.payment_systems.edit',['id'   => $payment_system->id])
+            return redirect()->route('payment.payment_systems.edit',['payment_system' => $payment_system->id])
                 ->withErrors($validator)
                 ->withInput();
         }
 
         PaymentSystemService::updatePaymentSystem($request,$payment_system);
 
-        return redirect()->route('payment.payment_systems.edit',['id'   => $payment_system->id])->with(['success'  => "Payment system successfully saved."]);
+        return redirect()->route('payment.payment_systems.edit',['payment_system' => $payment_system->id])->with(['success'  => "Payment system successfully saved."]);
     }
 
     /**

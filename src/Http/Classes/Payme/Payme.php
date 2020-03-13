@@ -2,13 +2,14 @@
 namespace Goodoneuz\PayUz\Http\Classes\Payme;
 
 use App;
-use Goodoneuz\PayUz\Http\Classes\DataFormat;
-use Goodoneuz\PayUz\Models\PaymentSystem;
-use Goodoneuz\PayUz\Models\PaymentSystemParam;
 use Goodoneuz\PayUz\Models\Transaction;
-use Goodoneuz\PayUz\Services\PaymentSystemService;
+use Goodoneuz\PayUz\Models\PaymentSystem;
 use Goodoneuz\PayUz\Services\PaymentService;
+use Goodoneuz\PayUz\Http\Classes\DataFormat;
+use Goodoneuz\PayUz\Http\Classes\BaseGateway;
+use Goodoneuz\PayUz\Models\PaymentSystemParam;
 use Goodoneuz\PayUz\Http\Classes\PaymentException;
+use Goodoneuz\PayUz\Services\PaymentSystemService;
 
 class Payme {
     public $config;
@@ -23,15 +24,14 @@ class Payme {
     public function __construct()
     {
         $this->config   = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::PAYME);
-        $this->response = new Response();
-        $this->request  = new Request($this->response);
-        $this->response->setRequest($this->request);
-        $this->merchant = new Merchant($this->config, $this->response);
     }
 
     public function run()
     {
-
+        $this->response = new Response();
+        $this->request  = new Request($this->response);
+        $this->response->setRequest($this->request);
+        $this->merchant = new Merchant($this->config, $this->response);
         // authorize session
         $this->merchant->Authorize();
 
@@ -427,10 +427,9 @@ class Payme {
         return $result;
 
     }
-    public static function getRedirectParams($model, $amount, $currency, $url){
-        $config = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::PAYME);
+    public function getRedirectParams($model, $amount, $currency, $url){
         return [
-            'merchant' => $config['merchant_id'],
+            'merchant' => $this->config['merchant_id'],
             'amount' => $amount*100,
             'account[key]' => PaymentService::convertModelToKey($model),
             'lang' => 'ru',

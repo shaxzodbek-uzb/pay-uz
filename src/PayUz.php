@@ -2,13 +2,14 @@
 
 namespace Goodoneuz\PayUz;
 
+use Illuminate\Support\Facades\View;
+use Goodoneuz\PayUz\Models\Transaction;
+use Goodoneuz\PayUz\Models\PaymentSystem;
+use Goodoneuz\PayUz\Http\Classes\Payme\Payme;
 use Goodoneuz\PayUz\Http\Classes\Click\Click;
 use Goodoneuz\PayUz\Http\Classes\Paynet\Paynet;
-use Goodoneuz\PayUz\Http\Classes\Payme\Payme;
+use Goodoneuz\PayUz\Http\Classes\Stripe\Stripe;
 use Goodoneuz\PayUz\Http\Classes\PaymentException;
-use Goodoneuz\PayUz\Models\PaymentSystem;
-use Goodoneuz\PayUz\Models\Transaction;
-use Illuminate\Support\Facades\View;
 
 class PayUz
 {
@@ -31,13 +32,16 @@ class PayUz
     public function driver($driver = null){
         switch ($driver){
             case PaymentSystem::PAYME:
-                $this->driverClass = Payme::class;
+                $this->driverClass = new Payme;
                 break;
             case PaymentSystem::CLICK:
-                $this->driverClass = Click::class;
+                $this->driverClass = new Click;
                 break;
             case PaymentSystem::PAYNET:
-                $this->driverClass = Paynet::class;
+                $this->driverClass = new Paynet;
+                break;
+            case PaymentSystem::STRIPE:
+                $this->driverClass = new Stripe;
                 break;
         }
         return $this;
@@ -53,8 +57,12 @@ class PayUz
      */
     public function redirect($model, $amount, $currency_code = Transaction::CURRENCY_CODE_UZS, $url = null){
         $this->validateDriver();
-        $params = $this->driverClass::getRedirectParams($model, $amount, $currency_code, $url);
-        echo view('pay-uz::redirect.redirect',compact('params'));
+        $driver = $this->driverClass;
+        $params = $driver->getRedirectParams($model, $amount, $currency_code, $url);
+        $view = 'pay-uz::merchant.redirect';
+        if (!empty($driver::CUSTOM_FORM))
+            $view = $driver::CUSTOM_FORM;
+        echo view($view, compact('params'));
     }
 
     /**
@@ -64,7 +72,7 @@ class PayUz
     public function handle(){
         $this->validateDriver();
         try{
-            return (new $this->driverClass)->run();
+            return $this->driverClass->run();
         }catch(PaymentException $e){
             return $e->response();
         }

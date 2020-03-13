@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Stripe Payment Gateway Integration</title>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
+    <title>Stripe Payment Gateway Integration</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <style type="text/css">
         .panel-title {
@@ -43,14 +43,15 @@
                             <p>{{ Session::get('success') }}</p>
                         </div>
                     @endif
-                    <form role="form" action="{{ route('payment.stripe.post') }}" method="post" class="require-validation"
+                    <form role="form" action="{{ url('/handle/stripe') }}" method="post" class="require-validation"
                         data-cc-on-file="false"
-                        data-stripe-publishable-key="{{ $config['publishable_key'] }}"
+                        data-stripe-publishable-key="{{ $params['config']['publishable_key'] }}"
                         id="payment-form">
 
                         @csrf
-                        <input type="hidden" name="url" value="{{ $url }}">
-                        <input type="hidden" name="amount" value="{{ $amount }}">
+                        <input type="hidden" name="key" value="{{ $params['key'] }}">
+                        <input type="hidden" name="url" value="{{ $params['url'] }}">
+                        <input type="hidden" name="amount" value="{{ $params['amount'] }}">
 
                         <div class='form-row row'>
                             <div class='col-xs-12 form-group required'>
@@ -90,7 +91,7 @@
                         </div>
                         <div class="row">
                             <div class="col-xs-12">
-                                <button class="btn btn-primary btn-lg btn-block" type="submit">Pay Now ({{ $amount }})</button>
+                                <button class="btn btn-primary btn-lg btn-block" type="submit">Pay Now ({{ $params['amount'] }})</button>
                             </div>
                         </div>
                     </form>

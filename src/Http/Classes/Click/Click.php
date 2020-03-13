@@ -1,15 +1,17 @@
 <?php
 namespace Goodoneuz\PayUz\Http\Classes\Click;
 
-use Goodoneuz\PayUz\Http\Classes\PaymentException;
-use Goodoneuz\PayUz\Http\Classes\DataFormat;
-use Goodoneuz\PayUz\Models\PaymentSystem;
 use Goodoneuz\PayUz\Models\Transaction;
-use Goodoneuz\PayUz\Services\PaymentSystemService;
+use Goodoneuz\PayUz\Models\PaymentSystem;
 use Goodoneuz\PayUz\Services\PaymentService;
+use Goodoneuz\PayUz\Http\Classes\DataFormat;
+use Goodoneuz\PayUz\Http\Classes\BaseGateway;
+use Goodoneuz\PayUz\Http\Classes\PaymentException;
+use Goodoneuz\PayUz\Services\PaymentSystemService;
 
-class Click {
-    
+class Click extends BaseGateway 
+{
+    private $config;
     private $merchant;
     private $request;
     private $response;
@@ -18,10 +20,10 @@ class Click {
 
     public function __construct()
     {
+        $this->config   = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::CLICK);
         $this->request  = request();
         $this->response = new Response();
         $this->merchant = new Merchant($this->response);
-
     }
 
 
@@ -160,17 +162,16 @@ class Click {
         return true;
     }
     
-    public static function getRedirectParams($model, $amount, $currency, $url)
+    public function getRedirectParams($model, $amount, $currency, $url)
     {
-        $config   = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::CLICK);
         $time = date('Y-m-d H:i:s', time());
-        $sign = MD5($time . $config['secret_key'] .
-        $config['service_id'] . $amount);
+        $sign = MD5($time . $this->config['secret_key'] .
+        $this->config['service_id'] . $amount);
         return [
             'MERCHANT_TRANS_AMOUNT' => $amount,
-            'MERCHANT_ID' => $config['merchant_id'],
-            'MERCHANT_USER_ID' => $config['merchant_user_id'],
-            'MERCHANT_SERVICE_ID' => $config['service_id'],
+            'MERCHANT_ID' => $this->config['merchant_id'],
+            'MERCHANT_USER_ID' => $this->config['merchant_user_id'],
+            'MERCHANT_SERVICE_ID' => $this->config['service_id'],
             'MERCHANT_TRANS_ID' => PaymentService::convertModelToKey($model),
             'MERCHANT_TRANS_NOTE' => '',
             'MERCHANT_USER_PHONE' => '',

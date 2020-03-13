@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Order;
+use App\Transaction;
 use App\Http\Controllers\Paycom\Format;
 use App\Http\Controllers\Paycom\Request;
 use App\Http\Controllers\Woywo\Merchant;
+use Goodoneuz\PayUz\Http\Classes\BaseGateway;
 use App\Http\Controllers\Woywo\WoywoException;
-use App\Order;
-use App\Transaction;
 
 
-class WoywoController extends Controller
+class WoywoController extends BaseGateway
 {
     public $config;
     public $request;

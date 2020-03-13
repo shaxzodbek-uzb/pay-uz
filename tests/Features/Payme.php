@@ -18,9 +18,9 @@ class Payme extends \Illuminate\Foundation\Testing\TestCase
         return $app;
     }
 
-    public function setUp()
+    public function setUp(): void
     {
-      parent::setUp();  
+      parent::setUp();
      $this->params = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::PAYME);
     }
 
@@ -57,7 +57,7 @@ class Payme extends \Illuminate\Foundation\Testing\TestCase
 
         $headers = [
             'Content-Type'  => 'text/json; charset=UTF-8',
-            'HTTP-Authorization' => 'Basic ' . base64_decode($this->params['login'] . ':' .$this->params['password'])                
+            'HTTP-Authorization' => 'Basic ' . base64_decode($this->params['login'] . ':' .$this->params['password'])
         ];
         $response = $this->withHeaders($headers)->json('POST','/handle/payme',['request' => $str]);
         // dd($response);
@@ -93,6 +93,6 @@ class Payme extends \Illuminate\Foundation\Testing\TestCase
                     "state" : 1,
                     "receivers" : null
                 }
-            }',true));        
+            }',true));
     }
 }
