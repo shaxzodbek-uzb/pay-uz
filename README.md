@@ -2,7 +2,7 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/dt/goodoneuz/pay-uz.svg?style=flat)](https://packagist.org/packages/goodoneuz/pay-uz)
 [![Build Status](https://img.shields.io/travis/shaxzodbek-uzb/pay-uz/master.svg?style=flat-square)](https://travis-ci.org/shaxzodbek-uzb/pay-uz)
-[![Quality Score](https://img.shields.io/scrutinizer/g/goodoneuz/pay-uz.svg?style=flat-square)](https://scrutinizer-ci.com/g/shaxzodbek-uzb/pay-uz)
+[![Quality Score](https://img.shields.io/scrutinizer/g/shaxzodbek-uzb/pay-uz.svg?style=flat-square)](https://scrutinizer-ci.com/g/shaxzodbek-uzb/pay-uz)
 
 **Featured**
 ------
