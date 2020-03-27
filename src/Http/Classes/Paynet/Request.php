@@ -7,7 +7,7 @@
  */
 
 namespace Goodoneuz\PayUz\Http\Classes\Paynet;
-use Log;
+
 class Request
 {
 

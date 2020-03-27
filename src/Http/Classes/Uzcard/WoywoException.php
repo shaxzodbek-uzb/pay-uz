@@ -6,7 +6,7 @@
  * Time: 15:37
  */
 
-namespace App\Http\Controllers\Woywo;
+namespace App\Http\Classes\Woywo;
 
 
 class WoywoException extends \Exception

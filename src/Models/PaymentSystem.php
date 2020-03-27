@@ -13,14 +13,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class PaymentSystem extends Model
 {
-    /**
-     *
-     */
-    const NOT_ACTIVE = 'not_active';
 
-    /**
-     *
-     */
+    const NOT_ACTIVE = 'not_active';
     const ACTIVE = 'active';
 
     const PAYME     = 'payme';

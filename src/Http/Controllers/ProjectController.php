@@ -1,19 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Azizbek Eshonaliyev
- * Date: 2/20/2019
- * Time: 8:17 PM
- */
 
 namespace Goodoneuz\PayUz\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Goodoneuz\PayUz\Models\Project;
 use App\Http\Controllers\Controller;
-use Goodoneuz\PayUz\Models\Transaction;
 
-class TransactionController extends Controller
+class ProjectController extends Controller
 {
+    
     /**
      * Display a listing of the resource.
      *
@@ -21,8 +16,8 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        $transactions = Transaction::latest()->get();
-        return view('pay-uz::transactions.index',compact('transactions'));
+        $projects = Project::latest()->get();
+        return view('pay-uz::projects.index',compact('projects'));
     }
 
     /**

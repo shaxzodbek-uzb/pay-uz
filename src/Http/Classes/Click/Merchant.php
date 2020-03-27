@@ -2,8 +2,8 @@
 
 namespace Goodoneuz\PayUz\Http\Classes\Click;
 
-use Goodoneuz\PayUz\Http\Classes\PaymentException;
 use Goodoneuz\PayUz\Models\PaymentSystem;
+use Goodoneuz\PayUz\Http\Classes\PaymentException;
 use Goodoneuz\PayUz\Services\PaymentSystemService;
 
 class Merchant{

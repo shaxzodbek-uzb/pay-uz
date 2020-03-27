@@ -6,7 +6,7 @@
  * Time: 15:39
  */
 
-namespace App\Http\Controllers\Woywo;
+namespace App\Http\Classes\Woywo;
 
 
 class Merchant

@@ -17,6 +17,7 @@ Route::middleware('web')->name('payment.')->prefix('payment')->namespace('Goodon
     // end --editable functions
 
     Route::resource('transactions','TransactionController');
+    Route::resource('projects','ProjectController');
     Route::resource('payment_systems','PaymentSystemController');
     Route::resource('transactions','TransactionController');
 });

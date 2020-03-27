@@ -89,29 +89,35 @@ class PayUzSeeder extends Seeder
             ]);
             PaymentSystemParam::firstOrCreate([
                 'system'    => 'paynet',
-                'label'     => 'password',
+                'label'     => 'Password',
                 'name'      => 'password',
                 'value'     => 'password'
             ]);
             PaymentSystemParam::firstOrCreate([
                 'system'    => 'paynet',
-                'label'     => 'service_id',
+                'label'     => 'Service id',
                 'name'      => 'service_id',
                 'value'     => 'service_id'
             ]);
             
             PaymentSystemParam::firstOrCreate([
                 'system'    => 'stripe',
-                'label'     => 'secret_key',
+                'label'     => 'Secret key',
                 'name'      => 'secret_key',
                 'value'     => 'secret_key'
             ]);
             
             PaymentSystemParam::firstOrCreate([
                 'system'    => 'stripe',
-                'label'     => 'publishable_key',
+                'label'     => 'Publishable key',
                 'name'      => 'publishable_key',
                 'value'     => 'publishable_key'
+            ]);
+            PaymentSystemParam::firstOrCreate([
+                'system'    => 'stripe',
+                'label'     => 'Proxy',
+                'name'      => 'proxy',
+                'value'     => ''
             ]);
         }
     }

@@ -1,7 +1,6 @@
 <?php
 namespace Goodoneuz\PayUz\Http\Classes\Stripe;
 
-use App;
 use Session;
 use Stripe as StripeGateway;
 use Illuminate\Http\Request;
@@ -37,10 +36,13 @@ class Stripe extends BaseGateway
      * @return \Illuminate\Http\Response
      */
     public function run(){
-        StripeGateway\Stripe::setApiKey('sk_test_qkJ2u0umLoQjkZenKrcsM0vT00pSc4vqea');
-        $curl = new StripeGateway\HttpClient\CurlClient([CURLOPT_PROXY => 'http://192.168.8.100:3128']);
-        // tell Stripe to use the tweaked client
-        StripeGateway\ApiRequestor::setHttpClient($curl);
+        StripeGateway\Stripe::setApiKey($this->config['secret_key']);
+        if (!empty($this->config['proxy'])){
+            $curl = new StripeGateway\HttpClient\CurlClient([CURLOPT_PROXY => $this->config['proxy']]);
+            // tell Stripe to use the tweaked client
+            StripeGateway\ApiRequestor::setHttpClient($curl); 
+        }
+
         $charge = StripeGateway\Charge::create ([
                 "amount" => (int)$this->request->amount,
                 "currency" => "USD",
@@ -65,6 +67,7 @@ class Stripe extends BaseGateway
         //todo: create transaction for stripe
 		PaymentService::payListener(null,$transaction,'after-pay');
         header("Location: ". $this->request->url);
+        echo "<script>window.location.href='".$this->request->url."';</script>";
     }
     public function getRedirectParams($model, $amount, $currency, $url){
     	return [

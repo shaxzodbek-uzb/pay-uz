@@ -6,7 +6,7 @@
  * Time: 9:57
  */
 
-namespace App\Http\Controllers\Oson;
+namespace App\Http\Classes\Oson;
 
 
 use Illuminate\Support\Facades\Log;
@@ -60,11 +60,6 @@ class OsonException extends \Exception
             'result' => $this->result
         ];
         echo json_encode($response);
-        Log::info('-----------------------------');
-        Log::info('oson');
-        Log::info('Payment Response: ');
-        Log::info($this->result);
-        Log::info('-----------------------------');
         exit();
     }
 }

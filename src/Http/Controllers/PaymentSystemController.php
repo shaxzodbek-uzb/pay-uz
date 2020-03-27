@@ -9,12 +9,12 @@
 namespace Goodoneuz\PayUz\Http\Controllers;
 
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 use Goodoneuz\PayUz\Models\PaymentSystem;
 use Goodoneuz\PayUz\Models\PaymentSystemParam;
 use Goodoneuz\PayUz\Services\PaymentSystemService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class PaymentSystemController extends Controller
 {

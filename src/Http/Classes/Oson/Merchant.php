@@ -6,7 +6,7 @@
  * Time: 9:57
  */
 
-namespace App\Http\Controllers\Oson;
+namespace App\Http\Classes\Oson;
 
 
 class Merchant

@@ -1,7 +1,6 @@
 <?php
 namespace Goodoneuz\PayUz\Http\Classes\Payme;
 
-use App;
 use Goodoneuz\PayUz\Models\Transaction;
 use Goodoneuz\PayUz\Models\PaymentSystem;
 use Goodoneuz\PayUz\Services\PaymentService;

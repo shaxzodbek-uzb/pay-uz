@@ -13,11 +13,18 @@
                 Asosiy bo'lim</span>
                 </a>
             </li>
+            <li class="nav-item @if($current_route == 'payment.projects.index') active @endif" data-toggle="tooltip" data-placement="right" title="Payment Systems">
+                <a class="nav-link" href="{{ route('payment.projects.index') }}">
+                    <i class="fa fa-fw fa-list"></i>
+                    <span class="nav-link-text">
+                Loyihalar</span>
+                </a>
+            </li>
             <li class="nav-item @if($current_route == 'payment.payment_systems.index') active @endif" data-toggle="tooltip" data-placement="right" title="Payment Systems">
                 <a class="nav-link" href="{{ route('payment.payment_systems.index') }}">
                     <i class="fa fa-fw fa-list"></i>
                     <span class="nav-link-text">
-                Payment Systems</span>
+                To'lov tizimlari</span>
                 </a>
             </li>
             <li class="nav-item @if($current_route == 'payment.transactions.index') active @endif" data-toggle="tooltip" data-placement="right" title="Transactions">

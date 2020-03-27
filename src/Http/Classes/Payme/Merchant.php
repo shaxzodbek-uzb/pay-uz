@@ -3,8 +3,6 @@
 namespace Goodoneuz\PayUz\Http\Classes\Payme;
 
 
-use Goodoneuz\PayUz\Http\Controllers;
-
 class Merchant
 {
     public $config;

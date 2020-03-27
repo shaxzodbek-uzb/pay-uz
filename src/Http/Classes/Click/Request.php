@@ -1,7 +1,6 @@
 <?php
 namespace Goodoneuz\PayUz\Http\Classes\Click;
 
-use Illuminate\Support\Facades\Log;
 
 class Request{
     private $inputs;

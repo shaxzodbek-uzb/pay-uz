@@ -8,10 +8,10 @@
 
 namespace Goodoneuz\PayUz\Http\Classes\Paynet;
 
-use App\Transaction;
 use Carbon\Carbon;
+use App\Transaction;
 use Goodoneuz\PayUz\Http\Classes\PaymentException;
-use Log;
+
 class Response
 {
     const ERROR_INTERNAL_SYSTEM         = -32400;
@@ -45,7 +45,6 @@ class Response
     }
     public function send(){
         header('content-type: text/xml;');
-        Log::info($this->body);
         if ($this->request == null)
             echo 'error';
         else 

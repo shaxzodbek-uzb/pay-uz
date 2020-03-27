@@ -1,16 +1,14 @@
 <?php
 namespace Goodoneuz\PayUz\Http\Classes\Paynet;
 
-use App;
-use Log;
 use Goodoneuz\PayUz\Models\Transaction;
 use Goodoneuz\PayUz\Models\PaymentSystem;
 use Goodoneuz\PayUz\Services\PaymentService;
 use Goodoneuz\PayUz\Http\Classes\DataFormat;
 use Goodoneuz\PayUz\Http\Classes\BaseGateway;
 use Goodoneuz\PayUz\Models\PaymentSystemParam;
-use Goodoneuz\PayUz\Services\PaymentSystemService;
 use Goodoneuz\PayUz\Http\Classes\PaymentException;
+use Goodoneuz\PayUz\Services\PaymentSystemService;
 
 class Paynet extands BaseGateway
 {

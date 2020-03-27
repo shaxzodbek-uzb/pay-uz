@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Classes;
 
 use App\Order;
 use App\Transaction;
-use App\Http\Controllers\Paycom\Format;
-use App\Http\Controllers\Paycom\Request;
-use App\Http\Controllers\Woywo\Merchant;
+use Goodoneuz\PayUz\Http\Classes\Paycom\Format;
+use Goodoneuz\PayUz\Http\Classes\Paycom\Request;
+use Goodoneuz\PayUz\Http\Classes\Uzcard\Merchant;
+use Goodoneuz\PayUz\Http\Classes\Uzcard\WoywoException;
 use Goodoneuz\PayUz\Http\Classes\BaseGateway;
-use App\Http\Controllers\Woywo\WoywoException;
 
 
 class WoywoController extends BaseGateway
@@ -118,7 +118,7 @@ class WoywoController extends BaseGateway
             'base64' => $hash
         ];
     }
-    function getMAC() {
+    public function getMAC() {
         $str = $this->config['key'] . $this->config['merchant_id'] .
                 $this->request['order_id'] . $this->request['tran_date'] . $this->request['amount'];
         return sha1($str);

@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Classes;
 
-use Log;
 use App\Order;
 use App\Transaction;
+use Goodoneuz\PayUz\Classes\DataFormat;
+use Goodoneuz\PayUz\Classes\Oson\Merchant;
+use Goodoneuz\PayUz\Classes\Paycom\Request;
 use Goodoneuz\PayUz\Http\Classes\BaseGateway;
-use Goodoneuz\PayUz\Controllers\Paycom\Format;
-use Goodoneuz\PayUz\Controllers\Oson\Merchant;
-use Goodoneuz\PayUz\Controllers\Paycom\Request;
-use Goodoneuz\PayUz\Controllers\Oson\OsonException;
+use Goodoneuz\PayUz\Classes\Oson\OsonException;
 
 class Oson extends BaseGateway
 {
@@ -30,11 +29,6 @@ class Oson extends BaseGateway
         ];
         $this->request  =  new Request();
         $this->merchant = new Merchant($this->config,$request['params']['acc']);
-        Log::info('-----------------------------');
-        Log::info('oson');
-        Log::info('Payment Request: ');
-        Log::info($this->request);
-        Log::info('-----------------------------');
     }
 
     /**
@@ -94,33 +88,18 @@ class Oson extends BaseGateway
                 throw new OsonException(OsonException::ERROR_INVALID_AMOUNT, ['prividerTrnId' => $this->request['params']['trans']['transID'], 'ts' => $this->request['params']['trans']['time']]);
             $order->changeState(Order::STATE_PAY_ACCEPTED);
         }
-        $create_time                        = Format::timestamp(true);
+        $create_time                        = DataFormat::timestamp(true);
         $transaction                        = new Transaction();
         $transaction->payment_system        = Transaction::OSON;
         $transaction->system_transaction_id = $this->request['params']['trans']['transID'];
-        $transaction->system_time           = Format::datetime2timestamp($this->request['params']['trans']['time']);
+        $transaction->system_time           = DataFormat::datetime2timestamp($this->request['params']['trans']['time']);
         $transaction->system_time_datetime  = $this->request['params']['trans']['time'];
-        $transaction->create_time           = Format::timestamp2datetime($create_time);
+        $transaction->create_time           = DataFormat::timestamp2datetime($create_time);
         $transaction->state                 = Transaction::STATE_COMPLETED;
         $transaction->amount                = $this->request['params']['trans']['amount'];
         $transaction->currency_code         = Transaction::CODE_UZS;
         $transaction->order_id              = $this->request['params']['trans']['login'];
-        $transaction->save(); // after save $transaction->id will be populated with the newly created transaction's id.
-        $str = "Pul o'tkazishi  muvofaqqiyatli yakunlandi ✅";
-        if ($order)
-            $str =  $str
-                ."\n<b>Buyurtma raqami 📥</b>: ".$order->id
-                ."\n<b>Sug'urtalanuvchi 👥</b>: " . $order->user->detail->name
-                ." \n<b>Summasi 💰:</b>".$order->price." sum ."
-                ."\n<b>To'lov tizimi:</b>".$transaction->payment_system;
-        else
-            $str =  $str
-                ."\n<b>Buyurtma raqami 📥</b>: ".$this->request['params']['trans']['login']
-                ." \n<b>Summasi 💰:</b>".$this->request['params']['trans']['amount']." sum ."
-                ."\n<b>To'lov tizimi:</b>".$transaction->payment_system;
-
-        TelegramController::send($str);
-        cURL::send_result($transaction);
+        $transaction->save();
 
         throw new OsonException(OsonException::SUCCESS,['prividerTrnId'=>$this->request['params']['trans']['transID'],'ts'=>$this->request['params']['trans']['time'],'order_state'=>Order::STATE_PAY_ACCEPTED]);
 
