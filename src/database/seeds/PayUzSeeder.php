@@ -54,6 +54,12 @@ class PayUzSeeder extends Seeder
                 'name'      => 'password',
                 'value'     => 'password'
             ]);
+            PaymentSystemParam::firstOrCreate([
+                'system'    => 'payme',
+                'label'     => 'Key',
+                'name'      => 'key',
+                'value'     => 'key'
+            ]);
             //Click
             PaymentSystemParam::firstOrCreate([
                 'system'    => 'click',

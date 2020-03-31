@@ -33,7 +33,6 @@ class Request
         $this->response = $response;
         $this->params = [];
         $arr_params = $this->getRequestArray();
-        // Log::info($arr_params);
         $this->loadAccount($arr_params);
 
         foreach ($arr_params as $key => $value){

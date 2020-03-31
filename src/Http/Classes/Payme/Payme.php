@@ -69,20 +69,30 @@ class Payme {
     private function CheckPerformTransaction()
     {
         $this->validateParams($this->request->params);
-        $model = PaymentService::convertKeyToModel($this->request->params['account']['key']);
+        $model = PaymentService::convertKeyToModel($this->request->params['account'][$this->config['key']]);
         if ($model == null){
             $this->response->error(
                 Response::ERROR_INVALID_ACCOUNT,
                 'Object not fount.'
             );
         }
-        if (!PaymentService::isProperModelAndAmount($model, $this->request->params['amount'])/100){
+        if (!PaymentService::isProperModelAndAmount($model, $this->request->params['amount'])){
             $this->response->error(
                 Response::ERROR_INVALID_AMOUNT,
+                'Invalid amount for this object.'
+            );
+        }
+        $active_transactions = $this->getModelTransactions($model, true);
+        \Log::info([
+            'active transactions' => count($active_transactions),
+            'multi' => config('payuz')['multi_transaction']
+        ]);
+        if ((count($active_transactions) > 0) && (config('payuz')['multi_transaction'] == false)){
+            $this->response->error(
+                Response::ERROR_INVALID_TRANSACTION,
                 'There is other active/completed transaction for this object.'
             );
         }
-
         PaymentService::payListener($model,null,'before-pay');
         
         $this->response->success(['allow' => true]);
@@ -116,7 +126,7 @@ class Payme {
         }
 
         // assume, we should have order_id
-        if (!isset($params['account']['key'])) {
+        if (!isset($params['account'][$this->config['key']])) {
             $this->response->error(
                 Response::ERROR_INVALID_ACCOUNT,
                 Response::message( 'Неверный код Счет.', 'Billing kodida xatolik.', 'Incorrect object code.'),
@@ -130,7 +140,7 @@ class Payme {
     {
 
         $this->validateParams($this->request->params);
-        $model = PaymentService::convertKeyToModel($this->request->params['account']['key']);
+        $model = PaymentService::convertKeyToModel($this->request->params['account'][$this->config['key']]);
         //todo alert if model is null
         $transaction = $this->findTransactionByParams($this->request->params);
         if ($transaction) {
@@ -147,7 +157,7 @@ class Payme {
                 );
             }
         } else {
-            
+
             try{
                 $this->CheckPerformTransaction();
             } catch(PaymentException $e){
@@ -243,8 +253,7 @@ class Payme {
 
             case Transaction::STATE_COMPLETED: // handle complete transaction
                 $detail = json_decode($transaction->detail,true);
-                PaymentService::payListener(null,$transaction,'after-pay');
-
+                
                 $this->response->success([
                     'transaction'  => (string)$transaction->id,
                     'perform_time' => 1*$detail['perform_time'],
@@ -332,8 +341,17 @@ class Payme {
 
     public function findTransactionByParams($params)
     {
-        $transaction = Transaction::where('payment_system',PaymentSystem::PAYME)->where('system_transaction_id',$params['id'])->first();
+        $transaction = Transaction::where('payment_system', PaymentSystem::PAYME)->where('system_transaction_id', $params['id'])->first();
         return $transaction;  
+    }
+    public function getModelTransactions($model, $active = false)
+    {
+        $transactions = Transaction::where('payment_system', PaymentSystem::PAYME)
+        ->where('transactionable_type',get_class($model))
+        ->where('transactionable_id',$model->id);
+        if ($active)
+            $transactions = $transactions->where('state', Transaction::STATE_CREATED);
+        return $transactions->get();  
     }
 
     /**
@@ -411,7 +429,7 @@ class Payme {
                 'time'         => 1 * $detail['system_time_datetime'], // paycom transaction timestamp as is
                 'amount'       => 1 * $row['amount'],
                 'account'      => [
-                    'key' => 1 * $row['key'], // account parameters to identify client/order/service
+                    'key' => 1 * $row[$this->config['key']], // account parameters to identify client/order/service
                     // ... additional parameters may be listed here, which are belongs to the account
                 ],
                 'create_time'  => DataFormat::datetime2timestamp($detail['create_time']),
