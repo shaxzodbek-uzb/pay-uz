@@ -1,4 +1,5 @@
 # Для национальных платежных систем в Узбекистане
+[Видео документация <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/1200px-YouTube_full-color_icon_%282017%29.svg.png" width="26">](https://www.youtube.com/playlist?list=PLIU-yN_rFScVbbglNYmucY3TKzrxypEaP)
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/dt/goodoneuz/pay-uz.svg?style=flat)](https://packagist.org/packages/goodoneuz/pay-uz)
 [![Build Status](https://img.shields.io/travis/shaxzodbek-uzb/pay-uz/master.svg?style=flat-square)](https://travis-ci.org/shaxzodbek-uzb/pay-uz)
