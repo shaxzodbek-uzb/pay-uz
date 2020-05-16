@@ -10,7 +10,7 @@ use Goodoneuz\PayUz\Models\PaymentSystemParam;
 use Goodoneuz\PayUz\Http\Classes\PaymentException;
 use Goodoneuz\PayUz\Services\PaymentSystemService;
 
-class Paynet extands BaseGateway
+class Paynet extends BaseGateway
 {
     public $config;
     public $request;
