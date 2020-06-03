@@ -59,7 +59,7 @@ class PayUz
         $this->validateDriver();
         $driver = $this->driverClass;
         $params = $driver->getRedirectParams($model, $amount, $currency_code, $url);
-        $view = 'pay-uz::merchant.redirect';
+        $view = 'pay-uz::merchant.index';
         if (!empty($driver::CUSTOM_FORM))
             $view = $driver::CUSTOM_FORM;
         echo view($view, compact('params'));
