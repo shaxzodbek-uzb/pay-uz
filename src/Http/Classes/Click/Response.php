@@ -80,6 +80,9 @@ class Response{
         $params = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::CLICK);
         $timestamp = time();
         $digest = sha1($timestamp .  $params['secret_key']);
-        return $this->result;
+        
+        if(env('APP_ENV') != 'testing')
+            header('Content-Type: application/json; charset=UTF-8');
+        echo json_encode($this->result);
     }
 }
