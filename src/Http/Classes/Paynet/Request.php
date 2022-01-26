@@ -83,12 +83,23 @@ class Request
     }
     public function paramsPerformTransaction($par)
     {
+        $key = $par['parameters'];
+        if (isset($key['paramValue'])) {
+            $key = $key['paramValue'];
+        } else {
+            $keys = $key;
+            foreach ($keys as $k) {
+                if ($k['paramKey'] == 'key') {
+                    $key = $k['paramValue'];
+                }
+            }
+        }
         $res = [
             'method' => self::METHOD_PerformTransaction,
             'amount' => $par['amount'],
             'transactionId' => $par['transactionId'],
             'transactionTime' => $par['transactionTime'],
-            'key' => $par['parameters']['paramValue'],
+            'key' => $key,
             'params' => $par['parameters']
         ];
         $this->params = array_merge($this->params, $res);
