@@ -58,7 +58,7 @@ class Transaction extends Model
         }
 
         $this->comment = $reason;
-        $detail = json_decode($this->detail,true);
+        $detail = json_decode($this->detail, true);
         $detail['cancel_time'] = $this->updated_time;
         $detail = json_encode($detail);
         $this->detail = $detail;
@@ -71,5 +71,4 @@ class Transaction extends Model
     {
         return $this->state == self::STATE_CREATED && DataFormat::datetime2timestamp($this->updated_time) - time() > self::TIMEOUT;
     }
-
 }
