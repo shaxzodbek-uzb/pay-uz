@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Good One Sales
@@ -35,8 +36,8 @@ class Request
         $arr_params = $this->getRequestArray();
         $this->loadAccount($arr_params);
 
-        foreach ($arr_params as $key => $value){
-            switch ($key){
+        foreach ($arr_params as $key => $value) {
+            switch ($key) {
                 case self::ARGUMENTS_PerformTransaction:
                     $this->paramsPerformTransaction($arr_params[self::ARGUMENTS_PerformTransaction]);
                     break;
@@ -53,12 +54,13 @@ class Request
                     $this->paramsInformation($arr_params[self::ARGUMENTS_GetInformation]);
                     break;
                 default:
-                    $this->response->response($this,'Error in request', Response::ERROR_METHOD_NOT_FOUND);
+                    $this->response->response($this, 'Error in request', Response::ERROR_METHOD_NOT_FOUND);
             }
         }
     }
-    public function loadAccount($arr_params){
-       $arr_params = array_values($arr_params)[0];
+    public function loadAccount($arr_params)
+    {
+        $arr_params = array_values($arr_params)[0];
 
         $this->params['account'] = [
             'login' => $arr_params['username'],
@@ -66,29 +68,33 @@ class Request
         ];
         $this->params['serviceId'] = $arr_params['serviceId'];
     }
-    public function getRequestArray(){
+    public function getRequestArray()
+    {
         $request_body  = file_get_contents('php://input');
-        $clean_xml = str_ireplace(['soapenv:', 'soap:','xmlns:','xsi:','ns1:'], '', $request_body);
+        $clean_xml = str_ireplace(['soapenv:', 'soap:', 'xmlns:', 'xsi:', 'ns1:'], '', $request_body);
         $xml = simplexml_load_string($clean_xml);
         $body = null;
         if ($xml)
             $body = $xml->Body;
         else
-            $this->response->response($this,'Error in request', Response::ERROR_INVALID_JSON_RPC_OBJECT);
+            $this->response->response($this, 'Error in request', Response::ERROR_INVALID_JSON_RPC_OBJECT);
 
-        return json_decode(json_encode($body),1);
+        return json_decode(json_encode($body), 1);
     }
-    public function paramsPerformTransaction($par){
+    public function paramsPerformTransaction($par)
+    {
         $res = [
             'method' => self::METHOD_PerformTransaction,
             'amount' => $par['amount'],
             'transactionId' => $par['transactionId'],
             'transactionTime' => $par['transactionTime'],
-            'key' => $par['parameters']['paramValue']
+            'key' => $par['parameters']['paramValue'],
+            'params' => $par['parameters']
         ];
         $this->params = array_merge($this->params, $res);
     }
-    public function paramsCheckTransaction($par){
+    public function paramsCheckTransaction($par)
+    {
         $res = [
             'method' => self::METHOD_CheckTransaction,
             'transactionId' => $par['transactionId'],
@@ -125,5 +131,4 @@ class Request
         ];
         $this->params = array_merge($this->params, $res);
     }
-
 }
