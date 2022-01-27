@@ -99,7 +99,8 @@ class Paynet extends BaseGateway
             'perform_time'          => null,
             'cancel_time'           => null,
             'system_time_datetime'  => DataFormat::timestamp2datetime($this->request->params['transactionTime']),
-            'params' => $this->request->params['params']
+            'params' => $this->request->params['params'],
+            'serviceId' => $this->request->params['serviceId']
         ));
         $transaction = Transaction::create([
             'payment_system'        => PaymentSystem::PAYNET,
