@@ -13,7 +13,9 @@ class Transaction extends Model
     protected $dates    = [
         'deleted_at'
     ];
-
+    protected $casts = [
+        'detail' => 'json',
+    ];
     protected $fillable = [
         'payment_system', //varchar 191
         'system_transaction_id', // varchar 191

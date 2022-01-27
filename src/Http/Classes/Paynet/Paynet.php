@@ -94,14 +94,14 @@ class Paynet extends BaseGateway
 
         $create_time = DataFormat::timestamp(true);
 
-        $detail = json_encode(array(
+        $detail = array(
             'create_time'           => $create_time,
             'perform_time'          => null,
             'cancel_time'           => null,
             'system_time_datetime'  => DataFormat::timestamp2datetime($this->request->params['transactionTime']),
             'params' => $this->request->params['params'],
             'serviceId' => $this->request->params['serviceId']
-        ));
+        );
         $transaction = Transaction::create([
             'payment_system'        => PaymentSystem::PAYNET,
             'system_transaction_id' => $this->request->params['transactionId'],
