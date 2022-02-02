@@ -237,7 +237,7 @@ class Payme extends BaseGateway
 
                     $detail = $transaction->detail;
                     $detail['perform_time']   =   $perform_time;
-                    $detail = json_encode($detail);
+                    $detail = $detail;
 
                     $transaction->detail = $detail;
 
