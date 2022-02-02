@@ -109,7 +109,7 @@ class Payme extends BaseGateway
             );
         }
 
-        $detail = json_decode($transaction->detail, true);
+        $detail = $transaction->detail;
         $this->response->success([
             'create_time'  => 1 * $detail['create_time'],
             'perform_time' => 1 * $detail['perform_time'],
@@ -235,7 +235,7 @@ class Payme extends BaseGateway
                     $transaction->state         = Transaction::STATE_COMPLETED;
                     $transaction->updated_time  = $perform_time;
 
-                    $detail = json_decode($transaction->detail, true);
+                    $detail = $transaction->detail;
                     $detail['perform_time']   =   $perform_time;
                     $detail = json_encode($detail);
 
@@ -254,7 +254,7 @@ class Payme extends BaseGateway
                 break;
 
             case Transaction::STATE_COMPLETED: // handle complete transaction
-                $detail = json_decode($transaction->detail, true);
+                $detail = $transaction->detail;
 
                 $this->response->success([
                     'transaction'  => (string)$transaction->id,
@@ -323,7 +323,7 @@ class Payme extends BaseGateway
                 if (true) {
                     $transaction->cancel(1 * $this->request->params['reason']);
 
-                    $detail = json_decode($transaction->detail, true);
+                    $detail = $transaction->detail;
 
                     PaymentService::payListener(null, $transaction, 'cancel-pay');
 

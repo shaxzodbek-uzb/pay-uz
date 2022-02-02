@@ -136,6 +136,17 @@ class Request
 
     private function paramsInformation($par)
     {
+        $key = $par['parameters'];
+        if (isset($key['paramValue'])) {
+            $key = $key['paramValue'];
+        } else {
+            $keys = $key;
+            foreach ($keys as $k) {
+                if ($k['paramKey'] == 'key') {
+                    $key = $k['paramValue'];
+                }
+            }
+        }
         $res = [
             'method' => self::METHOD_GetInformation,
             'key' => $par['parameters']['paramValue']
