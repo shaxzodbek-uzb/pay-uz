@@ -60,7 +60,7 @@ class Transaction extends Model
         }
 
         $this->comment = $reason;
-        $detail = json_decode($this->detail, true);
+        $detail = $this->detail;
         $detail['cancel_time'] = $this->updated_time;
         $this->detail = $detail;
 
