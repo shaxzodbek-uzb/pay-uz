@@ -29,8 +29,9 @@ class PayUz
      * @param null $driver
      * @return $this
      */
-    public function driver($driver = null){
-        switch ($driver){
+    public function driver($driver = null)
+    {
+        switch ($driver) {
             case PaymentSystem::PAYME:
                 $this->driverClass = new Payme;
                 break;
@@ -55,7 +56,8 @@ class PayUz
      * @return PayUz
      * @throws \Exception
      */
-    public function redirect($model, $amount, $currency_code = Transaction::CURRENCY_CODE_UZS, $url = null){
+    public function redirect($model, $amount, $currency_code = Transaction::CURRENCY_CODE_UZS, $url = null)
+    {
         $this->validateDriver();
         $driver = $this->driverClass;
         $params = $driver->getRedirectParams($model, $amount, $currency_code, $url);
@@ -69,11 +71,12 @@ class PayUz
      * @return $this
      * @throws \Exception
      */
-    public function handle(){
+    public function handle()
+    {
         $this->validateDriver();
-        try{
+        try {
             return $this->driverClass->run();
-        }catch(PaymentException $e){
+        } catch (PaymentException $e) {
             return $e->response();
         }
 
@@ -86,7 +89,8 @@ class PayUz
      * @param $currency_code
      * @throws \Exception
      */
-    public function validateModel($model, $amount, $currency_code){
+    public function validateModel($model, $amount, $currency_code)
+    {
         if (is_null($model))
             throw new \Exception('Modal can\'t be null');
         if (is_null($amount) || $amount == 0)
@@ -98,8 +102,13 @@ class PayUz
     /**
      * @throws \Exception
      */
-    public function validateDriver(){
+    public function validateDriver()
+    {
         if (is_null($this->driverClass))
             throw new \Exception('Driver not selected');
+    }
+    public function setDescription($hasDescription)
+    {
+        $this->driverClass->setDescription($hasDescription);
     }
 }
