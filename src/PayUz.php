@@ -109,6 +109,7 @@ class PayUz
     }
     public function setDescription($hasDescription)
     {
-        $this->driverClass->setDescription($hasDescription);
+        $this->driverClass->setDescription($hasDescription);'
+        return $this;
     }
 }
