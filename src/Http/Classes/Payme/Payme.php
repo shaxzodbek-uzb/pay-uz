@@ -448,7 +448,8 @@ class Payme extends BaseGateway
     }
     public function getRedirectParams($model, $amount, $currency, $url)
     {
-        return [
+
+        $params = [
             'merchant' => $this->config['merchant_id'],
             'amount' => $amount * 100,
             'account[key]' => PaymentService::convertModelToKey($model),
@@ -458,5 +459,8 @@ class Payme extends BaseGateway
             'callback_timeout' => 20000,
             'url'   => "https://checkout.paycom.uz/",
         ];
+        if ($this->hasDescription)
+            $params['account[description]'] = 'Оплата за №' . $model->id;
+        return $params;
     }
 }
