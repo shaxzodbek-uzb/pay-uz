@@ -149,7 +149,7 @@ class Request
         }
         $res = [
             'method' => self::METHOD_GetInformation,
-            'key' => $par['parameters']['paramValue']
+            'key' => $key
         ];
         $this->params = array_merge($this->params, $res);
     }
