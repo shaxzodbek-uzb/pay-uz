@@ -17,8 +17,8 @@
     ],
     "require": {
         "php": "^7.1|^8.0",
-        "illuminate/support": "5.7.*|5.8.*|6.*|7.*|8.*|^9.0",
-        "stripe/stripe-php": "^6.31|^7.60"
+        "illuminate/support": "*",
+        "stripe/stripe-php": "*"
     },
     "require-dev": {
         "orchestra/testbench": "3.7.*|^6.2",
