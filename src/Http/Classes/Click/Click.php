@@ -112,8 +112,10 @@ class Click extends BaseGateway
             'merchant_trans_id' => $params['merchant_trans_id'],
             'merchant_confirm_id' => null
         ];
-
-        $transaction = Transaction::find($params['merchant_prepare_id']);
+        $transaction = null;
+        try {
+            $transaction = Transaction::find($params['merchant_prepare_id']);
+        } catch(\Exception $e) { }
         if (!$transaction)
             $this->response->setResult(Response::ERROR_TRANSACTION_NOT_FOUND);
 
