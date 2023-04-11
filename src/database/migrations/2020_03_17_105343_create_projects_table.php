@@ -17,7 +17,7 @@ class CreateProjectsTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->integer('status');
-            $table->jsonb('details');
+            $table->json('details');
             $table->softDeletes();
             $table->timestamps();
         });
