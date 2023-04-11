@@ -17,7 +17,7 @@ class UpdateDetailTransactionsTable extends Migration
             $table->dropColumn('detail');
         });
         Schema::table('transactions', function (Blueprint $table) {
-            $table->jsonb('detail')->nullable();
+            $table->json('detail')->nullable();
         });
     }
 
