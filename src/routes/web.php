@@ -1,6 +1,8 @@
 <?php
 
-$middleware = config('payuz')['control_panel']['middleware'];
+$middleware = null;
+if(isset(config('payuz')['control_panel']['middleware']))
+    $middleware = config('payuz')['control_panel']['middleware'];
 
 //checking array is empty or null
 if (empty($middleware) || $middleware == null) {
