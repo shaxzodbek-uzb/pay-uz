@@ -20,6 +20,7 @@ class PaymentService
     {
         return require base_path('/app/Http/Controllers/Payments/model_key.php');
     }
+
     /*
     * $key - key of model
     * returns model or null
@@ -29,8 +30,9 @@ class PaymentService
     {
         return require base_path('/app/Http/Controllers/Payments/key_model.php');
     }
+
     /*
-    * returns true/false 
+    * returns true/false
     */
     public static function isProperModelAndAmount($model, $amount)
     {
@@ -61,5 +63,15 @@ class PaymentService
                 require base_path('/app/Http/Controllers/Payments/cancel_pay.php');
                 break;
         }
+    }
+
+    /**
+     * @param string $string - response string
+     * @param $params - request params
+     * @param array $additional_params - additional params
+     */
+    public static function beforeResponse(string $string, $params, array $additional_params)
+    {
+        return require base_path('/app/Http/Controllers/Payments/before_response.php');
     }
 }
