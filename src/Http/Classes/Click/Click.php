@@ -21,8 +21,8 @@ class Click extends BaseGateway
 
     public function __construct()
     {
-        $this->config   = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::CLICK);
-        $this->request  = request();
+        $this->config = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::CLICK);
+        $this->request = request();
         $this->response = new Response();
         $this->merchant = new Merchant($this->response);
     }
@@ -81,21 +81,21 @@ class Click extends BaseGateway
         $create_time = DataFormat::timestamp(true);
 
         $detail = array(
-            'create_time'           => $create_time,
-            'system_time_datetime'  => DataFormat::timestamp2datetime($params['sign_time'])
+            'create_time' => $create_time,
+            'system_time_datetime' => DataFormat::timestamp2datetime($params['sign_time'])
         );
 
         $transaction = Transaction::create([
-            'payment_system'        => PaymentSystem::CLICK,
+            'payment_system' => PaymentSystem::CLICK,
             'system_transaction_id' => $params['click_trans_id'],
-            'amount'                => $params['amount'],
-            'currency_code'         => Transaction::CURRENCY_CODE_UZS,
-            'state'                 => Transaction::STATE_CREATED,
-            'updated_time'          => 1 * $create_time,
-            'comment'               => $params['error_note'],
-            'detail'                => $detail,
-            'transactionable_type'  => get_class($model),
-            'transactionable_id'    => $model->id
+            'amount' => $params['amount'],
+            'currency_code' => Transaction::CURRENCY_CODE_UZS,
+            'state' => Transaction::STATE_CREATED,
+            'updated_time' => 1 * $create_time,
+            'comment' => $params['error_note'],
+            'detail' => $detail,
+            'transactionable_type' => get_class($model),
+            'transactionable_id' => $model->id
         ]);
 
         $additional_params['merchant_prepare_id'] = $transaction->id;
@@ -103,6 +103,7 @@ class Click extends BaseGateway
 
         $this->response->setResult(Response::SUCCESS, $additional_params);
     }
+
     private function Complete()
     {
         $params = $this->request->all();
@@ -115,7 +116,8 @@ class Click extends BaseGateway
         $transaction = null;
         try {
             $transaction = Transaction::find($params['merchant_prepare_id']);
-        } catch(\Exception $e) { }
+        } catch (\Exception $e) {
+        }
         if (!$transaction)
             $this->response->setResult(Response::ERROR_TRANSACTION_NOT_FOUND);
 
@@ -147,7 +149,10 @@ class Click extends BaseGateway
         $additional_params['merchant_confirm_id'] = $transaction->id;
 
         PaymentService::payListener(null, $transaction, 'after-pay');
-        $this->response->setResult(Response::SUCCESS, $additional_params);
+
+        $response = PaymentService::beforeResponse("CLick@Complete", $params, $additional_params);
+
+        $this->response->setResult(Response::SUCCESS, $response);
     }
 
     private function check_for_required_field($fields)
@@ -183,7 +188,7 @@ class Click extends BaseGateway
             'SIGN_TIME' => $time,
             'SIGN_STRING' => $sign,
             'RETURN_URL' => $url,
-            'url'       => 'https://my.click.uz/pay/'
+            'url' => 'https://my.click.uz/pay/'
         ];
     }
 }
