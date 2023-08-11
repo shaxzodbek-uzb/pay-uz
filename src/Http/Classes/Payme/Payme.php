@@ -2,14 +2,15 @@
 
 namespace Goodoneuz\PayUz\Http\Classes\Payme;
 
-use Goodoneuz\PayUz\Models\Transaction;
-use Goodoneuz\PayUz\Models\PaymentSystem;
-use Goodoneuz\PayUz\Services\PaymentService;
-use Goodoneuz\PayUz\Http\Classes\DataFormat;
 use Goodoneuz\PayUz\Http\Classes\BaseGateway;
-use Goodoneuz\PayUz\Models\PaymentSystemParam;
+use Goodoneuz\PayUz\Http\Classes\DataFormat;
 use Goodoneuz\PayUz\Http\Classes\PaymentException;
+use Goodoneuz\PayUz\Models\PaymentSystem;
+use Goodoneuz\PayUz\Models\PaymentSystemParam;
+use Goodoneuz\PayUz\Models\Transaction;
+use Goodoneuz\PayUz\Services\PaymentService;
 use Goodoneuz\PayUz\Services\PaymentSystemService;
+use Log;
 
 class Payme extends BaseGateway
 {
@@ -24,13 +25,13 @@ class Payme extends BaseGateway
      */
     public function __construct()
     {
-        $this->config   = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::PAYME);
+        $this->config = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::PAYME);
     }
 
     public function run()
     {
         $this->response = new Response();
-        $this->request  = new Request($this->response);
+        $this->request = new Request($this->response);
         $this->response->setRequest($this->request);
         $this->merchant = new Merchant($this->config, $this->response);
         // authorize session
@@ -71,6 +72,11 @@ class Payme extends BaseGateway
     private function CheckPerformTransaction()
     {
         $this->validateParams($this->request->params);
+
+        $additional_params = [
+            'allow' => false,
+        ];
+
         $model = PaymentService::convertKeyToModel($this->request->params['account'][$this->config['key']]);
         if ($model == null) {
             $this->response->error(
@@ -85,11 +91,8 @@ class Payme extends BaseGateway
             );
         }
         $active_transactions = $this->getModelTransactions($model, true);
-        \Log::info([
-            'active transactions' => count($active_transactions),
-            'multi' => config('payuz')['multi_transaction']
-        ]);
-        if ((count($active_transactions) > 0) && (config('payuz')['multi_transaction'] == false)) {
+
+        if ((count($active_transactions) > 0) && !config('payuz')['multi_transaction']) {
             $this->response->error(
                 Response::ERROR_INVALID_TRANSACTION,
                 'There is other active/completed transaction for this object.'
@@ -97,27 +100,11 @@ class Payme extends BaseGateway
         }
         PaymentService::payListener($model, null, 'before-pay');
 
-        $this->response->success(['allow' => true]);
-    }
-    private function CheckTransaction()
-    {
-        $transaction  =  $this->findTransactionByParams($this->request->params);
-        if (!$transaction) {
-            $this->response->error(
-                Response::ERROR_TRANSACTION_NOT_FOUND,
-                'Transaction not found.'
-            );
-        }
+        $additional_params['allow'] = true;
 
-        $detail = $transaction->detail;
-        $this->response->success([
-            'create_time'  => 1 * $detail['create_time'],
-            'perform_time' => 1 * $detail['perform_time'],
-            'cancel_time'  => 1 * $detail['cancel_time'],
-            'transaction'  => (string)$transaction->id,
-            'state'        => 1 * $transaction->state,
-            'reason'       => ($transaction->comment && is_numeric($transaction->comment)) ? 1 * $transaction->comment : null,
-        ]);
+        $response = PaymentService::beforeResponse("Payme@CheckPerformTransaction", $this->request->params, $additional_params);
+
+        $this->response->success($response);
     }
 
     public function validateParams(array $params)
@@ -138,6 +125,44 @@ class Payme extends BaseGateway
 
         return true;
     }
+
+    public function getModelTransactions($model, $active = false)
+    {
+        $transactions = Transaction::where('payment_system', PaymentSystem::PAYME)
+            ->where('transactionable_type', get_class($model))
+            ->where('transactionable_id', $model->id);
+        if ($active)
+            $transactions = $transactions->where('state', Transaction::STATE_CREATED);
+        return $transactions->get();
+    }
+
+    private function CheckTransaction()
+    {
+        $transaction = $this->findTransactionByParams($this->request->params);
+        if (!$transaction) {
+            $this->response->error(
+                Response::ERROR_TRANSACTION_NOT_FOUND,
+                'Transaction not found.'
+            );
+        }
+
+        $detail = $transaction->detail;
+        $this->response->success([
+            'create_time' => 1 * $detail['create_time'],
+            'perform_time' => 1 * $detail['perform_time'],
+            'cancel_time' => 1 * $detail['cancel_time'],
+            'transaction' => (string)$transaction->id,
+            'state' => 1 * $transaction->state,
+            'reason' => ($transaction->comment && is_numeric($transaction->comment)) ? 1 * $transaction->comment : null,
+        ]);
+    }
+
+    public function findTransactionByParams($params)
+    {
+        $transaction = Transaction::where('payment_system', PaymentSystem::PAYME)->where('system_transaction_id', $params['id'])->first();
+        return $transaction;
+    }
+
     private function CreateTransaction()
     {
 
@@ -182,23 +207,23 @@ class Payme extends BaseGateway
             $create_time = DataFormat::timestamp(true);
 
             $detail = array(
-                'create_time'           => $create_time,
-                'perform_time'          => null,
-                'cancel_time'           => null,
-                'system_time_datetime'  => DataFormat::timestamp2datetime($this->request->params['time'])
+                'create_time' => $create_time,
+                'perform_time' => null,
+                'cancel_time' => null,
+                'system_time_datetime' => DataFormat::timestamp2datetime($this->request->params['time'])
             );
 
             $transaction = Transaction::create([
-                'payment_system'        => PaymentSystem::PAYME,
+                'payment_system' => PaymentSystem::PAYME,
                 'system_transaction_id' => $this->request->params['id'],
-                'amount'                => 1 * ($this->request->amount) / 100,
-                'currency_code'         => Transaction::CURRENCY_CODE_UZS,
-                'state'                 => Transaction::STATE_CREATED,
-                'updated_time'          => 1 * $create_time,
-                'comment'               => (isset($this->request->params['error_note']) ? $this->request->params['error_note'] : ''),
-                'detail'                => $detail,
-                'transactionable_type'  => get_class($model),
-                'transactionable_id'    => $model->id
+                'amount' => 1 * ($this->request->amount) / 100,
+                'currency_code' => Transaction::CURRENCY_CODE_UZS,
+                'state' => Transaction::STATE_CREATED,
+                'updated_time' => 1 * $create_time,
+                'comment' => (isset($this->request->params['error_note']) ? $this->request->params['error_note'] : ''),
+                'detail' => $detail,
+                'transactionable_type' => get_class($model),
+                'transactionable_id' => $model->id
             ]);
         }
 
@@ -207,8 +232,8 @@ class Payme extends BaseGateway
         $this->response->success([
             'create_time' => 1 * $transaction->updated_time,
             'transaction' => (string)$transaction->id,
-            'state'       => 1 * $transaction->state,
-            'receivers'   => $transaction->receivers,
+            'state' => 1 * $transaction->state,
+            'receivers' => $transaction->receivers,
         ]);
     }
 
@@ -231,12 +256,12 @@ class Payme extends BaseGateway
                     );
                 } else {
 
-                    $perform_time               = DataFormat::timestamp(true);
-                    $transaction->state         = Transaction::STATE_COMPLETED;
-                    $transaction->updated_time  = $perform_time;
+                    $perform_time = DataFormat::timestamp(true);
+                    $transaction->state = Transaction::STATE_COMPLETED;
+                    $transaction->updated_time = $perform_time;
 
                     $detail = $transaction->detail;
-                    $detail['perform_time']   =   $perform_time;
+                    $detail['perform_time'] = $perform_time;
                     $detail = $detail;
 
                     $transaction->detail = $detail;
@@ -246,9 +271,9 @@ class Payme extends BaseGateway
                     PaymentService::payListener(null, $transaction, 'after-pay');
 
                     $this->response->success([
-                        'transaction'  => (string)$transaction->id,
+                        'transaction' => (string)$transaction->id,
                         'perform_time' => 1 * $perform_time,
-                        'state'        => 1 * $transaction->state,
+                        'state' => 1 * $transaction->state,
                     ]);
                 }
                 break;
@@ -257,9 +282,9 @@ class Payme extends BaseGateway
                 $detail = $transaction->detail;
 
                 $this->response->success([
-                    'transaction'  => (string)$transaction->id,
+                    'transaction' => (string)$transaction->id,
                     'perform_time' => 1 * $detail['perform_time'],
-                    'state'        => 1 * $transaction->state,
+                    'state' => 1 * $transaction->state,
                 ]);
 
                 break;
@@ -273,6 +298,7 @@ class Payme extends BaseGateway
                 break;
         }
     }
+
     private function CancelTransaction()
     {
         $transaction = $this->findTransactionByParams($this->request->params);
@@ -283,26 +309,26 @@ class Payme extends BaseGateway
         }
 
         switch ($transaction->state) {
-                // if already cancelled, just send it
+            // if already cancelled, just send it
             case Transaction::STATE_CANCELLED:
             case Transaction::STATE_CANCELLED_AFTER_COMPLETE:
                 $detail = $transaction->detail;
                 $this->response->success([
                     'transaction' => (string)$transaction->id,
                     'cancel_time' => 1 * $detail['cancel_time'],
-                    'state'       => 1 * $transaction->state,
+                    'state' => 1 * $transaction->state,
                 ]);
                 break;
 
-                // cancel active transaction
+            // cancel active transaction
             case Transaction::STATE_CREATED:
                 // cancel transaction with given reason
                 $transaction->cancel(1 * $this->request->params['reason']);
 
-                $cancel_time               = DataFormat::timestamp(true);
+                $cancel_time = DataFormat::timestamp(true);
 
                 $detail = $transaction->detail;
-                $detail['cancel_time']   =   $cancel_time;
+                $detail['cancel_time'] = $cancel_time;
 
                 $transaction->update([
                     'updated_time' => $cancel_time,
@@ -315,7 +341,7 @@ class Payme extends BaseGateway
                 $this->response->success([
                     'transaction' => (string)$transaction->id,
                     'cancel_time' => 1 * $cancel_time,
-                    'state'       => 1 * $transaction->state,
+                    'state' => 1 * $transaction->state,
                 ]);
                 break;
 
@@ -330,7 +356,7 @@ class Payme extends BaseGateway
                     $this->response->success([
                         'transaction' => (string)$transaction->id,
                         'cancel_time' => 1 * $detail['cancel_time'],
-                        'state'       => 1 * $transaction->state,
+                        'state' => 1 * $transaction->state,
                     ]);
                 } else {
                     $this->response->error(
@@ -342,23 +368,8 @@ class Payme extends BaseGateway
         }
     }
 
-    public function findTransactionByParams($params)
-    {
-        $transaction = Transaction::where('payment_system', PaymentSystem::PAYME)->where('system_transaction_id', $params['id'])->first();
-        return $transaction;
-    }
-    public function getModelTransactions($model, $active = false)
-    {
-        $transactions = Transaction::where('payment_system', PaymentSystem::PAYME)
-            ->where('transactionable_type', get_class($model))
-            ->where('transactionable_id', $model->id);
-        if ($active)
-            $transactions = $transactions->where('state', Transaction::STATE_CREATED);
-        return $transactions->get();
-    }
-
     /**
-     * @throws \Goodoneuz\PayUz\Http\Classes\PaymentException
+     * @throws PaymentException
      */
     private function ChangePassword()
     {
@@ -377,7 +388,7 @@ class Payme extends BaseGateway
         foreach ($params as $param) {
             if ($param->name == 'password') {
                 $param->update([
-                    'value' =>  $this->request->params['password']
+                    'value' => $this->request->params['password']
                 ]);
                 $completed = true;
             }
@@ -407,15 +418,16 @@ class Payme extends BaseGateway
         }
 
         // get list of transactions for specified period
-        $transactions  = $this->getReport($this->request->params['from'], $this->request->params['to']);
+        $transactions = $this->getReport($this->request->params['from'], $this->request->params['to']);
 
         // send results back
         $this->response->success(['transactions' => $transactions]);
     }
+
     public function getReport($from_date, $to_date)
     {
         $from_date = DataFormat::timestamp2datetime($from_date);
-        $to_date   = DataFormat::timestamp2datetime($to_date);
+        $to_date = DataFormat::timestamp2datetime($to_date);
 
         $transactions = Transaction::where('payment_system', PaymentSystem::PAYME)
             ->where('state', Transaction::STATE_COMPLETED)
@@ -428,24 +440,25 @@ class Payme extends BaseGateway
             $detail = $row['detail'];
 
             $result[] = [
-                'id'           => (string)$row['system_transaction_id'], // paycom transaction id
-                'time'         => 1 * $detail['system_time_datetime'], // paycom transaction timestamp as is
-                'amount'       => 1 * $row['amount'],
-                'account'      => [
+                'id' => (string)$row['system_transaction_id'], // paycom transaction id
+                'time' => 1 * $detail['system_time_datetime'], // paycom transaction timestamp as is
+                'amount' => 1 * $row['amount'],
+                'account' => [
                     'key' => 1 * $row[$this->config['key']], // account parameters to identify client/order/service
                     // ... additional parameters may be listed here, which are belongs to the account
                 ],
-                'create_time'  => DataFormat::datetime2timestamp($detail['create_time']),
+                'create_time' => DataFormat::datetime2timestamp($detail['create_time']),
                 'perform_time' => DataFormat::datetime2timestamp($detail['perform_time']),
-                'cancel_time'  => DataFormat::datetime2timestamp($detail['cancel_time']),
-                'transaction'  => (string)$row['id'],
-                'state'        => 1 * $row['state'],
-                'reason'       => isset($row['comment']) ? 1 * $row['comment'] : null,
-                'receivers'    => isset($row['receivers']) ? json_decode($row['receivers'], true) : null,
+                'cancel_time' => DataFormat::datetime2timestamp($detail['cancel_time']),
+                'transaction' => (string)$row['id'],
+                'state' => 1 * $row['state'],
+                'reason' => isset($row['comment']) ? 1 * $row['comment'] : null,
+                'receivers' => isset($row['receivers']) ? json_decode($row['receivers'], true) : null,
             ];
         }
         return $result;
     }
+
     public function getRedirectParams($model, $amount, $currency, $url)
     {
 
@@ -457,7 +470,7 @@ class Payme extends BaseGateway
             'currency' => $currency,
             'callback' => $url,
             'callback_timeout' => 20000,
-            'url'   => "https://checkout.paycom.uz/",
+            'url' => "https://checkout.paycom.uz/",
         ];
         if ($this->hasDescription)
             $params['account[description]'] = 'Оплата за №' . $model->id;

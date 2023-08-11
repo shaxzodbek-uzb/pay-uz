@@ -2,22 +2,22 @@
 
 namespace Goodoneuz\PayUz\Http\Classes\Click;
 
-use Goodoneuz\PayUz\Models\Transaction;
-use Goodoneuz\PayUz\Models\PaymentSystem;
-use Goodoneuz\PayUz\Services\PaymentService;
-use Goodoneuz\PayUz\Http\Classes\DataFormat;
+use Exception;
 use Goodoneuz\PayUz\Http\Classes\BaseGateway;
-use Goodoneuz\PayUz\Http\Classes\PaymentException;
+use Goodoneuz\PayUz\Http\Classes\DataFormat;
+use Goodoneuz\PayUz\Models\PaymentSystem;
+use Goodoneuz\PayUz\Models\Transaction;
+use Goodoneuz\PayUz\Services\PaymentService;
 use Goodoneuz\PayUz\Services\PaymentSystemService;
 
 class Click extends BaseGateway
 {
+    const REQUEST_PREPARE = 0;
+    const REQUEST_COMPLATE = 1;
     private $config;
     private $merchant;
     private $request;
     private $response;
-    const REQUEST_PREPARE = 0;
-    const REQUEST_COMPLATE = 1;
 
     public function __construct()
     {
@@ -30,7 +30,6 @@ class Click extends BaseGateway
 
     public function run()
     {
-
         $required_fields = [
             'click_trans_id', 'service_id',
             'click_paydoc_id', 'merchant_trans_id',
@@ -55,9 +54,24 @@ class Click extends BaseGateway
         }
     }
 
+    private function check_for_required_field($fields)
+    {
+        $arr = $this->request->all();
+
+        if ($arr['action'] == self::REQUEST_COMPLATE)
+            $fields[] = 'merchant_prepare_id';
+
+        foreach ($fields as $field)
+            if (!array_key_exists($field, $arr)) {
+                echo $field;
+                return false;
+            }
+
+        return true;
+    }
+
     private function Prepare()
     {
-
         $params = $this->request->all();
 
         $additional_params = [
@@ -116,7 +130,7 @@ class Click extends BaseGateway
         $transaction = null;
         try {
             $transaction = Transaction::find($params['merchant_prepare_id']);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
         }
         if (!$transaction)
             $this->response->setResult(Response::ERROR_TRANSACTION_NOT_FOUND);
@@ -155,26 +169,10 @@ class Click extends BaseGateway
         $this->response->setResult(Response::SUCCESS, $response);
     }
 
-    private function check_for_required_field($fields)
-    {
-        $arr = $this->request->all();
-
-        if ($arr['action'] == self::REQUEST_COMPLATE)
-            $fields[] = 'merchant_prepare_id';
-
-        foreach ($fields as $field)
-            if (!array_key_exists($field, $arr)) {
-                echo $field;
-                return false;
-            }
-
-        return true;
-    }
-
     public function getRedirectParams($model, $amount, $currency, $url)
     {
         $time = date('Y-m-d H:i:s', time());
-        $sign = MD5($time . $this->config['secret_key'] .
+        $sign = md5($time . $this->config['secret_key'] .
             $this->config['service_id'] . $amount);
         return [
             'MERCHANT_TRANS_AMOUNT' => $amount,
