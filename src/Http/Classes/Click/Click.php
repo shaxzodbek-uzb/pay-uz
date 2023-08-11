@@ -60,7 +60,7 @@ class Click extends BaseGateway
 
         $params = $this->request->all();
 
-        $additional_params = [
+        $response = [
             'merchant_prepare_id' => null,
             'click_trans_id' => null,
             'merchant_trans_id' => null
@@ -75,8 +75,8 @@ class Click extends BaseGateway
 
         if (!PaymentService::isProperModelAndAmount($model, $params['amount']))
             $this->response->setResult(Response::ERROR_INVALID_AMOUNT);
-        $additional_params['click_trans_id'] = $params['click_trans_id'];
-        $additional_params['merchant_trans_id'] = $params['merchant_trans_id'];
+        $response['click_trans_id'] = $params['click_trans_id'];
+        $response['merchant_trans_id'] = $params['merchant_trans_id'];
 
         $create_time = DataFormat::timestamp(true);
 
@@ -98,17 +98,19 @@ class Click extends BaseGateway
             'transactionable_id' => $model->id
         ]);
 
-        $additional_params['merchant_prepare_id'] = $transaction->id;
+        $response['merchant_prepare_id'] = $transaction->id;
         PaymentService::payListener($model, $transaction, 'paying');
 
-        $this->response->setResult(Response::SUCCESS, $additional_params);
+        $response = PaymentService::beforeResponse("Click@Prepare", $params, $response);
+        
+        $this->response->setResult(Response::SUCCESS, $response);
     }
 
     private function Complete()
     {
         $params = $this->request->all();
 
-        $additional_params = [
+        $response = [
             'click_trans_id' => $params['click_trans_id'],
             'merchant_trans_id' => $params['merchant_trans_id'],
             'merchant_confirm_id' => null
@@ -122,12 +124,12 @@ class Click extends BaseGateway
             $this->response->setResult(Response::ERROR_TRANSACTION_NOT_FOUND);
 
         if ($params['error'] == -1) {
-            $additional_params['error_note'] = $params['error_note'];
+            $response['error_note'] = $params['error_note'];
             $this->response->setResult(Response::ERROR_ALREADY_PAID);
         }
 
         if ($params['error'] == -5017) {
-            $additional_params['error_note'] = $params['error_note'];
+            $response['error_note'] = $params['error_note'];
             $transaction->state = Transaction::STATE_CANCELLED;
             $transaction->update();
             $this->response->setResult(Response::ERROR_TRANSACTION_CANCELLED);
@@ -146,11 +148,11 @@ class Click extends BaseGateway
         $transaction->state = Transaction::STATE_COMPLETED;
         $transaction->update();
 
-        $additional_params['merchant_confirm_id'] = $transaction->id;
+        $response['merchant_confirm_id'] = $transaction->id;
 
         PaymentService::payListener(null, $transaction, 'after-pay');
 
-        $response = PaymentService::beforeResponse("CLick@Complete", $params, $additional_params);
+        $response = PaymentService::beforeResponse("Click@Complete", $params, $response);
 
         $this->response->setResult(Response::SUCCESS, $response);
     }
