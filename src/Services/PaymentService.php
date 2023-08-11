@@ -7,10 +7,6 @@
 
 namespace Goodoneuz\PayUz\Services;
 
-use App\User;
-use Illuminate\Support\Facades\Log;
-
-
 class PaymentService
 {
     /*
