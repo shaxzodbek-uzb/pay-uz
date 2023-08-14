@@ -73,10 +73,6 @@ class Payme extends BaseGateway
     {
         $this->validateParams($this->request->params);
 
-        $additional_params = [
-            'allow' => false,
-        ];
-
         $model = PaymentService::convertKeyToModel($this->request->params['account'][$this->config['key']]);
         if ($model == null) {
             $this->response->error(
@@ -99,10 +95,12 @@ class Payme extends BaseGateway
             );
         }
         PaymentService::payListener($model, null, 'before-pay');
+        
+        $response = [
+            'allow' => false,
+        ];
 
-        $additional_params['allow'] = true;
-
-        $response = PaymentService::beforeResponse("Payme@CheckPerformTransaction", $this->request->params, $additional_params);
+        $response = PaymentService::beforeResponse("Payme@CheckPerformTransaction", $this->request->params, $response);
 
         $this->response->success($response);
     }
