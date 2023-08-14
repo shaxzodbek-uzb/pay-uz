@@ -1,2 +1,2 @@
 <?php
-return $additional_params;
+return $response;
