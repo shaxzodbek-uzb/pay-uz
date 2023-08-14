@@ -66,7 +66,7 @@ class PaymentService
      * @param $params - request params
      * @param array $additional_params - additional params
      */
-    public static function beforeResponse(string $string, $params, array $additional_params)
+    public static function beforeResponse(string $string, $request, array $response)
     {
         return require base_path('/app/Http/Controllers/Payments/before_response.php');
     }
