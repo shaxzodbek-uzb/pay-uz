@@ -97,7 +97,7 @@ class Payme extends BaseGateway
         PaymentService::payListener($model, null, 'before-pay');
         
         $response = [
-            'allow' => false,
+            'allow' => true,
         ];
 
         $response = PaymentService::beforeResponse("Payme@CheckPerformTransaction", $this->request->params, $response);
