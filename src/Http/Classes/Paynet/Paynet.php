@@ -45,7 +45,7 @@ class Paynet extends BaseGateway
                 $body = Response::makeResponse($this->GetInformation());
                 break;
             default:
-                $this->response->response($this->request, 'Method not found.', PaynetException::ERROR_METHOD_NOT_FOUND);
+                $this->response->response($this->request, 'Method not found.', Response::ERROR_METHOD_NOT_FOUND);
         }
         $this->response->response($this->request, $body, Response::SUCCESS);
     }
