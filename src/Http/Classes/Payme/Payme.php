@@ -208,7 +208,7 @@ class Payme extends BaseGateway
                 'create_time' => $create_time,
                 'perform_time' => null,
                 'cancel_time' => null,
-                'system_time_datetime' => DataFormat::timestamp2datetime($this->request->params['time'])
+                'system_time_datetime' => $this->request->params['time']
             );
 
             $transaction = Transaction::create([
