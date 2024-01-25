@@ -16,7 +16,7 @@ class CreatePaymentSystemsTable extends Migration
         Schema::create('payment_systems', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->nullable();
-            $table->string('system')->unique();
+            $table->string('system');
             $table->string('status')->default(\Goodoneuz\PayUz\Models\PaymentSystem::NOT_ACTIVE);
             $table->timestamps();
         });
