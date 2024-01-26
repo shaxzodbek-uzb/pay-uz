@@ -23,9 +23,9 @@ class Payme extends BaseGateway
     /**
      * Payme constructor.
      */
-    public function __construct()
+    public function __construct($payment_system)
     {
-        $this->config = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::PAYME);
+        $this->config = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::PAYME, $payment_system);
     }
 
     public function run()

@@ -16,71 +16,69 @@ class PayUzSeeder extends Seeder
      */
     public function run()
     {
-        if (Schema::hasTable('payment_systems')) {
-            PaymentSystem::firstOrCreate([
-                'name'      => 'Payme',
-                'system'    => 'payme'
-            ]);
-            PaymentSystem::firstOrCreate([
-                'name'      => 'Click',
-                'system'    => 'click'
-            ]);
-            PaymentSystem::firstOrCreate([
-                'name'      => 'Paynet',
-                'system'    => 'paynet'
-            ]);
-            PaymentSystem::firstOrCreate([
-                'name'      => 'Stripe',
-                'system'    => 'stripe'
-            ]);
-        }
+        $payme = PaymentSystem::firstOrCreate([
+            'name'      => 'Payme',
+            'system'    => 'payme'
+        ]);
+        $click = PaymentSystem::firstOrCreate([
+            'name'      => 'Click',
+            'system'    => 'click'
+        ]);
+        $paynet = PaymentSystem::firstOrCreate([
+            'name'      => 'Paynet',
+            'system'    => 'paynet'
+        ]);
+        $stripe = PaymentSystem::firstOrCreate([
+            'name'      => 'Stripe',
+            'system'    => 'stripe'
+        ]);
         if (Schema::hasTable('payment_system_params')) {
             //Paycom
             PaymentSystemParam::firstOrCreate([
-                'system'    => 'payme',
+                'payment_system_id'    => $payme->id,
                 'label'     => 'Login',
                 'name'      => 'login',
                 'value'     => 'Paycom'
             ]);
             PaymentSystemParam::firstOrCreate([
-                'system'    => 'payme',
+                'payment_system_id'    => $payme->id,
                 'label'     => 'Merchant id',
                 'name'      => 'merchant_id',
                 'value'     => 'merchant'
             ]);
             PaymentSystemParam::firstOrCreate([
-                'system'    => 'payme',
+                'payment_system_id'    => $payme->id,
                 'label'     => 'Password',
                 'name'      => 'password',
                 'value'     => 'password'
             ]);
             PaymentSystemParam::firstOrCreate([
-                'system'    => 'payme',
+                'payment_system_id'    => $payme->id,
                 'label'     => 'Key',
                 'name'      => 'key',
                 'value'     => 'key'
             ]);
             //Click
             PaymentSystemParam::firstOrCreate([
-                'system'    => 'click',
+                'payment_system_id'    => $click->id,
                 'label'     => 'Service id',
                 'name'      => 'service_id',
                 'value'     => 'service_id'
             ]);
             PaymentSystemParam::firstOrCreate([
-                'system'    => 'click',
+                'payment_system_id'    => $click->id,
                 'label'     => 'Secret key',
                 'name'      => 'secret_key',
                 'value'     => 'key'
             ]);
             PaymentSystemParam::firstOrCreate([
-                'system'    => 'click',
+                'payment_system_id'    => $click->id,
                 'label'     => 'Merchant Id',
                 'name'      => 'merchant_id',
                 'value'     => '0000'
             ]);
             PaymentSystemParam::firstOrCreate([
-                'system'    => 'click',
+                'payment_system_id'    => $click->id,
                 'label'     => 'Merchant user id',
                 'name'      => 'merchant_user_id',
                 'value'     => '0000'
@@ -88,39 +86,39 @@ class PayUzSeeder extends Seeder
 
             //Paynet
             PaymentSystemParam::firstOrCreate([
-                'system'    => 'paynet',
+                'payment_system_id'    => $paynet->id,
                 'label'     => 'Login',
                 'name'      => 'login',
                 'value'     => 'login'
             ]);
             PaymentSystemParam::firstOrCreate([
-                'system'    => 'paynet',
+                'payment_system_id'    => $paynet->id,
                 'label'     => 'Password',
                 'name'      => 'password',
                 'value'     => 'password'
             ]);
             PaymentSystemParam::firstOrCreate([
-                'system'    => 'paynet',
+                'payment_system_id'    => $paynet->id,
                 'label'     => 'Service id',
                 'name'      => 'service_id',
                 'value'     => 'service_id'
             ]);
             
             PaymentSystemParam::firstOrCreate([
-                'system'    => 'stripe',
+                'payment_system_id'    => $stripe->id,
                 'label'     => 'Secret key',
                 'name'      => 'secret_key',
                 'value'     => 'secret_key'
             ]);
             
             PaymentSystemParam::firstOrCreate([
-                'system'    => 'stripe',
+                'payment_system_id'    => $stripe->id,
                 'label'     => 'Publishable key',
                 'name'      => 'publishable_key',
                 'value'     => 'publishable_key'
             ]);
             PaymentSystemParam::firstOrCreate([
-                'system'    => 'stripe',
+                'payment_system_id'    => $stripe->id,
                 'label'     => 'Proxy',
                 'name'      => 'proxy',
                 'value'     => ''

@@ -50,6 +50,6 @@ class PaymentSystem extends Model
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function params(){
-        return $this->hasMany(PaymentSystemParam::class,'system','system');
+        return $this->hasMany(PaymentSystemParam::class);
     }
 }

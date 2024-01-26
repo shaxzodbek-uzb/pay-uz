@@ -10,7 +10,7 @@ class PaymentSystemParam extends Model
      * @var array
      */
     protected $fillable = [
-        'system',
+        'payment_system_id',
         'label',
         'name',
         'value',
@@ -20,6 +20,6 @@ class PaymentSystemParam extends Model
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function payment_system(){
-        return $this->hasOne(PaymentSystem::class,'system','system');
+        return $this->hasOne(PaymentSystem::class);
     }
 }

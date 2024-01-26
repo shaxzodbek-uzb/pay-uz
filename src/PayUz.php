@@ -29,20 +29,23 @@ class PayUz
      * @param null $driver
      * @return $this
      */
-    public function driver($driver = null)
+    public function driver($driver = null, $payment_system = null)
     {
+        if($payment_system){
+            $payment_system = PaymentSystem::where('system', $driver)->first();
+        }
         switch ($driver) {
             case PaymentSystem::PAYME:
-                $this->driverClass = new Payme;
+                $this->driverClass = new Payme($payment_system);
                 break;
             case PaymentSystem::CLICK:
-                $this->driverClass = new Click;
+                $this->driverClass = new Click($payment_system);
                 break;
             case PaymentSystem::PAYNET:
-                $this->driverClass = new Paynet;
+                $this->driverClass = new Paynet($payment_system);
                 break;
             case PaymentSystem::STRIPE:
-                $this->driverClass = new Stripe;
+                $this->driverClass = new Stripe($payment_system);
                 break;
         }
         return $this;

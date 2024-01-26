@@ -70,9 +70,9 @@ class PaymentSystemService
      * @param $driver
      * @return array
      */
-    public static function getPaymentSystemParamsCollect($driver)
+    public static function getPaymentSystemParamsCollect($driver, $payment_system)
     {
-        $params = PaymentSystemParam::where('system',$driver)->get();
+        $params = $payment_system->params()->get();
 
         if (count($params)>0)
         
