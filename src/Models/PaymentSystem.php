@@ -29,6 +29,7 @@ class PaymentSystem extends Model
     const CASH      = 'cash';
     const TERMINAL  = 'terminal';
     const STRIPE    = 'stripe';
+    const UZUM      = 'uzum';
     /**
      * @var array
      */

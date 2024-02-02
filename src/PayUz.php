@@ -10,6 +10,7 @@ use Goodoneuz\PayUz\Http\Classes\Click\Click;
 use Goodoneuz\PayUz\Http\Classes\Paynet\Paynet;
 use Goodoneuz\PayUz\Http\Classes\Stripe\Stripe;
 use Goodoneuz\PayUz\Http\Classes\PaymentException;
+use Goodoneuz\PayUz\Http\Classes\Uzum\Uzum;
 
 class PayUz
 {
@@ -46,6 +47,9 @@ class PayUz
                 break;
             case PaymentSystem::STRIPE:
                 $this->driverClass = new Stripe($payment_system);
+                break;
+            case PaymentSystem::UZUM:
+                $this->driverClass = new Uzum($payment_system);
                 break;
         }
         return $this;
