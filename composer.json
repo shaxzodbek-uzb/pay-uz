@@ -2,10 +2,10 @@
     "name": "goodoneuz/pay-uz",
     "description": "Payment: Click, Payme, Uzcard, Visa",
     "keywords": [
-        "goodoneuz",
+        "blaze",
         "pay-uz"
     ],
-    "homepage": "https://github.com/goodoneuz/pay-uz",
+    "homepage": "https://github.com/shaxzodbek-uzb/pay-uz",
     "license": "MIT",
     "type": "library",
     "authors": [

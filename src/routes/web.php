@@ -37,7 +37,7 @@ Route::middleware($middleware)->name('payment.')->prefix('payment')->namespace('
     // end --editable functions
 
     Route::resource('transactions', 'TransactionController');
-    Route::resource('projects', 'ProjectController');
+    Route::resource('payment-projects', 'PaymentProjectController');
     Route::resource('payment_systems', 'PaymentSystemController');
     Route::resource('transactions', 'TransactionController');
 });

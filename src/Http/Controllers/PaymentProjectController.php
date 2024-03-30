@@ -3,10 +3,10 @@
 namespace Goodoneuz\PayUz\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Goodoneuz\PayUz\Models\Project;
+use Goodoneuz\PayUz\Models\PaymentProject;
 use App\Http\Controllers\Controller;
 
-class ProjectController extends Controller
+class PaymentProjectController extends Controller
 {
     
     /**
@@ -16,7 +16,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::latest()->get();
+        $projects = PaymentProject::latest()->get();
         return view('pay-uz::projects.index',compact('projects'));
     }
 
