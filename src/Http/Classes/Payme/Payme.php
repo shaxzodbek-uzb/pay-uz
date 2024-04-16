@@ -463,7 +463,7 @@ class Payme extends BaseGateway
         $params = [
             'merchant' => $this->config['merchant_id'],
             'amount' => $amount * 100,
-            'account[key]' => PaymentService::convertModelToKey($model),
+            'account[' . $this->config['key'] . ']' => PaymentService::convertModelToKey($model),
             'lang' => 'ru',
             'currency' => $currency,
             'callback' => $url,
