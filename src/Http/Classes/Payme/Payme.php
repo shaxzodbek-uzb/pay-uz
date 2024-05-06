@@ -95,7 +95,7 @@ class Payme extends BaseGateway
             );
         }
         PaymentService::payListener($model, null, 'before-pay');
-        
+
         $response = [
             'allow' => true,
         ];
@@ -442,7 +442,7 @@ class Payme extends BaseGateway
                 'time' => 1 * $detail['system_time_datetime'], // paycom transaction timestamp as is
                 'amount' => 1 * $row['amount'],
                 'account' => [
-                    'key' => 1 * $row[$this->config['key']], // account parameters to identify client/order/service
+                    "{$this->config['key']}" => 1 * $row[$this->config['key']], // account parameters to identify client/order/service
                     // ... additional parameters may be listed here, which are belongs to the account
                 ],
                 'create_time' => DataFormat::datetime2timestamp($detail['create_time']),
