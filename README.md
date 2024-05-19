@@ -17,6 +17,8 @@
 - [Paynet](http://paynet.uz) - Merchant
 - [Stripe](https://stripe.com/) - Merchant(Subscribe)
 
+*По умолчанию в Payme установлен "накопительный режим". Чтобы производить оплату в "Одноразовом режиме", вам необходимо изменить параметр в config/config.php ``'multi_transaction' => false``*
+
 **Planned**
 ------
 - Upay
