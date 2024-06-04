@@ -67,7 +67,7 @@ class Transaction extends Model
 
     public function isExpired()
     {
-        return $this->state == self::STATE_CREATED && DataFormat::datetime2timestamp($this->updated_time) - time() > self::TIMEOUT;
+        return ($this->state == self::STATE_CREATED) && ($this->updated_at < now()->subHours(12));
     }
 
     public function transactionable(): MorphTo
