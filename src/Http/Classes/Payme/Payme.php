@@ -86,9 +86,9 @@ class Payme extends BaseGateway
                 'Invalid amount for this object.'
             );
         }
-        $active_transactions = $this->getModelTransactions($model, true);
+        $completed_transactions = $this->getModelTransactions($model, true);
 
-        if ((count($active_transactions) > 0) && !config('payuz')['multi_transaction']) {
+        if ((count($completed_transactions) > 0) && !config('payuz')['multi_transaction']) {
             $this->response->error(
                 Response::ERROR_INVALID_TRANSACTION,
                 'There is other active/completed transaction for this object.'
@@ -124,13 +124,13 @@ class Payme extends BaseGateway
         return true;
     }
 
-    public function getModelTransactions($model, $active = false)
+    public function getModelTransactions($model, $completed = false)
     {
         $transactions = Transaction::where('payment_system', PaymentSystem::PAYME)
             ->where('transactionable_type', get_class($model))
             ->where('transactionable_id', $model->id);
-        if ($active)
-            $transactions = $transactions->where('state', Transaction::STATE_CREATED);
+        if ($completed)
+            $transactions = $transactions->where('state', Transaction::STATE_COMPLETED);
         return $transactions->get();
     }
 
