@@ -442,15 +442,15 @@ class Payme extends BaseGateway
                 'time' => 1 * $detail['system_time_datetime'], // paycom transaction timestamp as is
                 'amount' => 1 * $row['amount'],
                 'account' => [
-                    "{$this->config['key']}" => 1 * $row[$this->config['key']], // account parameters to identify client/order/service
+                    "{$this->config['key']}" => 1 * $row['transactionable_id'], // account parameters to identify client/order/service
                     // ... additional parameters may be listed here, which are belongs to the account
                 ],
                 'create_time' => DataFormat::datetime2timestamp($detail['create_time']),
                 'perform_time' => DataFormat::datetime2timestamp($detail['perform_time']),
-                'cancel_time' => DataFormat::datetime2timestamp($detail['cancel_time']),
+                'cancel_time' => DataFormat::datetime2timestamp($detail['cancel_time']) ?? 0,
                 'transaction' => (string)$row['id'],
-                'state' => 1 * $row['state'],
-                'reason' => isset($row['comment']) ? 1 * $row['comment'] : null,
+                'state' => 1 * intval($row['state']),
+                'reason' => \Illuminate\Support\Arr::get($row,"comment") ? (1 * \Illuminate\Support\Arr::get($row,"comment")) : null,,
                 'receivers' => isset($row['receivers']) ? json_decode($row['receivers'], true) : null,
             ];
         }
