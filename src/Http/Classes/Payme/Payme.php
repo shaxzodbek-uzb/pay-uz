@@ -86,14 +86,23 @@ class Payme extends BaseGateway
                 'Invalid amount for this object.'
             );
         }
-        $completed_transactions = $this->getModelTransactions($model, true);
 
+        $active_transactions = $this->getActiveTransactions($model);
+        if ((count($active_transactions) > 0)) {
+            $this->response->error(
+                Response::ERROR_INVALID_TRANSACTION,
+                'There is other active transaction for this object.'
+            );
+        }
+
+        $completed_transactions = $this->getComplatedTransactions($model);
         if ((count($completed_transactions) > 0) && !config('payuz')['multi_transaction']) {
             $this->response->error(
                 Response::ERROR_INVALID_TRANSACTION,
-                'There is other active/completed transaction for this object.'
+                'There is other completed transaction for this object.'
             );
         }
+
         PaymentService::payListener($model, null, 'before-pay');
 
         $response = [
@@ -124,14 +133,22 @@ class Payme extends BaseGateway
         return true;
     }
 
-    public function getModelTransactions($model, $completed = false)
+    public function getActiveTransactions($model)
     {
-        $transactions = Transaction::where('payment_system', PaymentSystem::PAYME)
+        return Transaction::where('payment_system', PaymentSystem::PAYME)
             ->where('transactionable_type', get_class($model))
-            ->where('transactionable_id', $model->id);
-        if ($completed)
-            $transactions = $transactions->where('state', Transaction::STATE_COMPLETED);
-        return $transactions->get();
+            ->where('transactionable_id', $model->id)
+            ->where('state', Transaction::STATE_CREATED)
+            ->get();
+    }
+
+    public function getComplatedTransactions($model)
+    {
+        return Transaction::where('payment_system', PaymentSystem::PAYME)
+            ->where('transactionable_type', get_class($model))
+            ->where('transactionable_id', $model->id)
+            ->where('state', Transaction::STATE_COMPLETED)
+            ->get();
     }
 
     private function CheckTransaction()
