@@ -1,3 +1,3 @@
 <?php
-    return \App\User::find($key);
+    return \App\Models\User::find($key);
 

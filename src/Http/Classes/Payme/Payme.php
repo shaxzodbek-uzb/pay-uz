@@ -86,18 +86,27 @@ class Payme extends BaseGateway
                 'Invalid amount for this object.'
             );
         }
-        $active_transactions = $this->getModelTransactions($model, true);
 
-        if ((count($active_transactions) > 0) && !config('payuz')['multi_transaction']) {
+        $active_transactions = $this->getActiveTransactions($model);
+        if ((count($active_transactions) > 0)) {
             $this->response->error(
                 Response::ERROR_INVALID_TRANSACTION,
-                'There is other active/completed transaction for this object.'
+                'There is other active transaction for this object.'
             );
         }
+
+        $completed_transactions = $this->getComplatedTransactions($model);
+        if ((count($completed_transactions) > 0) && !config('payuz')['multi_transaction']) {
+            $this->response->error(
+                Response::ERROR_INVALID_TRANSACTION,
+                'There is other completed transaction for this object.'
+            );
+        }
+
         PaymentService::payListener($model, null, 'before-pay');
 
         $response = [
-            'allow' => false,
+            'allow' => true,
         ];
 
         $response = PaymentService::beforeResponse("Payme@CheckPerformTransaction", $this->request->params, $response);
@@ -124,15 +133,22 @@ class Payme extends BaseGateway
         return true;
     }
 
-    public function getModelTransactions($model, $active = false)
+    public function getActiveTransactions($model)
     {
-        $transactions = Transaction::where('payment_system', PaymentSystem::PAYME)
+        return Transaction::where('payment_system', PaymentSystem::PAYME)
             ->where('transactionable_type', get_class($model))
-            ->where('transactionable_id', $model->id);
-        if ($active) {
-            $transactions = $transactions->where('state', Transaction::STATE_CREATED);
-        }
-        return $transactions->get();
+            ->where('transactionable_id', $model->id)
+            ->where('state', Transaction::STATE_CREATED)
+            ->get();
+    }
+
+    public function getComplatedTransactions($model)
+    {
+         return Transaction::where('payment_system', PaymentSystem::PAYME)
+            ->where('transactionable_type', get_class($model))
+            ->where('transactionable_id', $model->id)
+            ->where('state', Transaction::STATE_COMPLETED)
+            ->get();
     }
 
     private function CheckTransaction()
@@ -211,7 +227,7 @@ class Payme extends BaseGateway
                 'create_time' => $create_time,
                 'perform_time' => null,
                 'cancel_time' => null,
-                'system_time_datetime' => DataFormat::timestamp2datetime($this->request->params['time'])
+                'system_time_datetime' => $this->request->params['time']
             );
 
             $transaction = Transaction::create([
@@ -463,7 +479,7 @@ class Payme extends BaseGateway
         $params = [
             'merchant' => $this->config['merchant_id'],
             'amount' => $amount * 100,
-            'account[key]' => PaymentService::convertModelToKey($model),
+            'account[' . $this->config['key'] . ']' => PaymentService::convertModelToKey($model),
             'lang' => 'ru',
             'currency' => $currency,
             'callback' => $url,

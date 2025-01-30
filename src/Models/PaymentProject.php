@@ -5,7 +5,7 @@ namespace Goodoneuz\PayUz\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Project extends Model
+class PaymentProject extends Model
 {
     use SoftDeletes;
 
