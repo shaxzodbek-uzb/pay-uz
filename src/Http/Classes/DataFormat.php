@@ -79,7 +79,7 @@ class DataFormat{
         }
 
         // convert to datetime string
-        return date('Y-m-d H:i:s', strtotime($timestamp));
+        return date('Y-m-d H:i:s', $timestamp);
     }
 
     /**
@@ -90,7 +90,7 @@ class DataFormat{
     public static function datetime2timestamp($datetime)
     {
         if ($datetime) {
-            return strtotime($datetime);
+            return ($datetime);
         }
 
         return $datetime;
