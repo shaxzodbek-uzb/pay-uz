@@ -1,5 +1,7 @@
 # O'zbekiston milliy to'lov tizimlari uchun
 
+<a href="https://tirikchilik.uz/shaxzodbek-uzb" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+
 [![Latest Version on Packagist](https://img.shields.io/packagist/dt/goodoneuz/pay-uz.svg?style=flat)](https://packagist.org/packages/goodoneuz/pay-uz)
 [![Build Status](https://img.shields.io/travis/goodoneuz/pay-uz/master.svg?style=flat-square)](https://travis-ci.org/goodoneuz/pay-uz)
 [![Quality Score](https://img.shields.io/scrutinizer/g/goodoneuz/pay-uz.svg?style=flat-square)](https://scrutinizer-ci.com/g/goodoneuz/pay-uz)
