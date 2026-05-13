@@ -70,7 +70,7 @@ class Request
     }
     public function getRequestArray()
     {
-        $request_body  = file_get_contents('php://input');
+        $request_body  = request()->getContent();
         $clean_xml = str_ireplace(['soapenv:', 'soap:', 'xmlns:', 'xsi:', 'ns1:'], '', $request_body);
         $xml = simplexml_load_string($clean_xml);
         $body = null;
