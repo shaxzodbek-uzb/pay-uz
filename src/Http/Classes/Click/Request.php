@@ -7,7 +7,7 @@ class Request{
     private $in_array;
     public function __construct()
     {
-        $this->inputs = file_get_contents('php://input');
+        $this->inputs = request()->getContent();
     }
     public function all(){
         if (!$this->in_array){
