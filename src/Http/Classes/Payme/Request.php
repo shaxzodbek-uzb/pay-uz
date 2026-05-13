@@ -27,7 +27,7 @@ class Request
     public function __construct($response)
     {
         $this->response = $response;
-        $request_body  = file_get_contents('php://input');
+        $request_body  = request()->getContent();
 
         if(env('APP_ENV') == 'testing')
             $request_body = request()->all()['request'];
