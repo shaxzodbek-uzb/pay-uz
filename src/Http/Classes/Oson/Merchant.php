@@ -19,7 +19,9 @@ class Merchant
         $this->config = $config;
     }
     public function checkAuth(){
-        if ($this->config['login'] != $this->acc['login'] || $this->config['password'] != $this->acc['password'] )
+        // Constant-time compares to avoid timing / type-juggling auth bypass.
+        if (!hash_equals((string)$this->config['login'], (string)($this->acc['login'] ?? '')) ||
+            !hash_equals((string)$this->config['password'], (string)($this->acc['password'] ?? '')) )
             throw new OsonException(OsonException::ERROR_AUTHORIZATION,[]);
     }
 }

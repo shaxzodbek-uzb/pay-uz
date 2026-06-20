@@ -36,8 +36,12 @@ class PayUzServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        // Automatically apply the package configuration
-        $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'pay-uz');
+        // Automatically apply the package configuration.
+        // NOTE: the key must be 'payuz' to match every config('payuz') read in the
+        // package (routes, gateways) and the published file name config_path('payuz.php').
+        // It was previously merged under 'pay-uz', so the package defaults (including the
+        // control-panel auth middleware) silently never applied on a default install.
+        $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'payuz');
 
         // Register the main class to use with the facade
         $this->app->singleton('pay-uz', function () {

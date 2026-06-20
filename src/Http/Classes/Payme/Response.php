@@ -38,7 +38,7 @@ class Response
      */
     public function send()
     {
-        if(env('APP_ENV') != 'testing')
+        if(! app()->runningUnitTests())
             header('Content-Type: application/json; charset=UTF-8');
         echo json_encode($this->response);
     }

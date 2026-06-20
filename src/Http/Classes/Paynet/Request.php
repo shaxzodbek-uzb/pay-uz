@@ -70,9 +70,17 @@ class Request
     }
     public function getRequestArray()
     {
-        $request_body  = file_get_contents('php://input');
+        // See issue #71 — getContent() is Octane/RoadRunner safe.
+        $request_body  = request()->getContent();
         $clean_xml = str_ireplace(['soapenv:', 'soap:', 'xmlns:', 'xsi:', 'ns1:'], '', $request_body);
-        $xml = simplexml_load_string($clean_xml);
+        // Harden XML parsing against XXE / external entity attacks:
+        //  - LIBXML_NONET blocks network access for entities
+        //  - LIBXML_NOENT is deliberately NOT set, so entities are not substituted
+        //  - on PHP < 8 also disable the external entity loader (no-op / removed on 8+)
+        if (\function_exists('libxml_disable_entity_loader') && \PHP_VERSION_ID < 80000) {
+            libxml_disable_entity_loader(true);
+        }
+        $xml = simplexml_load_string($clean_xml, 'SimpleXMLElement', LIBXML_NONET);
         $body = null;
         if ($xml)
             $body = $xml->Body;

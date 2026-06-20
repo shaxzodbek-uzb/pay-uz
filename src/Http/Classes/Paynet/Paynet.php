@@ -92,6 +92,21 @@ class Paynet extends BaseGateway
         }
         // TODO: check if user be yuridik litso can not return status 501;
 
+        // SECURITY: verify the amount the gateway is paying matches what the order
+        // actually owes. Without this, a tampered/incorrect callback amount would be
+        // accepted verbatim and stored as a completed payment. Mirrors the
+        // isProperModelAndAmount() guard used by the Click and Payme drivers.
+        // NOTE: status 411 ("incorrect amount") — confirm the exact code your Paynet
+        // contract expects for an amount mismatch.
+        if (!PaymentService::isProperModelAndAmount($model, $this->request->params['amount'])) {
+            return  "<ns2:PerformTransactionResult xmlns:ns2=\"http://uws.provider.com/\">" .
+                "<errorMsg>Incorrect amount</errorMsg>" .
+                "<status>411</status>" .
+                "<timeStamp>" . DataFormat::toDateTimeWithTimeZone(now()) . "</timeStamp>" .
+                "<providerTrnId>0</providerTrnId>" .
+                "</ns2:PerformTransactionResult>";
+        }
+
         $create_time = DataFormat::timestamp(true);
 
         $detail = array(
@@ -210,6 +225,11 @@ class Paynet extends BaseGateway
 
     private function getTransactionBySystemTransactionId()
     {
-        return Transaction::where('system_transaction_id', $this->request->params['transactionId'])->first();
+        // Scope by payment_system: system_transaction_id is only unique per gateway,
+        // so an unscoped lookup can collide with a Click/Payme transaction that
+        // happens to share the same id.
+        return Transaction::where('payment_system', PaymentSystem::PAYNET)
+            ->where('system_transaction_id', $this->request->params['transactionId'])
+            ->first();
     }
 }

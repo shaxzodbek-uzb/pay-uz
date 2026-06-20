@@ -7,7 +7,9 @@ class Request{
     private $in_array;
     public function __construct()
     {
-        $this->inputs = file_get_contents('php://input');
+        // request()->getContent() works under php-fpm and Octane/RoadRunner alike,
+        // unlike reading the raw php://input stream. See issue #71.
+        $this->inputs = request()->getContent();
     }
     public function all(){
         if (!$this->in_array){

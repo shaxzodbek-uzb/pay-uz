@@ -68,8 +68,20 @@ class Stripe extends BaseGateway
         Session::flash('success', 'Payment successful!');
         //todo: create transaction for stripe
         PaymentService::payListener(null, $transaction, 'after-pay');
-        header("Location: " . $this->request->url);
-        echo "<script>window.location.href='" . $this->request->url . "';</script>";
+
+        // The redirect target comes straight from the request, so it must be
+        // validated and escaped before use:
+        //  - filter_var + http(s) scheme check blocks CRLF header injection,
+        //    open redirects and javascript:/data: URIs;
+        //  - json_encode safely escapes it for the inline <script> JS string,
+        //    closing the reflected XSS.
+        $redirectUrl = (string) $this->request->url;
+        $scheme = parse_url($redirectUrl, PHP_URL_SCHEME);
+        if (!filter_var($redirectUrl, FILTER_VALIDATE_URL) || !in_array($scheme, ['http', 'https'], true)) {
+            $redirectUrl = url('/');
+        }
+        header("Location: " . $redirectUrl);
+        echo "<script>window.location.href=" . json_encode($redirectUrl) . ";</script>";
     }
     public function getRedirectParams($model, $amount, $currency, $url)
     {

@@ -274,16 +274,37 @@ class Payme extends BaseGateway
                 } else {
 
                     $perform_time = DataFormat::timestamp(true);
-                    $transaction->state = Transaction::STATE_COMPLETED;
-                    $transaction->updated_time = $perform_time;
 
                     $detail = $transaction->detail;
                     $detail['perform_time'] = $perform_time;
-                    $detail = $detail;
 
-                    $transaction->detail = $detail;
+                    // Atomic compare-and-set: flip CREATED -> COMPLETED in a single
+                    // conditional UPDATE. Only one of two concurrent PerformTransaction
+                    // calls for the same transaction can match state=CREATED, so the
+                    // after-pay listener fires exactly once and we cannot double-perform.
+                    // (detail is json-encoded manually because the query builder does
+                    // not apply the model's 'json' cast.)
+                    $affected = Transaction::where('id', $transaction->id)
+                        ->where('state', Transaction::STATE_CREATED)
+                        ->update([
+                            'state'        => Transaction::STATE_COMPLETED,
+                            'updated_time' => $perform_time,
+                            'detail'       => json_encode($detail),
+                        ]);
 
-                    $transaction->update();
+                    $transaction->refresh();
+
+                    if ($affected === 0) {
+                        // Lost the race (another worker already performed it): return
+                        // the already-recorded perform result instead of performing again.
+                        $detail = $transaction->detail;
+                        $this->response->success([
+                            'transaction' => (string) $transaction->id,
+                            'perform_time' => 1 * ($detail['perform_time'] ?? $transaction->updated_time),
+                            'state' => 1 * $transaction->state,
+                        ]);
+                        break;
+                    }
 
                     PaymentService::payListener(null, $transaction, 'after-pay');
 
