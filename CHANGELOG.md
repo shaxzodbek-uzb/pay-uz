@@ -2,11 +2,17 @@
 
 All notable changes to `pay-uz` will be documented in this file
 
-## Unreleased
+## 3.0.0 - 2026-06-20
+
+Security release. Fixes **CVE-2026-31843** (GHSA-m5wg-cjgh-223j) — the
+unauthenticated remote code execution via the code editor — and a set of related
+hardening fixes; adds the Uzum Bank gateway. **Major** version because the
+control-panel routes now require authentication by default (see Breaking).
 
 ### Security
 
-- **[Critical] Fixed unauthenticated remote code execution in the code "editors".**
+- **[Critical] Fixed unauthenticated remote code execution in the code "editors"
+  (CVE-2026-31843 / GHSA-m5wg-cjgh-223j).**
   `POST /payment/api/editable/update` (`ApiController::file_put`) wrote
   attacker-controlled content into `app/Http/Controllers/Payments/*.php`, which
   the package later `require`s — and the `file_name` was unsanitised (path
