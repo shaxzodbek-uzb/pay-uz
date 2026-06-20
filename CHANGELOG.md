@@ -51,6 +51,12 @@ All notable changes to `pay-uz` will be documented in this file
 
 ### Fixed
 
+- **`DataFormat::timestamp2datetime()` returned `1970-01-01` for numeric timestamps.**
+  It applied `strtotime()` to the numeric Unix timestamp (which returns `false`),
+  so any numeric input collapsed to the epoch. It now accepts both a numeric Unix
+  timestamp (used by Uzcard) and a date-time string (Click `sign_time`, Paynet
+  `transactionTime`). `datetime2timestamp()` is hardened symmetrically. (Addresses
+  the bug behind #68; the `getReport` part of #68 was already fixed by #69.)
 - **Octane / RoadRunner request body (#71).** All gateways now read the request
   body via `request()->getContent()` instead of `file_get_contents('php://input')`,
   which is unreliable under Octane/RoadRunner.

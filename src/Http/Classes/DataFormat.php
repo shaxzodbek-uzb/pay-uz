@@ -78,19 +78,29 @@ class DataFormat{
             $timestamp = self::timestamp2seconds($timestamp);
         }
 
+        // Accept either a numeric Unix timestamp (seconds) or a parseable
+        // date-time string. strtotime() must only be applied to a string —
+        // calling it on a numeric timestamp returns false, which previously
+        // made this method yield "1970-01-01 00:00:00" for every numeric input.
+        if (!is_numeric($timestamp)) {
+            $timestamp = strtotime($timestamp);
+        }
+
         // convert to datetime string
-        return date('Y-m-d H:i:s', strtotime($timestamp));
+        return date('Y-m-d H:i:s', (int) $timestamp);
     }
 
     /**
      * Converts date time string to timestamp value.
-     * @param string $datetime date time string.
+     * @param string|int $datetime date time string or Unix timestamp.
      * @return int timestamp as seconds.
      */
     public static function datetime2timestamp($datetime)
     {
         if ($datetime) {
-            return strtotime($datetime);
+            // A date-time string is parsed with strtotime(); an already numeric
+            // Unix timestamp is returned as-is (strtotime() of a number is false).
+            return is_numeric($datetime) ? (int) $datetime : strtotime($datetime);
         }
 
         return $datetime;
