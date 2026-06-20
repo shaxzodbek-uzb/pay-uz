@@ -33,6 +33,10 @@ class PayUzSeeder extends Seeder
                 'name'      => 'Stripe',
                 'system'    => 'stripe'
             ]);
+            PaymentSystem::firstOrCreate([
+                'name'      => 'Uzum Bank',
+                'system'    => 'uzum'
+            ]);
         }
         if (Schema::hasTable('payment_system_params')) {
             //Paycom
@@ -124,6 +128,32 @@ class PayUzSeeder extends Seeder
                 'label'     => 'Proxy',
                 'name'      => 'proxy',
                 'value'     => ''
+            ]);
+
+            //Uzum Bank (Merchant API)
+            PaymentSystemParam::firstOrCreate([
+                'system'    => 'uzum',
+                'label'     => 'Login',
+                'name'      => 'login',
+                'value'     => 'login'
+            ]);
+            PaymentSystemParam::firstOrCreate([
+                'system'    => 'uzum',
+                'label'     => 'Password',
+                'name'      => 'password',
+                'value'     => 'password'
+            ]);
+            PaymentSystemParam::firstOrCreate([
+                'system'    => 'uzum',
+                'label'     => 'Service id',
+                'name'      => 'service_id',
+                'value'     => 'service_id'
+            ]);
+            PaymentSystemParam::firstOrCreate([
+                'system'    => 'uzum',
+                'label'     => 'Account key (params field that identifies the order)',
+                'name'      => 'key',
+                'value'     => 'id'
             ]);
         }
     }

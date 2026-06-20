@@ -24,7 +24,8 @@ class WoywoController extends BaseGateway
             'merchant_id' => env('WOYWO_MERCHANT_ID',null),
             'key'     => env('WOYWO_KEY',null),
         ];
-        $request_body  = file_get_contents('php://input');
+        // See issue #71 — getContent() is Octane/RoadRunner safe.
+        $request_body  = request()->getContent();
         $this->request  = json_decode($request_body, true);
         $this->merchant = new Merchant($this->config);
     }

@@ -63,7 +63,6 @@ class Click extends BaseGateway
 
         foreach ($fields as $field)
             if (!array_key_exists($field, $arr)) {
-                echo $field;
                 return false;
             }
 
@@ -155,7 +154,9 @@ class Click extends BaseGateway
         if ($transaction->state != Transaction::STATE_CREATED)
             $this->response->setResult(Response::ERROR_ALREADY_PAID);
 
-        if ($transaction->amount != $params['amount']) {
+        // Compare amounts as integer tiyin to avoid float precision issues and the
+        // type-juggling pitfalls of a loose != on a double-typed column.
+        if ((int) round($transaction->amount * 100) !== (int) round(((float) $params['amount']) * 100)) {
             $this->response->setResult(Response::ERROR_INVALID_AMOUNT);
         }
 

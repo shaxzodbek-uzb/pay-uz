@@ -15,6 +15,7 @@
 - [Oson](http://click.uz) - Merchant
 - [Uzcard](http://uzcard.uz) - Merchant
 - [Paynet](http://paynet.uz) - Merchant
+- [Uzum Bank](https://uzumbank.uz) - Merchant
 - [Stripe](https://stripe.com/) - Merchant(Subscribe)
 
 *По умолчанию для оплаты установлен "накопительный режим". Чтобы производить оплату в "Одноразовом режиме", вам необходимо изменить параметр в config/payuz.php ``'multi_transaction' => false``*
@@ -71,6 +72,32 @@ Route::any('/pay/{paysys}/{key}/{amount}',function($paysys, $key, $amount){
 });
 ```
 
+### Uzum Bank (Merchant API)
+
+Uzum Bank uses the server-to-server "Merchant API" model: Uzum's processing
+centre calls **your** endpoints for five operations — `check`, `create`,
+`confirm`, `reverse`, `status`. Expose them on a single `{operation}` route:
+
+```php
+Route::post('/handle/uzum/{operation}', function () {
+    return (new Goodoneuz\PayUz\PayUz)->driver('uzum')->handle();
+})->where('operation', 'check|create|confirm|reverse|status');
+```
+
+Configure the credentials Uzum issues for your terminal in the control panel
+(payment system `uzum`):
+
+| param        | meaning                                                        |
+|--------------|----------------------------------------------------------------|
+| `login`      | HTTP Basic auth login                                          |
+| `password`   | HTTP Basic auth password                                       |
+| `service_id` | your Uzum `serviceId` (also validated against the request body) |
+| `key`        | which `params` field identifies the order/model (default `id`) |
+
+Authentication is HTTP Basic (`login:password`) plus a `serviceId` match. Amounts
+on the wire are in **tiyin** (1 som = 100 tiyin); transactions are stored in som,
+like the Payme driver.
+
 **Exception:**
 ------
 
@@ -87,6 +114,16 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 ### Security
 
 If you discover any security related issues, please email shaxzodbek.qambaraliyev@gmail.com instead of using the issue tracker.
+
+> ⚠️ **Upgrade note (control panel now requires authentication).**
+> The control-panel routes (dashboard, settings, transactions, payment-systems
+> CRUD and the code "editors") are now protected by the `auth` middleware by
+> default, because the editor can write executable PHP. If you publish
+> `config/payuz.php`, set `control_panel.middleware` to your own admin/authorization
+> guard. Previously these routes — including the `POST /payment/api/editable/update`
+> endpoint — were reachable with only the `web` middleware, which allowed remote
+> code execution; upgrading and protecting them is strongly recommended. See
+> [CHANGELOG](CHANGELOG.md) for the full list of security fixes.
 
 ## Credits
 

@@ -81,7 +81,7 @@ class Response{
         $timestamp = time();
         $digest = sha1($timestamp .  $params['secret_key']);
         
-        if(env('APP_ENV') != 'testing')
+        if(! app()->runningUnitTests())
             header('Content-Type: application/json; charset=UTF-8');
         echo json_encode($this->result);
     }

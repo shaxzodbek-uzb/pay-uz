@@ -27,9 +27,11 @@ class Request
     public function __construct($response)
     {
         $this->response = $response;
-        $request_body  = file_get_contents('php://input');
+        // Use the framework request body (works under php-fpm and Octane/RoadRunner,
+        // where reading the raw php://input stream is unreliable). See issue #71.
+        $request_body  = request()->getContent();
 
-        if(env('APP_ENV') == 'testing')
+        if (app()->runningUnitTests())
             $request_body = request()->all()['request'];
     
         $this->payload = json_decode($request_body, true);

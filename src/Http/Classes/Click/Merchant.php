@@ -26,8 +26,7 @@ class Merchant{
                 $result = $this->validateCompleteRequest($request);
                 break;
         }
-        if($request['service_id'] != $this->config['service_id'] || !$result){
-            echo $result;
+        if((string)$request['service_id'] !== (string)($this->config['service_id'] ?? '') || !$result){
             $this->response->setResult(Response::ERROR_SIGN_CHECK);
         }
     }
@@ -37,8 +36,9 @@ class Merchant{
                     $request['service_id'] . $this->config['secret_key'] .
                     $request['merchant_trans_id'] . $request['amount'] .
                     $request['action'] . $request['sign_time']);
-                // echo $sign .'/'. $request['sign_string'];
-        return $sign == $request['sign_string'];
+        // Constant-time compare: a loose == on hex hashes is vulnerable to PHP
+        // type-juggling ("magic hash" 0e... collisions) and to timing analysis.
+        return hash_equals($sign, (string)($request['sign_string'] ?? ''));
     }
     public function validateCompleteRequest($request)
     {
@@ -47,7 +47,6 @@ class Merchant{
             $this->config['secret_key'] . $request['merchant_trans_id'] .
             $request['merchant_prepare_id'] . $request['amount'] .
             $request['action'] . $request['sign_time']);
-            // echo $sign;
-        return $sign == $request['sign_string'];
+        return hash_equals($sign, (string)($request['sign_string'] ?? ''));
     }
 }

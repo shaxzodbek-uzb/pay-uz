@@ -5,7 +5,7 @@
 @stop
 
 @section('style')
-    <link rel="stylesheet" href="{{ config('pay-uz.pay_assets_path') }}/css/pay.css">
+    <link rel="stylesheet" href="{{ config('payuz.pay_assets_path') }}/css/pay.css">
     <style>
 
     </style>
@@ -67,5 +67,5 @@
 @stop
 
 @section('script')
-    <script src="{{ config('pay-uz.pay_assets_path') }}/js/pay.js"></script>
+    <script src="{{ config('payuz.pay_assets_path') }}/js/pay.js"></script>
 @stop
