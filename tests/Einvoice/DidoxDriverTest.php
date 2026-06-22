@@ -77,6 +77,30 @@ class DidoxDriverTest extends TestCase
 
         $this->assertTrue($result->isSuccessful());
         $this->assertSame('doc-9', $result->documentId());
+        $this->assertSame(DocumentStatus::DRAFT, $result->status()); // doc_status mapped onto the result
+    }
+
+    /** @test */
+    public function create_document_reads_id_and_status_from_a_data_wrapped_envelope()
+    {
+        // Didox's envelope may nest the payload under `data` — pick() must find it.
+        $http = (new FakeHttpClient())->queue(['data' => ['_id' => 'doc-1', 'doc_status' => DocumentStatus::SIGNED_ONE_PARTY]]);
+
+        $result = $this->driver($http)->createDocument($this->document());
+
+        $this->assertSame('doc-1', $result->documentId());
+        $this->assertSame(DocumentStatus::SIGNED_ONE_PARTY, $result->status());
+    }
+
+    /** @test */
+    public function the_partner_header_name_is_configurable()
+    {
+        $http = (new FakeHttpClient())->queue(['_id' => 'd', 'doc_status' => 0]);
+
+        $this->driver($http, ['partner_header' => 'X-Partner'])->createDocument($this->document());
+
+        $this->assertSame('PT', $http->lastRequest['headers']['X-Partner']);
+        $this->assertArrayNotHasKey('Partner-Authorization', $http->lastRequest['headers']);
     }
 
     /** @test */
@@ -97,13 +121,15 @@ class DidoxDriverTest extends TestCase
         $http = (new FakeHttpClient())->queue(['doc_status' => 1])->queue(['doc_status' => 1]);
         $driver = $this->driver($http);
 
-        $driver->submit('doc-9', 'PKCS7BLOB');
+        $submitted = $driver->submit('doc-9', 'PKCS7BLOB');
         $this->assertSame('https://testapi3.didox.uz/v1/documents/doc-9/sign', $http->requests[0]['url']);
         $this->assertSame('PKCS7BLOB', $http->requests[0]['payload']['signature']);
+        $this->assertSame(DocumentStatus::SIGNED_ONE_PARTY, $submitted->status());
 
-        $driver->accept('doc-9', 'PKCS7BLOB');
+        $accepted = $driver->accept('doc-9', 'PKCS7BLOB');
         $this->assertSame('https://testapi3.didox.uz/v1/documents/doc-9/sign', $http->requests[1]['url']);
         $this->assertSame('PKCS7BLOB', $http->requests[1]['payload']['signature']);
+        $this->assertSame(DocumentStatus::SIGNED_ONE_PARTY, $accepted->status());
     }
 
     /** @test */
@@ -133,16 +159,20 @@ class DidoxDriverTest extends TestCase
         $http = (new FakeHttpClient())->queue(['doc_status' => 3])->queue(['doc_status' => 3])->queue([]);
         $driver = $this->driver($http);
 
-        $driver->reject('doc-9', 'BLOB', 'wrong items');
+        $rejected = $driver->reject('doc-9', 'BLOB', 'wrong items');
         $this->assertSame('https://testapi3.didox.uz/v1/documents/doc-9/reject', $http->requests[0]['url']);
         $this->assertSame('wrong items', $http->requests[0]['payload']['comment']);
         $this->assertSame('BLOB', $http->requests[0]['payload']['signature']);
+        $this->assertSame(DocumentStatus::REJECTED, $rejected->status());
 
-        $driver->cancel('doc-9', 'BLOB');
+        $cancelled = $driver->cancel('doc-9', 'BLOB');
         $this->assertSame('https://testapi3.didox.uz/v1/documents/doc-9/delete', $http->requests[1]['url']);
+        $this->assertSame('BLOB', $http->requests[1]['payload']['signature']); // signature carried on cancel
+        $this->assertSame(DocumentStatus::REJECTED, $cancelled->status());
 
         $driver->deleteDraft('doc-9');
         $this->assertSame('https://testapi3.didox.uz/v1/documents/doc-9/delete/draft', $http->requests[2]['url']);
+        $this->assertSame([], $http->requests[2]['payload']); // delete-draft has no body
     }
 
     /** @test */

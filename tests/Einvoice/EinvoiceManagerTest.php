@@ -9,6 +9,7 @@ use Goodoneuz\PayUz\Einvoice\Counterparty;
 use Goodoneuz\PayUz\Einvoice\EinvoiceManager;
 use Goodoneuz\PayUz\Einvoice\Drivers\NullDriver;
 use Goodoneuz\PayUz\Einvoice\Signers\NullSigner;
+use Goodoneuz\PayUz\Tests\Support\FakeHttpClient;
 use Goodoneuz\PayUz\Einvoice\Signers\CallableSigner;
 use Goodoneuz\PayUz\Einvoice\Events\DocumentSigned;
 use Goodoneuz\PayUz\Einvoice\Events\DocumentCreated;
@@ -90,6 +91,29 @@ class EinvoiceManagerTest extends TestCase
         $this->assertSame(base64_encode('null-to-sign:doc-1'), $seen);
         $this->assertTrue($result->isSuccessful());
         $this->assertCount(1, $dispatcher->ofType(DocumentSigned::class));
+    }
+
+    /** @test */
+    public function sign_and_submit_forwards_the_signed_blob_to_the_driver()
+    {
+        // Drive the real Didox driver so the signer's OUTPUT is observable on the wire.
+        $http = (new FakeHttpClient())
+            ->queue(['documentB64' => 'PAYLOAD64'])   // toSign (GET)
+            ->queue(['doc_status' => 1]);             // submit (POST /sign)
+
+        $manager = new EinvoiceManager(
+            ['default' => 'didox', 'drivers' => ['didox' => ['partner_token' => 'PT', 'user_key' => 'UK', 'base_url' => 'https://testapi3.didox.uz']]],
+            $http
+        );
+        $manager->useSigner(new CallableSigner(function ($payload) {
+            return 'SIGNED('.$payload.')';
+        }));
+
+        $manager->signAndSubmit('doc-1');
+
+        // the blob the signer produced (from the to-sign payload) is what reaches /sign
+        $this->assertSame('https://testapi3.didox.uz/v1/documents/doc-1/sign', $http->requests[1]['url']);
+        $this->assertSame('SIGNED(PAYLOAD64)', $http->requests[1]['payload']['signature']);
     }
 
     /** @test */
