@@ -47,7 +47,12 @@
                 "Goodoneuz\\PayUz\\PayUzServiceProvider"
             ],
             "aliases": {
-                "PayUz": "Goodoneuz\\PayUz\\PayUzFacade"
+                "PayUz": "Goodoneuz\\PayUz\\PayUzFacade",
+                "Fiscalizer": "Goodoneuz\\PayUz\\Fiscalization\\FiscalizerFacade",
+                "Subscribe": "Goodoneuz\\PayUz\\Subscribe\\SubscribeFacade",
+                "Checkout": "Goodoneuz\\PayUz\\Checkout\\CheckoutFacade",
+                "Bnpl": "Goodoneuz\\PayUz\\Bnpl\\BnplFacade",
+                "Einvoice": "Goodoneuz\\PayUz\\Einvoice\\EinvoiceFacade"
             }
         }
     }

@@ -3,6 +3,7 @@
 namespace Goodoneuz\PayUz\Models;
 
 use Goodoneuz\PayUz\Http\Classes\DataFormat;
+use Goodoneuz\PayUz\Fiscalization\FiscalResult;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -73,5 +74,36 @@ class Transaction extends Model
     public function transactionable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    /**
+     * Store an OFD fiscal receipt result under this transaction's `detail` JSON
+     * (key `fiscal`), so the fiscal sign / QR / receipt URL travel with the
+     * transaction. Returns $this for chaining.
+     *
+     * @param FiscalResult $result
+     * @return $this
+     */
+    public function attachFiscalReceipt(FiscalResult $result)
+    {
+        $detail = $this->detail ?: [];
+        $detail['fiscal'] = $result->toArray();
+        $this->detail = $detail;
+        $this->save();
+
+        return $this;
+    }
+
+    /**
+     * The fiscal receipt previously attached via {@see attachFiscalReceipt()},
+     * or null when the transaction has not been fiscalized.
+     *
+     * @return array|null
+     */
+    public function fiscalReceipt()
+    {
+        $detail = $this->detail ?: [];
+
+        return isset($detail['fiscal']) ? $detail['fiscal'] : null;
     }
 }

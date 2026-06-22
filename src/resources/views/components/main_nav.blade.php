@@ -27,14 +27,6 @@
                 Transactions</span>
                 </a>
             </li>
-            <li class="nav-item @if($current_route == 'payment.editors.index') active @endif" data-toggle="tooltip" data-placement="right" title="Editors">
-                <a class="nav-link" href="{{ route('payment.editors') }}">
-                    <i class="fa fa-fw fa-edit"></i>
-                    <span class="nav-link-text">
-                 Editors
-                </span>
-                </a>
-            </li>
             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Logout">
                 <a class="nav-link" href="#">
                     <i class="fa fa-fw fa-times-circle"></i>
