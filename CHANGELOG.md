@@ -2,6 +2,15 @@
 
 All notable changes to `pay-uz` will be documented in this file
 
+## Unreleased
+
+### Fixed
+
+- Click redirect: the legacy POST form to `https://my.click.uz/pay/` was shut
+  down by CLICK. `Click::getRedirectParams()` now builds the CLICK-Button
+  payment link (GET to `https://my.click.uz/services/pay`). Shop API
+  callbacks are unchanged.
+
 ## 4.0.0 - 2026-06-21
 
 Expands the package from "Payme + Click webhooks" into a multi-rail Uzbekistan
