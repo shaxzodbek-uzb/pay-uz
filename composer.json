@@ -17,6 +17,8 @@
     ],
     "require": {
         "php": "^7.1|^8.0",
+        "illuminate/database": "*",
+        "illuminate/http": "*",
         "illuminate/support": "*",
         "stripe/stripe-php": "*"
     },

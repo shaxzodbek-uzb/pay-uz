@@ -6,6 +6,12 @@ All notable changes to `pay-uz` will be documented in this file
 
 ### Fixed
 
+- Declared `illuminate/database` and `illuminate/http`. The package imports from
+  both across 22 files but listed only `illuminate/support`, so it relied on the
+  host application happening to provide them. Constraints are `*`, matching the
+  existing `illuminate/support` entry — this package deliberately floats them so
+  it installs against whatever Laravel version the application already has.
+
 - Click redirect: the legacy POST form to `https://my.click.uz/pay/` was shut
   down by CLICK. `Click::getRedirectParams()` now builds the CLICK-Button
   payment link (GET to `https://my.click.uz/services/pay`). Shop API
