@@ -26,29 +26,52 @@ class PayUz
 
 
     /**
+     * Payment systems that have a working redirect/callback gateway.
+     *
+     * PaymentSystem declares more constants than this (oson, uzcard, upay,
+     * mbank, visa, agr, cash, terminal). Those are transaction *labels* — there
+     * is no gateway behind them — so selecting one must fail here rather than
+     * later with a misleading message.
+     *
+     * @return array<string, class-string>
+     */
+    public static function supportedDrivers()
+    {
+        return [
+            PaymentSystem::PAYME  => Payme::class,
+            PaymentSystem::CLICK  => Click::class,
+            PaymentSystem::PAYNET => Paynet::class,
+            PaymentSystem::STRIPE => Stripe::class,
+            PaymentSystem::UZUM   => Uzum::class,
+        ];
+    }
+
+    /**
      * Select payment driver
-     * @param null $driver
+     *
+     * @param  string|null $driver a PaymentSystem constant
      * @return $this
+     * @throws \InvalidArgumentException when the system has no gateway
      */
     public function driver($driver = null)
     {
-        switch ($driver) {
-            case PaymentSystem::PAYME:
-                $this->driverClass = new Payme;
-                break;
-            case PaymentSystem::CLICK:
-                $this->driverClass = new Click;
-                break;
-            case PaymentSystem::PAYNET:
-                $this->driverClass = new Paynet;
-                break;
-            case PaymentSystem::STRIPE:
-                $this->driverClass = new Stripe;
-                break;
-            case PaymentSystem::UZUM:
-                $this->driverClass = new Uzum;
-                break;
+        $drivers = self::supportedDrivers();
+
+        if (!isset($drivers[$driver])) {
+            // Previously an unknown driver left driverClass null and surfaced
+            // later as "Driver not selected" — which is wrong twice over: the
+            // caller did select one, and the message names neither what they
+            // asked for nor what is available.
+            throw new \InvalidArgumentException(sprintf(
+                'Payment system [%s] has no gateway in pay-uz. Supported: %s.',
+                is_scalar($driver) ? (string) $driver : gettype($driver),
+                implode(', ', array_keys($drivers))
+            ));
         }
+
+        $class = $drivers[$driver];
+        $this->driverClass = new $class;
+
         return $this;
     }
 
