@@ -12,8 +12,6 @@
 ------
 - [Payme](http://payme.uz) - Merchant
 - [Click](http://click.uz) - Merchant
-- [Oson](http://click.uz) - Merchant
-- [Uzcard](http://uzcard.uz) - Merchant
 - [Paynet](http://paynet.uz) - Merchant
 - [Uzum Bank](https://uzumbank.uz) - Merchant
 - [Stripe](https://stripe.com/) - Merchant(Subscribe)
@@ -29,6 +27,11 @@
 ------
 - Upay
 - Visa
+- Oson, Uzcard — `PaymentSystem::OSON` / `::UZCARD` exist as transaction labels, but
+  there is no gateway behind them. Draft classes under `src/Http/Classes/{Oson,Uzcard}`
+  are **not** wired into `PayUz::driver()` and are not autoloadable either (they declare
+  `App\…` namespaces, which PSR-4 maps to the host application rather than this package).
+  `driver('oson')` fails immediately and says so.
 
 
 ## Installation
