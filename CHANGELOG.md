@@ -4,7 +4,89 @@ All notable changes to `pay-uz` will be documented in this file
 
 ## Unreleased
 
+### Added
+
+- **Octo card binding (tokenization).** New `Checkout\Contracts\CardBinder`
+  capability, implemented by the Octo driver, with `CardBinding`, `BindingSession`
+  and `BoundCard` value objects and `Checkout::bindCard()` /
+  `confirmBinding()` / `bindCallback()` / `revokeToken()` on the manager. Binding
+  is modelled as three steps because Octo delivers the token on a separate
+  callback rather than in the confirmation response, so a card is confirmed before
+  it is chargeable. `BoundCard` derives the BIN and last four digits from the
+  callback and drops the PAN it arrives with; `BoundCard::acknowledgement()` is the
+  exact reply Octo requires — it retries three times and then cancels the token
+  without it.
+
+- `OctoDriver::confirmPayment()` for the SMS step Octo asks for on card and
+  saved-token charges (`wait_user_action`), and `OctoDriver::cancel()` for
+  releasing a hold via `set_accept`.
+
+- Octo config keys `bind_notify_url`, `receipt_email` and `bindable_methods`.
+
+- **Checkout credentials now come from the control panel.** `CheckoutManager` reads
+  `payment_system_params` — the table Payme, Click and Uzum already use — and merges
+  it over the config file, so Octo is set up at `/payment/payment_systems` like every
+  other system instead of only through env. The lookup is lazy and fails soft (no
+  table yet, no framework in unit tests), and blank panel fields never override a
+  configured value. `PayUzSeeder` seeds the Octo system and its params;
+  `PaymentSystem::OCTO` and `::MULTICARD` were added.
+
+  Panel fields are text, so the driver now parses `test` properly — `(bool) "false"`
+  is `true` in PHP, which would silently flip a live shop into test mode — and
+  accepts `bindable_methods` as a comma-separated list.
+
 ### Fixed
+
+- **Octo status reads hit a URL that does not exist.** `status()` posted to
+  `/check_status`; Octo has no such endpoint (help.octo.uz/check-status.html) — the
+  read goes through `/prepare_payment` with a minimal body, where omitting
+  `total_sum` is what makes it a read rather than a second transaction.
+
+- **Octo cancellations were reported as pending.** The status map knew only
+  `cancelled`, while Octo documents `canceled`. A cancelled payment stayed
+  indefinitely in "pending" for every caller.
+
+- **Refunds were reported as complete the moment Octo accepted them.** `error: 0`
+  only acknowledges the request; the refund itself reports
+  `succeeded` / `pending` / `failed`, and only the first is a refund.
+
+- **Saved-token charges omitted a required field.** Octo documents `email` as
+  required on `/pay`; it is now sent, falling back to the new `receipt_email`
+  config for customers who have no address of their own.
+
+- **Card binding was impossible as shipped, in two ways — both found against the
+  live API, both contradicting the published field table.** `/bind_card` requires
+  **`notify_url` as well as `bind_notify_url`** (the docs mark both optional; the
+  live API answers `Wrong params: [bindNotifyUrl, notifyUrl] must not be null or
+  blank`, and validates this before it even looks up the shop), and it accepts
+  **exactly one phone shape** — 12 digits, country code, no `+` and no separators —
+  rejecting the `+998…` form most applications store with `Wrong phone format`.
+  `CardBinding::withPhone()` now normalises, `notifyPaymentsAt()` supplies the
+  second URL, and both URLs are required up front.
+
+  Conversely `return_url`, which the docs mark **required**, is accepted as absent
+  by the live API — it is now sent when present instead of being enforced. Same for
+  `cardHolderName` and `cvc2`: omitted rather than padded with placeholder values.
+
+- **Status reads survive Octo's rate limit.** Octo allows roughly one read per
+  second per transaction and answers `Requests too often. Minimum delay is 1 second`
+  beyond that — which a caller reads as "state unknown". A webhook, a return page
+  and a reconciliation sweep collide on the same order routinely, so `status()` now
+  pauses and retries once; other errors still propagate untouched.
+
+- **A missing `notify_url` is now caught before the request, not by Octo.** It is
+  mandatory on `/prepare_payment`; sending it as `null` produced an opaque gateway
+  error. It now raises a `CheckoutException` naming the missing setting.
+
+- Webhook verification now also accepts the signature in the `hash_key` field and
+  compares case-insensitively — Octo documents neither the field choice nor the hex
+  case, and merchants have been issued both.
+
+- Unknown Octo statuses map to `pending` rather than being treated as terminal, so
+  a state Octo adds later cannot cancel or settle an order.
+
+- Dropped the unused `orchestra/testbench` dev dependency: nothing in the suite
+  used it, and its pinned Laravel 5.7/8.x range blocked `composer install`.
 
 - Declared `illuminate/database` and `illuminate/http`. The package imports from
   both across 22 files but listed only `illuminate/support`, so it relied on the

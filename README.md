@@ -341,7 +341,27 @@ The `Checkout` facade is gateway-agnostic (Octo is the first driver; ATMOS /
 Multicard follow). **Amounts are tiyin** in your code — the driver converts to
 Octo's som. Default driver is `null` (simulator).
 
-**Configure** `checkout` in `config/payuz.php` and switch to `octo`:
+**Credentials live in the control panel**, the same as Payme and Click: run the
+seeder, then open `/payment/payment_systems`, edit **Octo** and fill in the fields.
+They are stored in `payment_system_params` and read on every call, so a key change
+needs no deploy.
+
+```bash
+php artisan db:seed --class="Goodoneuz\PayUz\Database\Seeds\PayUzSeeder"
+```
+
+| Param | Meaning |
+|---|---|
+| `shop_id`, `secret` | issued by Octo; sent in the body of every request |
+| `unique_key` | webhook signing key — notifications are rejected without it |
+| `test` | `1` for the sandbox, `0` for live (a real flag, not a separate host) |
+| `notify_url` | payment webhook |
+| `bind_notify_url` | where Octo delivers a card token after binding |
+| `return_url`, `language`, `receipt_email`, `bindable_methods` | optional |
+
+`config/payuz.php` keeps the same keys as a fallback, so an app that prefers env
+vars can set them there instead — the panel simply wins where both are present, and
+a blank panel field never overrides a configured value:
 
 ```php
 'checkout' => [
@@ -350,9 +370,8 @@ Octo's som. Default driver is `null` (simulator).
         'octo' => [
             'shop_id'    => env('OCTO_SHOP_ID'),
             'secret'     => env('OCTO_SECRET'),
-            'unique_key' => env('OCTO_UNIQUE_KEY'), // webhook signature secret
+            'unique_key' => env('OCTO_UNIQUE_KEY'),
             'test'       => env('OCTO_TEST', false),
-            'return_url' => env('OCTO_RETURN_URL'),
             'notify_url' => env('OCTO_NOTIFY_URL'),
         ],
     ],
@@ -385,6 +404,68 @@ Route::post('/checkout/webhook', function () {
     return response('', 200);
 });
 ```
+
+Octo signs notifications as `sha1(unique_key + octo_payment_UUID + status)`, and
+that signature covers **only the payment id and status — never the amount**. Treat
+the webhook as a trigger and reconcile with `Checkout::status($order->id)` before
+granting value.
+
+**Saving a card (tokenization).** `chargeToken()` spends a token; `CardBinder`
+mints one. Binding is three steps because that is what Octo does: it debits a
+small amount, has the issuer send an SMS code, reverses the debit, and only then
+delivers the token — on a **separate callback**, not in the confirmation response.
+So a card is confirmed before it is chargeable.
+
+```php
+use Goodoneuz\PayUz\Checkout\CardBinding;
+
+// 1. send the card; Octo texts the customer a code
+$session = Checkout::bindCard(
+    CardBinding::make($pan, '1229', (string) Str::uuid())   // expiry is "MMYY"
+        ->heldBy('ALISHER KARIMOV')
+        ->withPhone($user->phone)
+        ->withCvc($cvc)
+        ->notifyAt(route('cards.octo.callback'))
+);
+// $session->bindingId(), ->verifyId(), ->phone(), ->secondsLeft()
+
+// 2. the customer enters the code
+$session = Checkout::confirmBinding($session->bindingId(), $session->verifyId(), $code);
+
+// 3. Octo calls back with the token
+Route::post('/cards/octo/callback', function () {
+    $card = Checkout::bindCallback(request()->all());
+
+    if ($card->isBound()) {
+        // persist $card->token() only — never a PAN
+        PaymentCard::where('binding_reference', $card->reference())
+            ->update(['token' => $card->token(), 'last_four' => $card->lastFour()]);
+    }
+
+    // ALWAYS 200 + this body: Octo retries three times and then CANCELS the token.
+    return response()->json(\Goodoneuz\PayUz\Checkout\BoundCard::acknowledgement());
+})->name('cards.octo.callback');
+```
+
+Then charge it with no redirect, and revoke it when the customer deletes the card:
+
+```php
+$result = Checkout::charge($token, Payment::make(1_200_000, $order->id));
+
+if (!$result->isSuccessful()) {
+    // Octo asked for an SMS code (status wait_user_action)
+    $info = Checkout::driver('octo')->verificationInfo($result->paymentId());
+    // … collect the code, then:
+    $result = Checkout::driver('octo')->confirmPayment($paymentId, $info->verifyId(), $code);
+}
+
+Checkout::revokeToken($token);
+```
+
+Octo documents binding for **Uzcard and Humo only** — `bindableMethods()` refuses
+anything else before the card is charged for the verification. Taking a PAN on your
+own page also requires PCI DSS certification on your Octo contract; without it, use
+the hosted checkout above instead.
 
 **Saved-card charge, two-stage and refunds:**
 

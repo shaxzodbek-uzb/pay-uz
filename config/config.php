@@ -119,10 +119,19 @@ return [
                 // Secret used to verify inbound webhook signatures (issued by Octo,
                 // may differ from `secret`). Webhooks are rejected without it.
                 'unique_key' => env('OCTO_UNIQUE_KEY'),
-                'test'       => env('OCTO_TEST', false),
+                // Test mode unless explicitly disabled — a misconfigured deploy must not
+                // start taking real money.
+                'test'       => env('OCTO_TEST', true),
                 'return_url' => env('OCTO_RETURN_URL'),
                 'notify_url' => env('OCTO_NOTIFY_URL'),
+                // Where Octo delivers the card token after a successful binding.
+                'bind_notify_url' => env('OCTO_BIND_NOTIFY_URL'),
                 'language'   => env('OCTO_LANGUAGE', 'uz'),
+                // Octo requires an email on /pay; used when the customer has none.
+                'receipt_email' => env('OCTO_RECEIPT_EMAIL'),
+                // Octo documents card binding for Humo and Uzcard only. Widen once
+                // Octo confirms international cards on your contract.
+                'bindable_methods' => ['uzcard', 'humo'],
             ],
             // Multicard — amounts are tiyin (no conversion). `base_url` is the
             // prod/sandbox switch (https://mesh.multicard.uz | https://dev-mesh.multicard.uz).
