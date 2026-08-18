@@ -2,7 +2,7 @@
 
 All notable changes to `pay-uz` will be documented in this file
 
-## Unreleased
+## 4.1.0 - 2026-08-18
 
 ### Added
 
@@ -34,6 +34,15 @@ All notable changes to `pay-uz` will be documented in this file
   Panel fields are text, so the driver now parses `test` properly — `(bool) "false"`
   is `true` in PHP, which would silently flip a live shop into test mode — and
   accepts `bindable_methods` as a comma-separated list.
+
+### Changed
+
+- **Octo now defaults to test mode.** `config/config.php` reads
+  `env('OCTO_TEST', true)` where it read `env('OCTO_TEST', false)`: a deploy that
+  never set the variable used to take real money, and now does not. Set
+  `OCTO_TEST=false` — or `test` to `0` in the control panel — to go live. Only
+  applications running the packaged config are affected; a published
+  `config/payuz.php` keeps whatever it already says.
 
 ### Fixed
 
@@ -93,6 +102,10 @@ All notable changes to `pay-uz` will be documented in this file
   host application happening to provide them. Constraints are `*`, matching the
   existing `illuminate/support` entry — this package deliberately floats them so
   it installs against whatever Laravel version the application already has.
+
+## 4.0.1 - 2026-07-27
+
+### Fixed
 
 - Click redirect: the legacy POST form to `https://my.click.uz/pay/` was shut
   down by CLICK. `Click::getRedirectParams()` now builds the CLICK-Button

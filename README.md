@@ -371,7 +371,7 @@ a blank panel field never overrides a configured value:
             'shop_id'    => env('OCTO_SHOP_ID'),
             'secret'     => env('OCTO_SECRET'),
             'unique_key' => env('OCTO_UNIQUE_KEY'),
-            'test'       => env('OCTO_TEST', false),
+            'test'       => env('OCTO_TEST', true), // false to go live
             'notify_url' => env('OCTO_NOTIFY_URL'),
         ],
     ],
