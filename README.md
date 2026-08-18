@@ -4,9 +4,9 @@
 
 <a href="https://tirikchilik.uz/shaxzodbek-uzb" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/dt/goodoneuz/pay-uz.svg?style=flat)](https://packagist.org/packages/goodoneuz/pay-uz)
-[![Build Status](https://img.shields.io/travis/shaxzodbek-uzb/pay-uz/master.svg?style=flat-square)](https://travis-ci.org/shaxzodbek-uzb/pay-uz)
-[![Quality Score](https://img.shields.io/scrutinizer/g/shaxzodbek-uzb/pay-uz.svg?style=flat-square)](https://scrutinizer-ci.com/g/shaxzodbek-uzb/pay-uz)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/goodoneuz/pay-uz.svg?style=flat-square)](https://packagist.org/packages/goodoneuz/pay-uz)
+[![Total Downloads](https://img.shields.io/packagist/dt/goodoneuz/pay-uz.svg?style=flat-square)](https://packagist.org/packages/goodoneuz/pay-uz)
+[![License](https://img.shields.io/packagist/l/goodoneuz/pay-uz.svg?style=flat-square)](LICENSE.md)
 
 **Featured**
 ------
@@ -55,7 +55,7 @@ php artisan migrate
 Seed settings:
 
 ```bash
-php artisan db:seed --class="Goodoneuz\PayUz\database\seeds\PayUzSeeder"
+php artisan db:seed --class="Goodoneuz\PayUz\Database\Seeds\PayUzSeeder"
 ```
 
 ## Usage

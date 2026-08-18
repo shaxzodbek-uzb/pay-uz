@@ -1,67 +1,142 @@
-# O'zbekiston milliy to'lov tizimlari uchun
+# O'zbekiston to'lov tizimlari uchun Laravel paketi
 
-<a href="https://tirikchilik.uz/shaxzodbek-uzb" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+<a href="https://tirikchilik.uz/shaxzodbek-uzb" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/dt/goodoneuz/pay-uz.svg?style=flat)](https://packagist.org/packages/goodoneuz/pay-uz)
-[![Build Status](https://img.shields.io/travis/goodoneuz/pay-uz/master.svg?style=flat-square)](https://travis-ci.org/goodoneuz/pay-uz)
-[![Quality Score](https://img.shields.io/scrutinizer/g/goodoneuz/pay-uz.svg?style=flat-square)](https://scrutinizer-ci.com/g/goodoneuz/pay-uz)
+[![Packagist'dagi oxirgi versiya](https://img.shields.io/packagist/v/goodoneuz/pay-uz.svg?style=flat-square)](https://packagist.org/packages/goodoneuz/pay-uz)
+[![Yuklab olishlar](https://img.shields.io/packagist/dt/goodoneuz/pay-uz.svg?style=flat-square)](https://packagist.org/packages/goodoneuz/pay-uz)
+[![Litsenziya](https://img.shields.io/packagist/l/goodoneuz/pay-uz.svg?style=flat-square)](LICENSE.md)
 
-**Featured**
-------
-- [Payme](http://payme.uz) - Merchant <img src="https://cdn.paycom.uz/documentation_assets/payme_01.png" alt="Payme" width="80"/>
-- [Click](http://click.uz) - Merchant <img src="http://click.uz/wp-content/themes/click_theme/assets/img/logo.png" alt="Click" width="80"/>
+Merchant integratsiyalari, karta ekvayringi, takroriy to'lovlar, fiskallashtirish,
+BNPL va elektron hisob-fakturalar — hammasi bitta paketda.
 
-**Planed**
-------
-- Paynet
-- Upay
-- Oson
-- Visa
-- [Uzcard](http://uzcard.uz) - Merchant <img src="http://uzcard.uz/templates/uzcard_ordinary/images/logo-f.png" alt="UZCARD" width="80"/>
+> **To'liq hujjat — [README.md](README.md).** Bu sahifa qisqacha ko'rinishi;
+> quyidagi har bir qatlam o'sha yerdagi o'z bo'limiga havola qiladi.
+> Also available [in English](README.en.md).
 
-## Installation
+## Paket ichida nima bor
 
-You can install the package via composer:
+Har bir qatlam — almashtiriladigan drayverlar ustidagi fasad. Hammasida `null`
+drayver bor, shuning uchun yangi o'rnatilgan paket internetsiz ham ishlaydi.
+
+| Qatlam | Fasad | Provayderlar |
+|---|---|---|
+| Merchant callback'lari (redirect + webhook) | `PayUz` | [Payme](https://payme.uz), [Click](https://click.uz), [Paynet](https://paynet.uz), [Uzum Bank](https://uzumbank.uz) |
+| Karta ekvayringi (hosted checkout, saqlangan karta, capture/refund) | `Checkout` | [Octo](https://octo.uz), [Multicard / Rahmat Pay](https://multicard.uz) |
+| Takroriy to'lovlar / karta tokenizatsiyasi | `Subscribe` | [Payme Subscribe](https://developer.help.paycom.uz), [ATMOS](https://atmos.uz), [Stripe](https://stripe.com) |
+| OFD fiskallashtirish (virtual kassa) | `Fiscalizer` | almashtiriladigan — IKPU/MXIK, QQS, fiskal belgi/QR |
+| BNPL / bo'lib to'lash | `Bnpl` | [Uzum Nasiya](https://uzum.uz/nasiya) |
+| Elektron hisob-faktura / ЭСФ | `Einvoice` | [Didox](https://didox.uz) |
+
+**Kodingizda summalar doimo tiyinda.** Har bir drayver o'z chegarasida shlyuz talab
+qilgan ko'rinishga o'giradi — masalan, Octo o'nlik somda hisob-kitob qiladi —
+shuning uchun buni chaqiruv joyida qilish kerak emas.
+
+Rejada: Upay, Visa. `PaymentSystem::OSON` va `::UZCARD` faqat tranzaksiya yorlig'i
+sifatida mavjud, ular ortida ishlaydigan shlyuz yo'q.
+
+## O'rnatish
 
 ```bash
 composer require goodoneuz/pay-uz
 ```
 
-## Usage
-------
-- Request handle: `PayUz::driver('payme')->redirect($model, $amount, $currency)`
-- Redirect user:  `PayUz::driver('payme')->handle()`
+Paket fayllarini nashr qilish:
 
-**Exception:**
-------
+```bash
+php artisan vendor:publish --provider="Goodoneuz\PayUz\PayUzServiceProvider"
+```
 
-PaymentException 
+Migratsiya, so'ngra seed:
 
-### Testing
+```bash
+php artisan migrate
+```
 
-``` bash
+```bash
+php artisan db:seed --class="Goodoneuz\PayUz\Database\Seeds\PayUzSeeder"
+```
+
+Shundan keyin Payme, Click, Uzum va Octo kalitlari boshqaruv panelidagi
+`/payment/payment_systems` sahifasida kiritiladi. Nashr qilingan
+`config/payuz.php` xuddi shu kalitlarni env orqali zaxira variant sifatida saqlaydi,
+paneldagi bo'sh maydon esa sozlangan qiymatni hech qachon o'chirib yubormaydi.
+
+## Foydalanish
+
+Merchant oqimi — biri to'lov tizimining callback'larini qabul qiladi, ikkinchisi
+mijozni to'lovga yuboradi:
+
+```php
+// to'lov tizimidan kelgan so'rovlarni qabul qilish
+Route::any('/handle/{paysys}', function ($paysys) {
+    (new Goodoneuz\PayUz\PayUz)->driver($paysys)->handle();
+});
+
+// to'lov tizimiga yoki uning to'lov formasiga yo'naltirish
+Route::any('/pay/{paysys}/{key}/{amount}', function ($paysys, $key, $amount) {
+    $model = Goodoneuz\PayUz\Services\PaymentService::convertKeyToModel($key);
+    $url   = request('redirect_url', '/'); // to'lovdan keyin qaytadigan manzil
+
+    (new Goodoneuz\PayUz\PayUz)
+        ->driver($paysys)
+        ->redirect($model, $amount, 860, $url);
+});
+```
+
+Karta ekvayringi — hosted checkout, summa tiyinda:
+
+```php
+use Checkout;
+use Goodoneuz\PayUz\Checkout\Payment;
+
+$result = Checkout::pay(
+    Payment::make(1_200_000, $order->id)        // tiyin
+        ->describedAs('Buyurtma #'.$order->id)
+        ->returnTo(route('checkout.return'))
+        ->notifyAt(route('checkout.webhook'))
+);
+
+return redirect($result->payUrl());             // mijozni shlyuzga yuborish
+```
+
+Saqlangan kartalar, ikki bosqichli capture, refund, webhook'lar va Octo karta
+bog'lash — [README.md ning Checkout bo'limida](README.md#card-acquiring-aggregator-octo).
+
+To'lovga munosabat bildirish `PaymentResolver` va `Payments\Events\*` hodisalari
+orqali amalga oshiriladi — [Payment hooks](README.md#payment-hooks-resolver--events)
+bo'limiga qarang. Agar 3.0.0 dan oldingi versiyadan yangilanayotgan bo'lsangiz,
+[README.md](README.md) oxiridagi ogohlantirishni o'qing: kod "muharriri" olib
+tashlangan.
+
+Xatoliklar `PaymentException` ni ko'taradi; Checkout, Subscribe, Bnpl va Einvoice
+qatlamlarining o'z exception turlari bor.
+
+## Testlash
+
+```bash
 composer test
 ```
 
-### Changelog
+## O'zgarishlar tarixi
 
-Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
+Yaqinda nima o'zgarganini [CHANGELOG](CHANGELOG.md) dan ko'ring.
 
-## Contributing
+## Hissa qo'shish
 
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+Tafsilotlar uchun [CONTRIBUTING](CONTRIBUTING.md) ga qarang.
 
-### Security
+## Xavfsizlik
 
-If you discover any security related issues, please email shaxzodbek.qambaraliyev@gmail.com instead of using the issue tracker.
+Xavfsizlikka oid muammo topsangiz, issue tracker o'rniga
+shaxzodbek.qambaraliyev@gmail.com ga xat yozing.
 
-## Credits
+## Mualliflar
 
-- [Shaxzodbek](https://github.com/goodoneuz)
+- [Shaxzodbek](https://github.com/shaxzodbek-uzb)
 - [Azizbek](https://github.com/azizbekeshonaliyev)
 - [Rustam Mamadaminov](https://github.com/rustamwin)
-- [All Contributors](../../contributors)
+- [Barcha hissa qo'shganlar](../../contributors)
 
-## License
+## Litsenziya
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+MIT litsenziyasi (MIT). Batafsil ma'lumot uchun [litsenziya faylini](LICENSE.md) ko'ring.
