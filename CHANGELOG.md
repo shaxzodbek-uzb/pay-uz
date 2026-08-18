@@ -31,6 +31,10 @@ All notable changes to `pay-uz` will be documented in this file
   configured value. `PayUzSeeder` seeds the Octo system and its params;
   `PaymentSystem::OCTO` and `::MULTICARD` were added.
 
+  The driver also defaults `test` to **true**. Credentials come from the panel, so
+  a shop whose `test` field was never filled in would otherwise start taking real
+  money the moment it is switched on — going live has to be a deliberate act.
+
   Panel fields are text, so the driver now parses `test` properly — `(bool) "false"`
   is `true` in PHP, which would silently flip a live shop into test mode — and
   accepts `bindable_methods` as a comma-separated list.

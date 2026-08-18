@@ -85,7 +85,10 @@ class OctoDriver implements CheckoutDriver, CardBinder
         $canonical = array_merge($this->credentials(), [
             'shop_transaction_id' => $payment->orderId(),
             'auto_capture'        => $payment->isAutoCapture(),
-            'test'                => $this->boolCfg('test'),
+            // Defaults to the sandbox: credentials come from the control panel, and a
+            // shop whose `test` field was never filled in must not start taking real
+            // money on our say-so.
+            'test'                => $this->boolCfg('test', true),
             'init_time'           => date('Y-m-d H:i:s'),
             'total_sum'           => $this->toSom($payment->amount()),
             'currency'            => $payment->currency(),
