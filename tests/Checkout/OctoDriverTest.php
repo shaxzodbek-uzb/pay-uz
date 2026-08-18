@@ -200,7 +200,9 @@ class OctoDriverTest extends TestCase
     /** @test */
     public function refund_posts_refund_with_a_unique_refund_id_and_returns_refunded()
     {
-        $http = (new FakeHttpClient())->queue(['error' => 0, 'data' => ['octo_payment_UUID' => 'U-9', 'status' => 'cancelled']]);
+        $http = (new FakeHttpClient())->queue(['error' => 0, 'data' => [
+            'octo_payment_UUID' => 'U-9', 'refund_id' => 'octo-r-1', 'status' => 'succeeded',
+        ]]);
 
         $result = $this->driver($http)->refund('U-9', 600000);
 
@@ -209,8 +211,75 @@ class OctoDriverTest extends TestCase
         $this->assertSame('U-9', $body['octo_payment_UUID']);
         $this->assertSame(6000.0, $body['amount']);
         $this->assertStringStartsWith('U-9-r-', $body['shop_refund_id']); // unique merchant refund id
-        // a successful /refund means REFUNDED even though the echoed status was "cancelled"
         $this->assertTrue($result->isRefunded());
+    }
+
+    /**
+     * `error: 0` only means Octo accepted the request — the refund itself reports
+     * succeeded/pending/failed, and a pending refund must not close the order.
+     *
+     * @test
+     */
+    public function a_refund_octo_has_not_completed_is_not_reported_as_refunded()
+    {
+        $http = (new FakeHttpClient())->queue(['error' => 0, 'data' => ['octo_payment_UUID' => 'U-9', 'status' => 'pending']]);
+
+        $result = $this->driver($http)->refund('U-9', 600000);
+
+        $this->assertFalse($result->isRefunded());
+        $this->assertSame(PaymentResult::STATUS_PENDING, $result->status());
+    }
+
+    /**
+     * Octo marks notify_url mandatory: without it the outcome can never reach the
+     * shop and the order hangs whatever the customer does.
+     *
+     * @test
+     */
+    public function creating_a_payment_without_a_notify_url_throws()
+    {
+        $http = new FakeHttpClient();
+
+        $this->expectException(CheckoutException::class);
+        $this->expectExceptionMessage('notify_url');
+
+        try {
+            $this->driver($http, ['notify_url' => null])->createPayment(Payment::make(100000, 'order-1'));
+        } finally {
+            $this->assertSame([], $http->requests);
+        }
+    }
+
+    /**
+     * Octo allows about one status read per second per transaction. A webhook, a
+     * return page and a reconciliation sweep collide on the same order routinely,
+     * and the caller would read the complaint as "state unknown".
+     *
+     * @test
+     */
+    public function a_rate_limited_status_read_is_retried_once()
+    {
+        $http = (new FakeHttpClient())
+            ->queue(['error' => 11, 'errMessage' => 'Requests too often. Minimum delay is 1 second'])
+            ->queue(['error' => 0, 'data' => ['status' => 'succeeded', 'shop_transaction_id' => 'o']]);
+
+        $result = $this->driver($http)->status('o');
+
+        $this->assertTrue($result->isSuccessful());
+        $this->assertCount(2, $http->requests);
+    }
+
+    /** @test */
+    public function a_status_error_that_is_not_the_rate_limit_is_not_retried()
+    {
+        $http = (new FakeHttpClient())->queue(['error' => 2, 'errMessage' => 'no_shop_found']);
+
+        try {
+            $this->driver($http)->status('o');
+            $this->fail('Expected CheckoutException.');
+        } catch (CheckoutException $e) {
+            $this->assertCount(1, $http->requests);
+        }
     }
 
     /** @test */
@@ -229,9 +298,13 @@ class OctoDriverTest extends TestCase
 
         $result = $this->driver($http)->status('order-1');
 
-        $this->assertSame('https://secure.octo.uz/check_status', $http->lastRequest['url']);
+        // Octo has no dedicated status endpoint: the read goes through
+        // /prepare_payment, and omitting total_sum is what keeps it a read instead of
+        // opening a second transaction.
+        $this->assertSame('https://secure.octo.uz/prepare_payment', $http->lastRequest['url']);
         $this->assertSame('order-1', $http->lastRequest['payload']['shop_transaction_id']);
         $this->assertArrayNotHasKey('octo_payment_UUID', $http->lastRequest['payload']);
+        $this->assertArrayNotHasKey('total_sum', $http->lastRequest['payload']);
         $this->assertTrue($result->isHeld()); // waiting_for_capture -> held
     }
 

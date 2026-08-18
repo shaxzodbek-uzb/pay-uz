@@ -124,7 +124,7 @@ class CheckoutManagerTest extends TestCase
     {
         $dispatcher = new RecordingDispatcher();
         $manager = new CheckoutManager(
-            ['default' => 'octo', 'drivers' => ['octo' => ['shop_id' => 1, 'secret' => 's']]],
+            ['default' => 'octo', 'drivers' => ['octo' => ['shop_id' => 1, 'secret' => 's', 'notify_url' => 'https://app/webhook']]],
             new ThrowingHttpClient(),
             $dispatcher
         );

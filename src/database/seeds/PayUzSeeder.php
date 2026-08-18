@@ -37,6 +37,10 @@ class PayUzSeeder extends Seeder
                 'name'      => 'Uzum Bank',
                 'system'    => 'uzum'
             ]);
+            PaymentSystem::firstOrCreate([
+                'name'      => 'Octo',
+                'system'    => 'octo'
+            ]);
         }
         if (Schema::hasTable('payment_system_params')) {
             //Paycom
@@ -154,6 +158,70 @@ class PayUzSeeder extends Seeder
                 'label'     => 'Account key (params field that identifies the order)',
                 'name'      => 'key',
                 'value'     => 'id'
+            ]);
+
+            // Octo (acquiring). Seeded blank rather than with placeholders: the
+            // Checkout manager ignores empty params, so an unconfigured Octo falls
+            // back to config/env instead of sending "shop_id" as a shop id.
+            PaymentSystemParam::firstOrCreate([
+                'system'    => 'octo',
+                'label'     => 'Shop id',
+                'name'      => 'shop_id',
+                'value'     => ''
+            ]);
+            PaymentSystemParam::firstOrCreate([
+                'system'    => 'octo',
+                'label'     => 'Secret key',
+                'name'      => 'secret',
+                'value'     => ''
+            ]);
+            PaymentSystemParam::firstOrCreate([
+                'system'    => 'octo',
+                'label'     => 'Unique key (webhook signature)',
+                'name'      => 'unique_key',
+                'value'     => ''
+            ]);
+            PaymentSystemParam::firstOrCreate([
+                'system'    => 'octo',
+                'label'     => 'Test mode (1 / 0)',
+                'name'      => 'test',
+                'value'     => '1'
+            ]);
+            PaymentSystemParam::firstOrCreate([
+                'system'    => 'octo',
+                'label'     => 'Return URL (after payment)',
+                'name'      => 'return_url',
+                'value'     => ''
+            ]);
+            PaymentSystemParam::firstOrCreate([
+                'system'    => 'octo',
+                'label'     => 'Notify URL (payment webhook)',
+                'name'      => 'notify_url',
+                'value'     => ''
+            ]);
+            PaymentSystemParam::firstOrCreate([
+                'system'    => 'octo',
+                'label'     => 'Bind notify URL (card token callback)',
+                'name'      => 'bind_notify_url',
+                'value'     => ''
+            ]);
+            PaymentSystemParam::firstOrCreate([
+                'system'    => 'octo',
+                'label'     => 'Payment form language (oz / uz / en / ru)',
+                'name'      => 'language',
+                'value'     => 'uz'
+            ]);
+            PaymentSystemParam::firstOrCreate([
+                'system'    => 'octo',
+                'label'     => 'Receipt email (used when the customer has none)',
+                'name'      => 'receipt_email',
+                'value'     => ''
+            ]);
+            PaymentSystemParam::firstOrCreate([
+                'system'    => 'octo',
+                'label'     => 'Bindable card schemes (comma separated)',
+                'name'      => 'bindable_methods',
+                'value'     => 'uzcard,humo'
             ]);
         }
     }
