@@ -22,8 +22,12 @@ class Merchant
         // just APP_ENV === 'testing', so a deployed app with APP_ENV=testing
         // would accept unauthenticated callbacks.
         if (! CallbackAuth::isSkipped()) {
-            $headers = $_SERVER;
-            $auth = ''; //$headers['REDIRECT_REDIRECT_HTTP_AUTHORIZATION']
+            // Read the current request's server vars, not the $_SERVER global: under
+            // Octane, RoadRunner or Swoole the global belongs to the worker, not to
+            // this request. Any key with AUTHORIZATION in it counts, so Apache CGI's
+            // REDIRECT_HTTP_AUTHORIZATION works too.
+            $headers = request()->server->all();
+            $auth = '';
             foreach($headers as $key=>$val){
                 if (strpos($key, 'AUTHORIZATION') !== false) {
                     $auth = $val;
