@@ -2,6 +2,8 @@
 
 namespace Goodoneuz\PayUz\Http\Classes\Payme;
 
+use Goodoneuz\PayUz\Testing\CallbackAuth;
+
 class Request
 {
     /** @var array decoded request payload */
@@ -31,9 +33,10 @@ class Request
         // where reading the raw php://input stream is unreliable). See issue #71.
         $request_body  = request()->getContent();
 
-        if (app()->runningUnitTests())
-            $request_body = request()->all()['request'];
-    
+        // Test-only seam: lets a feature test post the body as a `request` field.
+        if (CallbackAuth::isSkipped())
+            $request_body = request()->all()['request'] ?? $request_body;
+
         $this->payload = json_decode($request_body, true);
         if (!$this->payload) {
             $this->response->error(Response::ERROR_INVALID_JSON_RPC_OBJECT,'Invalid JSON-RPC object.');

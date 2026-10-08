@@ -2,6 +2,66 @@
 
 All notable changes to `pay-uz` will be documented in this file
 
+## 4.1.1 - Unreleased
+
+### Security
+
+- **[High] Payme and Uzum callbacks skipped Basic auth on any Laravel app with
+  `APP_ENV=testing`.** Both drivers skipped the credential check, and read the
+  JSON body from a `request` form field, whenever `app()->runningUnitTests()` was
+  true. In Laravel that method is `$this['env'] === 'testing'` and nothing more,
+  so a deployed app whose `APP_ENV` is `testing` (a staging box, a `test.`
+  subdomain, a copied `.env`) accepted callbacks from anyone: unauthenticated
+  posts of `request={"method":"CreateTransaction",…}` then
+  `PerformTransaction` mark an order paid. Uzum still checked the `serviceId`,
+  which is not a secret.
+
+  The 3.0.0 entry "Removed the `APP_ENV == 'testing'` auth bypass" was wrong for
+  Laravel applications: it moved the check from `env('APP_ENV')` to a method
+  that reads the same value. It also widened it: with `config:cache`, `env()`
+  returns `null` for a value that comes only from `.env`, which kept many 2.x
+  deployments safe, while `runningUnitTests()` reads the cached config.
+
+  **Affected:** Payme in every release up to 4.1.0 and Uzum 3.0.0 – 4.1.0, only
+  when the application's `APP_ENV` is `testing`. Click, Paynet and Stripe have
+  their own checks and were not affected. To check a deployment, run
+  `php artisan env` on the server.
+
+  The check is now skipped only when code calls
+  `Goodoneuz\PayUz\Testing\CallbackAuth::skipForTests()`. The switch is off by
+  default and is never read from env or config.
+
+### Changed
+
+- **Feature tests that post Payme or Uzum callbacks need the new switch.** A
+  test that sends no Basic credentials, or posts the body as a `request` field,
+  now gets `-32504` (Payme) / `10001` (Uzum) unless it turns the check off. The
+  flag is static, so turn it back on in `tearDown()`:
+
+  ```php
+  use Goodoneuz\PayUz\Testing\CallbackAuth;
+
+  protected function setUp(): void
+  {
+      parent::setUp();
+      CallbackAuth::skipForTests();
+  }
+
+  protected function tearDown(): void
+  {
+      CallbackAuth::enforce();
+      parent::tearDown();
+  }
+  ```
+
+  Tests that set `$_SERVER['HTTP_AUTHORIZATION']` and post the raw JSON body
+  exercise the real check and need no change.
+
+- `Response::send()` for Payme, Click and Uzum skips `header()` once output has
+  started (`headers_sent()`) instead of under `runningUnitTests()`. Click tests
+  need no change, and an app with `APP_ENV=testing` sends
+  `Content-Type: application/json` again.
+
 ## 4.1.0 - 2026-08-18
 
 ### Added
@@ -307,6 +367,8 @@ control-panel routes now require authentication by default (see Breaking).
   The Basic-auth check (and the test-only body/header seams) are now keyed on
   `app()->runningUnitTests()`, so a deployed app can no longer skip auth by having
   `APP_ENV=testing`.
+  _Correction: this did not hold for Laravel applications —
+  `runningUnitTests()` is `APP_ENV === 'testing'`. Fixed in 4.1.1._
 - **[High] Fixed reflected XSS / header injection / open redirect** in the Stripe
   driver: the request-supplied redirect URL is validated (http/https only) and
   JSON-escaped before being emitted.

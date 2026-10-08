@@ -2,6 +2,7 @@
 
 namespace Goodoneuz\PayUz\Http\Classes\Payme;
 
+use Goodoneuz\PayUz\Testing\CallbackAuth;
 
 class Merchant
 {
@@ -16,11 +17,11 @@ class Merchant
 
     public function Authorize()
     {
-        // The auth check is skipped only under the package's own unit tests.
-        // It must NOT be keyed on env('APP_ENV') == 'testing': a deployed app that
-        // happens to set APP_ENV=testing (or has it injected) would otherwise bypass
-        // Basic auth entirely. runningUnitTests() is true only inside PHPUnit.
-        if (! app()->runningUnitTests()) {
+        // The auth check is skipped only when a test turned it off in code.
+        // It must NOT be keyed on the environment: app()->runningUnitTests() is
+        // just APP_ENV === 'testing', so a deployed app with APP_ENV=testing
+        // would accept unauthenticated callbacks.
+        if (! CallbackAuth::isSkipped()) {
             $headers = $_SERVER;
             $auth = ''; //$headers['REDIRECT_REDIRECT_HTTP_AUTHORIZATION']
             foreach($headers as $key=>$val){
