@@ -2,6 +2,18 @@
 
 All notable changes to `pay-uz` will be documented in this file
 
+## Unreleased
+
+### Fixed
+
+- **Payme and Uzum read the Basic credentials from the current request, not the
+  `$_SERVER` global.** Under Octane, RoadRunner or Swoole that global belongs to
+  the long-lived worker, so the check did not see the callback's `Authorization`
+  header. The drivers now scan `request()->server` for the same keys, so Apache
+  CGI's `REDIRECT_HTTP_AUTHORIZATION` still works. Feature tests can send the
+  credentials with `withHeaders(['Authorization' => 'Basic …'])`; setting
+  `$_SERVER['HTTP_AUTHORIZATION']` in a test no longer reaches the check.
+
 ## 4.1.1 - 2026-10-08
 
 ### Security

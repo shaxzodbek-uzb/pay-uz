@@ -27,8 +27,11 @@ class Merchant
     public function Authorize($request)
     {
         if (! CallbackAuth::isSkipped()) {
+            // The current request's server vars, not the $_SERVER global, which
+            // under Octane/RoadRunner/Swoole is the worker's. Any key with
+            // AUTHORIZATION in it counts (REDIRECT_HTTP_AUTHORIZATION on Apache CGI).
             $auth = '';
-            foreach ($_SERVER as $key => $val) {
+            foreach (request()->server->all() as $key => $val) {
                 if (strpos($key, 'AUTHORIZATION') !== false) {
                     $auth = $val;
                 }

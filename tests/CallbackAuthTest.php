@@ -23,6 +23,11 @@ use PHPUnit\Framework\TestCase;
  * unauthenticated callbacks: anyone could post `request={"method":
  * "PerformTransaction",...}` and mark an order paid. The seam is now an explicit
  * switch that only code can turn on.
+ *
+ * The credentials come from the current request's server vars, not the $_SERVER
+ * global. Under Octane, RoadRunner or Swoole the global belongs to the worker, not
+ * to the request, so it is stale or empty; and a Laravel feature test that sends
+ * `withHeaders(['Authorization' => ...])` only reaches the request.
  */
 class CallbackAuthTest extends TestCase
 {
@@ -42,8 +47,9 @@ class CallbackAuthTest extends TestCase
         $this->server = $_SERVER;
         $this->env = [$_ENV['APP_ENV'] ?? null, getenv('APP_ENV')];
 
-        // Merchant::Authorize() takes credentials from any $_SERVER key that
-        // contains AUTHORIZATION; start every test with none.
+        // Authorize() used to read credentials from any $_SERVER key that contains
+        // AUTHORIZATION. Start every test with none there, so a test that puts one
+        // in the global is the only source of it.
         foreach (array_keys($_SERVER) as $key) {
             if (strpos($key, 'AUTHORIZATION') !== false) {
                 unset($_SERVER[$key]);
@@ -75,21 +81,81 @@ class CallbackAuthTest extends TestCase
 
     public function test_payme_rejects_a_callback_without_credentials(): void
     {
+        $this->bindRequest();
+
         $this->assertPaymeRejects();
     }
 
     public function test_payme_rejects_wrong_credentials(): void
     {
-        $_SERVER['HTTP_AUTHORIZATION'] = 'Basic ' . base64_encode('Paycom:wrong');
+        $this->bindRequest(['HTTP_AUTHORIZATION' => $this->basic('Paycom:wrong')]);
 
         $this->assertPaymeRejects();
     }
 
     public function test_payme_accepts_the_configured_credentials(): void
     {
-        $_SERVER['HTTP_AUTHORIZATION'] = 'Basic ' . base64_encode('Paycom:payme-secret');
+        $this->bindRequest(['HTTP_AUTHORIZATION' => $this->basic('Paycom:payme-secret')]);
 
         $this->assertTrue((new PaymeMerchant(self::PAYME, new PaymeResponse()))->Authorize());
+    }
+
+    /**
+     * A long-lived worker's $_SERVER still holds another request's header (or the
+     * CLI's); the callback being handled carries the right one.
+     */
+    public function test_payme_reads_credentials_from_the_request_not_a_stale_server_global(): void
+    {
+        $_SERVER['HTTP_AUTHORIZATION'] = $this->basic('Paycom:stale');
+        $this->bindRequest(['HTTP_AUTHORIZATION' => $this->basic('Paycom:payme-secret')]);
+
+        $this->assertTrue((new PaymeMerchant(self::PAYME, new PaymeResponse()))->Authorize());
+    }
+
+    public function test_payme_ignores_credentials_left_in_the_server_global(): void
+    {
+        $_SERVER['HTTP_AUTHORIZATION'] = $this->basic('Paycom:payme-secret');
+        $this->bindRequest();
+
+        $this->assertPaymeRejects();
+    }
+
+    /** Apache with PHP as CGI/FastCGI passes the header on as REDIRECT_HTTP_AUTHORIZATION. */
+    public function test_payme_reads_the_apache_cgi_redirect_header_from_the_request(): void
+    {
+        $this->bindRequest(['REDIRECT_HTTP_AUTHORIZATION' => $this->basic('Paycom:payme-secret')]);
+
+        $this->assertTrue((new PaymeMerchant(self::PAYME, new PaymeResponse()))->Authorize());
+    }
+
+    public function test_uzum_accepts_the_configured_credentials(): void
+    {
+        $this->bindRequest(['HTTP_AUTHORIZATION' => $this->basic('uzum:uzum-secret')]);
+
+        $this->assertTrue((new UzumMerchant(self::UZUM, new UzumResponse()))->Authorize((object) ['serviceId' => 501]));
+    }
+
+    public function test_uzum_reads_credentials_from_the_request_not_a_stale_server_global(): void
+    {
+        $_SERVER['HTTP_AUTHORIZATION'] = $this->basic('uzum:stale');
+        $this->bindRequest(['HTTP_AUTHORIZATION' => $this->basic('uzum:uzum-secret')]);
+
+        $this->assertTrue((new UzumMerchant(self::UZUM, new UzumResponse()))->Authorize((object) ['serviceId' => 501]));
+    }
+
+    public function test_uzum_ignores_credentials_left_in_the_server_global(): void
+    {
+        $_SERVER['HTTP_AUTHORIZATION'] = $this->basic('uzum:uzum-secret');
+        $this->bindRequest();
+
+        $this->assertUzumRejectsAuth();
+    }
+
+    public function test_uzum_reads_the_apache_cgi_redirect_header_from_the_request(): void
+    {
+        $this->bindRequest(['REDIRECT_HTTP_AUTHORIZATION' => $this->basic('uzum:uzum-secret')]);
+
+        $this->assertTrue((new UzumMerchant(self::UZUM, new UzumResponse()))->Authorize((object) ['serviceId' => 501]));
     }
 
     public function test_app_env_testing_alone_does_not_skip_payme_auth(): void
@@ -116,6 +182,8 @@ class CallbackAuthTest extends TestCase
 
     public function test_skip_for_tests_skips_payme_auth_until_enforced(): void
     {
+        $this->bindRequest();
+
         CallbackAuth::skipForTests();
         $this->assertTrue((new PaymeMerchant(self::PAYME, new PaymeResponse()))->Authorize());
 
@@ -184,6 +252,27 @@ class CallbackAuthTest extends TestCase
         $app->instance('request', $request ?: Request::create('/handle', 'POST'));
 
         $this->assertTrue(app()->runningUnitTests(), 'Precondition: the old seam would have been active.');
+    }
+
+    /**
+     * Binds the callback being handled. The server vars are what Laravel builds
+     * from the HTTP request; withHeaders(['Authorization' => ...]) in a feature
+     * test ends up as HTTP_AUTHORIZATION here.
+     */
+    private function bindRequest(array $server = []): void
+    {
+        if (! function_exists('request')) {
+            $this->markTestSkipped('Needs the request() helper from illuminate/foundation (laravel/framework).');
+        }
+
+        $container = new Container();
+        $container->instance('request', Request::create('/handle', 'POST', [], [], [], $server));
+        Container::setInstance($container);
+    }
+
+    private function basic(string $credentials): string
+    {
+        return 'Basic ' . base64_encode($credentials);
     }
 
     /**
