@@ -2,7 +2,7 @@
 
 All notable changes to `pay-uz` will be documented in this file
 
-## 4.1.1 - Unreleased
+## 4.1.1 - 2026-10-08
 
 ### Security
 
