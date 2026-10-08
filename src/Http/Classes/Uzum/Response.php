@@ -58,7 +58,8 @@ class Response
 
     public function send()
     {
-        if (! app()->runningUnitTests()) {
+        // Feature tests run after PHPUnit has printed, where these warn.
+        if (! headers_sent()) {
             http_response_code($this->httpCode);
             header('Content-Type: application/json; charset=UTF-8');
         }

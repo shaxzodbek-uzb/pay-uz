@@ -2,13 +2,16 @@
 
 namespace Goodoneuz\PayUz\Http\Classes\Uzum;
 
+use Goodoneuz\PayUz\Testing\CallbackAuth;
+
 /**
  * Authenticates an incoming Uzum Bank Merchant API request:
  *   - HTTP Basic auth (login:password), and
  *   - the body serviceId must match the configured value.
  *
  * Both comparisons are constant-time to avoid timing / type-juggling bypass.
- * Authentication is skipped only under the package's own unit tests.
+ * Basic auth is skipped only when a test turned it off in code
+ * (CallbackAuth::skipForTests()), never because of APP_ENV.
  */
 class Merchant
 {
@@ -23,7 +26,7 @@ class Merchant
 
     public function Authorize($request)
     {
-        if (! app()->runningUnitTests()) {
+        if (! CallbackAuth::isSkipped()) {
             $auth = '';
             foreach ($_SERVER as $key => $val) {
                 if (strpos($key, 'AUTHORIZATION') !== false) {

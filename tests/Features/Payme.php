@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Illuminate\Support\Facades\Input;
 use Goodoneuz\PayUz\Models\PaymentSystem;
 use Goodoneuz\PayUz\Services\PaymentSystemService;
+use Goodoneuz\PayUz\Testing\CallbackAuth;
 
 class Payme extends \Illuminate\Foundation\Testing\TestCase
 {
@@ -22,6 +23,14 @@ class Payme extends \Illuminate\Foundation\Testing\TestCase
     {
       parent::setUp();
      $this->params = PaymentSystemService::getPaymentSystemParamsCollect(PaymentSystem::PAYME);
+        // These requests carry no Basic auth and post the body as a `request` field.
+        CallbackAuth::skipForTests();
+    }
+
+    public function tearDown(): void
+    {
+        CallbackAuth::enforce();
+        parent::tearDown();
     }
 
     /** @test */

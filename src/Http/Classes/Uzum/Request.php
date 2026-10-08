@@ -2,6 +2,8 @@
 
 namespace Goodoneuz\PayUz\Http\Classes\Uzum;
 
+use Goodoneuz\PayUz\Testing\CallbackAuth;
+
 /**
  * Parses an Uzum Bank Merchant API request body.
  *
@@ -49,7 +51,8 @@ class Request
 
         // Octane/RoadRunner safe body read (see issue #71).
         $request_body = request()->getContent();
-        if (app()->runningUnitTests()) {
+        // Test-only seam: lets a feature test post the body as a `request` field.
+        if (CallbackAuth::isSkipped()) {
             $request_body = request()->all()['request'] ?? $request_body;
         }
 

@@ -81,7 +81,8 @@ class Response{
         $timestamp = time();
         $digest = sha1($timestamp .  $params['secret_key']);
         
-        if(! app()->runningUnitTests())
+        // Feature tests run after PHPUnit has printed, where header() warns.
+        if (! headers_sent())
             header('Content-Type: application/json; charset=UTF-8');
         echo json_encode($this->result);
     }
