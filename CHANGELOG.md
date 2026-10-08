@@ -2,7 +2,7 @@
 
 All notable changes to `pay-uz` will be documented in this file
 
-## Unreleased
+## 4.1.2 - 2026-10-08
 
 ### Fixed
 
